@@ -3,6 +3,9 @@ import SwiftUI
 
 struct ArticleDetailView: View {
     let article: GuideArticle
+    @Environment(ReadabilitySettings.self) private var readability
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var revealed = false
 
     private var renderedBody: AttributedString {
         (try? AttributedString(
@@ -13,7 +16,7 @@ struct ArticleDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: readability.sectionSpacing) {
                 header
                 if article.isDraftFixture {
                     draftBanner
@@ -22,19 +25,32 @@ struct ArticleDetailView: View {
                 bodyBlock
                 sourcesBlock
             }
-            .padding()
-            .frame(maxWidth: 720, alignment: .leading)
+            .padding(AppTheme.contentGutter)
+            .frame(maxWidth: readability.textSize.contentMaxWidth, alignment: .leading)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .opacity(revealed || reduceMotion ? 1 : 0)
+            .offset(y: revealed || reduceMotion ? 0 : 10)
         }
         .navigationTitle(article.title)
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
 #endif
+        .onAppear {
+            withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                revealed = true
+            }
+        }
+        .onChange(of: article.id) { _, _ in
+            revealed = false
+            withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                revealed = true
+            }
+        }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
+            FlowMeta {
                 PriorityBadge(priority: article.priority)
                 ForEach(article.periodLabels, id: \.self) { label in
                     PeriodChip(label: label)
@@ -42,11 +58,11 @@ struct ArticleDetailView: View {
                 if article.isDraftFixture {
                     DraftStatusLabel(status: article.reviewStatus)
                 }
-                Spacer(minLength: 0)
             }
 
             Text(article.title)
-                .font(.largeTitle.bold())
+                .font(.largeTitle.weight(.bold))
+                .tracking(-0.4)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
         }
@@ -54,35 +70,44 @@ struct ArticleDetailView: View {
 
     private var draftBanner: some View {
         Label {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("未監修の制作確認用コンテンツ")
                     .font(.headline)
                 Text("緊急時の案内として使用しないでください。正式な行動手順は監修完了後に公開します。")
-                    .font(.subheadline)
+                    .font(.body)
                     .fixedSize(horizontal: false, vertical: true)
             }
         } icon: {
             Image(systemName: "exclamationmark.triangle.fill")
+                .imageScale(.large)
         }
         .foregroundStyle(.orange)
-        .padding()
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .fill(Color.orange.opacity(0.12))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .strokeBorder(Color.orange.opacity(0.25), lineWidth: 1)
+        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("注意。未監修の制作確認用コンテンツです。緊急時の案内として使用しないでください。")
     }
 
     private var summaryBlock: some View {
         Text(article.summary)
-            .font(.title3)
+            .font(readability.prefersBoldBody ? .title3.weight(.semibold) : .title3)
             .foregroundStyle(.secondary)
+            .lineSpacing(readability.resolvedLineSpacing * 0.5)
             .fixedSize(horizontal: false, vertical: true)
     }
 
     private var bodyBlock: some View {
         Text(renderedBody)
-            .font(.body)
-            .lineSpacing(4)
+            .font(readability.prefersBoldBody ? .body.weight(.medium) : .body)
+            .lineSpacing(readability.resolvedLineSpacing)
             .textSelection(.enabled)
             .frame(maxWidth: .infinity, alignment: .leading)
             .environment(\.openURL, OpenURLAction { _ in
@@ -92,85 +117,101 @@ struct ArticleDetailView: View {
     }
 
     private var sourcesBlock: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("情報源")
-                .font(.headline)
-                .accessibilityAddTraits(.isHeader)
+        SurfaceCard(padding: 18) {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("情報源")
+                    .font(.title3.weight(.semibold))
+                    .accessibilityAddTraits(.isHeader)
 
-            Text("本文は自前で整理し、参照先は権利に配慮した利用形態で記録します。長い原文の転載は行いません。")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if article.sources.isEmpty {
-                Text("この記事にはまだ情報源が登録されていません。")
-                    .font(.subheadline)
+                Text("本文は自前で整理し、参照先は権利に配慮した利用形態で記録します。長い原文の転載は行いません。")
+                    .font(.callout)
                     .foregroundStyle(.secondary)
-            } else {
-                ForEach(article.sources) { source in
-                    SourceCard(source: source)
+                    .lineSpacing(readability.resolvedLineSpacing * 0.4)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if article.sources.isEmpty {
+                    Text("この記事にはまだ情報源が登録されていません。")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(article.sources) { source in
+                        SourceCard(source: source, lineSpacing: readability.resolvedLineSpacing)
+                        if source.id != article.sources.last?.id {
+                            Divider()
+                        }
+                    }
+                }
+
+                if let reviewedAt = article.reviewedAt, let reviewedBy = article.reviewedBy {
+                    Text("最終確認: \(reviewedAt) / \(reviewedBy)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 2)
                 }
             }
-
-            if let reviewedAt = article.reviewedAt, let reviewedBy = article.reviewedBy {
-                Text("最終確認: \(reviewedAt) / \(reviewedBy)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 4)
-            }
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 
 private struct SourceCard: View {
     let source: GuideArticle.Source
+    var lineSpacing: CGFloat
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(source.title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.body.weight(.semibold))
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
                 Text(source.usage.displayName)
-                    .font(.caption2.weight(.semibold))
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
                     .background(.quaternary, in: Capsule())
             }
 
             Text(source.publisher)
-                .font(.caption.weight(.medium))
+                .font(.subheadline.weight(.medium))
                 .foregroundStyle(.secondary)
 
             Text(source.url.absoluteString)
-                .font(.caption)
+                .font(.footnote)
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
 
             Text("確認日: \(source.accessedAt)")
-                .font(.caption2)
+                .font(.caption)
                 .foregroundStyle(.secondary)
 
             Text(source.rightsNote)
-                .font(.caption)
+                .font(.callout)
+                .lineSpacing(lineSpacing * 0.4)
                 .fixedSize(horizontal: false, vertical: true)
 
             if source.usage == .shortQuote, let excerpt = source.excerpt, source.hasExcerpt {
                 Text("「\(excerpt)」")
-                    .font(.caption)
+                    .font(.callout)
                     .italic()
-                    .padding(8)
+                    .padding(10)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .background(.background, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .accessibilityLabel("引用。\(excerpt)")
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct FlowMeta<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { content() }
+            VStack(alignment: .leading, spacing: 8) { content() }
+        }
     }
 }
 
@@ -212,4 +253,5 @@ private struct SourceCard: View {
             )
         )
     }
+    .environment(ReadabilitySettings())
 }

@@ -7,18 +7,27 @@ struct FourteenDayNoteApp: App {
             RootView()
         }
 #if os(macOS)
-        .defaultSize(width: 1120, height: 740)
+        .defaultSize(width: 1160, height: 760)
         .commands {
             CommandGroup(replacing: .appInfo) {
                 Button("14日ノートについて…") {
                     NotificationCenter.default.post(name: .showAbout, object: nil)
                 }
             }
+            CommandGroup(after: .textEditing) {
+                Button("読みやすさ…") {
+                    NotificationCenter.default.post(name: .showReadability, object: nil)
+                }
+                .keyboardShortcut("t", modifiers: [.command, .shift])
+            }
             CommandGroup(replacing: .help) {
                 Button("14日ノートについて") {
                     NotificationCenter.default.post(name: .showAbout, object: nil)
                 }
                 .keyboardShortcut("?", modifiers: [.command])
+                Button("読みやすさ") {
+                    NotificationCenter.default.post(name: .showReadability, object: nil)
+                }
             }
         }
 #endif
@@ -27,4 +36,5 @@ struct FourteenDayNoteApp: App {
 
 extension Notification.Name {
     static let showAbout = Notification.Name("jp.hazakura.FourteenDayNote.showAbout")
+    static let showReadability = Notification.Name("jp.hazakura.FourteenDayNote.showReadability")
 }

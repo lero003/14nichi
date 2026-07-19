@@ -3,7 +3,10 @@ import SwiftUI
 
 struct ArticleBrowserView: View {
     @Bindable var model: AppModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(ReadabilitySettings.self) private var readability
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var appeared = false
 
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
@@ -14,33 +17,51 @@ struct ArticleBrowserView: View {
             detailColumn
         }
         .navigationSplitViewStyle(.balanced)
+        .onAppear {
+            guard !appeared else { return }
+            appeared = true
+        }
     }
 
     private var situationColumn: some View {
         List(selection: situationSelection) {
             Section {
-                ForEach(model.catalog?.situations ?? []) { situation in
+                ForEach(Array((model.catalog?.situations ?? []).enumerated()), id: \.element.id) { index, situation in
                     SituationRow(
                         situation: situation,
-                        articleCount: model.catalog?.articles(for: situation.id).count ?? 0
+                        articleCount: model.catalog?.articles(for: situation.id).count ?? 0,
+                        generousSpacing: readability.prefersGenerousSpacing
                     )
                     .tag(situation.id)
+                    .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                    .opacity(appeared || reduceMotion ? 1 : 0)
+                    .offset(y: appeared || reduceMotion ? 0 : 8)
+                    .animation(
+                        reduceMotion
+                            ? nil
+                            : .spring(response: 0.42, dampingFraction: 0.86).delay(Double(index) * 0.04),
+                        value: appeared
+                    )
                 }
             } header: {
                 Text("状況を選ぶ")
+                    .font(.subheadline.weight(.semibold))
             } footer: {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 10) {
                     OfflineCapabilityBadge()
-                    Text("通信なしで、いま必要な記事へ進めます。")
-                        .font(.caption)
+                    Text("通信なしで、いま必要な記事へ進めます。文字サイズは右上のボタンから変えられます。")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.top, 4)
+                .padding(.top, 6)
             }
         }
+        .listStyle(.sidebar)
         .navigationTitle("いま何が起きていますか？")
         .toolbar { browserToolbar }
 #if os(macOS)
-        .navigationSplitViewColumnWidth(min: 220, ideal: 270, max: 340)
+        .navigationSplitViewColumnWidth(min: 240, ideal: 290, max: 360)
 #endif
     }
 
@@ -49,40 +70,48 @@ struct ArticleBrowserView: View {
             if let situation = model.selectedSituation {
                 Section {
                     ForEach(model.visibleArticles) { article in
-                        ArticleRow(article: article)
-                            .tag(article.id)
+                        ArticleRow(
+                            article: article,
+                            generousSpacing: readability.prefersGenerousSpacing
+                        )
+                        .tag(article.id)
+                        .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                     }
                 } header: {
                     Text(situation.title)
+                        .font(.subheadline.weight(.semibold))
                 } footer: {
                     if model.visibleArticles.isEmpty {
                         Text("この状況の記事はまだありません。")
+                            .font(.callout)
                     } else {
                         Text("優先度の高い順に並んでいます。")
-                            .font(.caption)
+                            .font(.callout)
                     }
                 }
             }
         }
+        .listStyle(.sidebar)
         .navigationTitle(model.selectedSituation?.title ?? "記事")
         .overlay {
             if model.selectedSituationID == nil {
-                ContentUnavailableView(
-                    "状況を選んでください",
+                emptyState(
+                    title: "状況を選んでください",
                     systemImage: "checklist",
-                    description: Text("左側からいまの状況を選ぶと、関連記事が表示されます。")
+                    description: "左側からいまの状況を選ぶと、関連記事が表示されます。"
                 )
             } else if model.visibleArticles.isEmpty {
-                ContentUnavailableView(
-                    "記事がありません",
+                emptyState(
+                    title: "記事がありません",
                     systemImage: "doc",
-                    description: Text("この状況の制作コンテンツはまだありません。")
+                    description: "この状況の制作コンテンツはまだありません。"
                 )
             }
         }
+        .animation(AppTheme.spring(reduceMotion: reduceMotion), value: model.selectedSituationID)
         .toolbar { browserToolbar }
 #if os(macOS)
-        .navigationSplitViewColumnWidth(min: 250, ideal: 320, max: 400)
+        .navigationSplitViewColumnWidth(min: 270, ideal: 340, max: 420)
 #endif
     }
 
@@ -90,20 +119,46 @@ struct ArticleBrowserView: View {
     private var detailColumn: some View {
         if let article = model.selectedArticle {
             ArticleDetailView(article: article)
+                .id(article.id)
+                .transition(
+                    reduceMotion
+                        ? .opacity
+                        : .asymmetric(
+                            insertion: .opacity.combined(with: .move(edge: .trailing)).combined(with: .offset(y: 6)),
+                            removal: .opacity
+                        )
+                )
                 .toolbar { browserToolbar }
         } else {
-            ContentUnavailableView(
-                "記事を選んでください",
+            emptyState(
+                title: "記事を選んでください",
                 systemImage: "book",
-                description: Text("状況と記事を選ぶと、オフラインで本文を読めます。")
+                description: "状況と記事を選ぶと、オフラインで本文を読めます。"
             )
             .toolbar { browserToolbar }
         }
     }
 
+    private func emptyState(title: String, systemImage: String, description: String) -> some View {
+        ContentUnavailableView {
+            Label(title, systemImage: systemImage)
+        } description: {
+            Text(description)
+                .font(.body)
+        }
+    }
+
     @ToolbarContentBuilder
     private var browserToolbar: some ToolbarContent {
-        ToolbarItem(placement: .primaryAction) {
+        ToolbarItemGroup(placement: .primaryAction) {
+            Button {
+                model.isReadabilityPresented = true
+            } label: {
+                Label("読みやすさ", systemImage: "textformat.size")
+            }
+            .help("文字サイズと余白を変更")
+            .accessibilityHint("文字を大きくしたり、行間を広げたりできます")
+
             Button {
                 model.isAboutPresented = true
             } label: {
@@ -116,14 +171,22 @@ struct ArticleBrowserView: View {
     private var situationSelection: Binding<GuideSituation.ID?> {
         Binding(
             get: { model.selectedSituationID },
-            set: { model.selectSituation($0) }
+            set: { newValue in
+                withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                    model.selectSituation(newValue)
+                }
+            }
         )
     }
 
     private var articleSelection: Binding<GuideArticle.ID?> {
         Binding(
             get: { model.selectedArticleID },
-            set: { model.selectArticle($0) }
+            set: { newValue in
+                withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                    model.selectArticle(newValue)
+                }
+            }
         )
     }
 }
@@ -131,24 +194,27 @@ struct ArticleBrowserView: View {
 private struct SituationRow: View {
     let situation: GuideSituation
     let articleCount: Int
+    var generousSpacing: Bool
 
     var body: some View {
-        Label {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(alignment: .center, spacing: 14) {
+            IconWell(systemName: situation.systemImage)
+            VStack(alignment: .leading, spacing: generousSpacing ? 6 : 4) {
                 Text(situation.title)
                     .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(situation.summary)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+                Text(articleCount == 0 ? "記事なし" : "記事 \(articleCount)件")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
             }
-        } icon: {
-            Image(systemName: situation.systemImage)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(.tint)
-                .accessibilityHidden(true)
+            Spacer(minLength: 0)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, generousSpacing ? 8 : 4)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityValue(articleCount == 0 ? "記事なし" : "記事 \(articleCount)件")
     }
@@ -156,9 +222,10 @@ private struct SituationRow: View {
 
 private struct ArticleRow: View {
     let article: GuideArticle
+    var generousSpacing: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: generousSpacing ? 10 : 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(article.title)
                     .font(.headline)
@@ -172,7 +239,7 @@ private struct ArticleRow: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            HStack(spacing: 8) {
+            FlowChips {
                 ForEach(article.periodLabels, id: \.self) { label in
                     PeriodChip(label: label)
                 }
@@ -181,7 +248,21 @@ private struct ArticleRow: View {
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, generousSpacing ? 8 : 4)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// チップが折り返せる簡易フロー。
+private struct FlowChips<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        // macOS / iOS 共通で自然に折り返す
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { content() }
+            VStack(alignment: .leading, spacing: 8) { content() }
+        }
     }
 }

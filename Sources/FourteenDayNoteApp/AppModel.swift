@@ -28,11 +28,17 @@ final class AppModel {
     var selectedSituationID: GuideSituation.ID?
     var selectedArticleID: GuideArticle.ID?
     var isAboutPresented = false
+    var isReadabilityPresented = false
 
+    let readability: ReadabilitySettings
     private let repository: ContentRepository
 
-    init(repository: ContentRepository = ContentRepository()) {
+    init(
+        repository: ContentRepository = ContentRepository(),
+        readability: ReadabilitySettings = ReadabilitySettings()
+    ) {
         self.repository = repository
+        self.readability = readability
     }
 
     var catalog: ContentCatalog? {

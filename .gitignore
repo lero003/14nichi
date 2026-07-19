@@ -1,0 +1,42 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode / Swift
+.build/
+DerivedData/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+timeline.xctimeline
+playground.xcworkspace
+
+# SwiftPM
+.swiftpm/xcode/package.xcworkspace/xcuserdata/
+.swiftpm/config/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+Package.resolved
+
+# XcodeGen output (regenerate with `xcodegen generate`)
+FourteenDayNote.xcodeproj/
+
+# Local tooling / agent artifacts
+habitat-report/
+.idea/
+.vscode/
+*.swp
+*~
+
+# Secrets and local env
+.env
+.env.*
+*.pem
+*.p12
+*.mobileprovision

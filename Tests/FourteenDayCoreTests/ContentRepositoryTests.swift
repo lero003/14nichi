@@ -1,0 +1,209 @@
+import Foundation
+import Testing
+@testable import FourteenDayCore
+
+@Suite("Bundled content")
+struct ContentRepositoryTests {
+    @Test("manifest and Markdown fixture load together")
+    func loadsBundledArticle() throws {
+        let catalog = try ContentRepository().loadBundledCatalog()
+
+        #expect(
+            catalog.situations.map(\.id) == [
+                "earthquake",
+                "blackout",
+                "water-outage",
+                "communication",
+            ]
+        )
+        #expect(catalog.articles.count == 5)
+        #expect(catalog.articles.allSatisfy { $0.reviewStatus == .draft })
+        #expect(catalog.articles(for: "blackout").map(\.id) == [
+            "blackout-first-actions",
+            "blackout-phone-battery",
+        ])
+
+        let blackout = try #require(catalog.articles.first { $0.id == "blackout-first-actions" })
+        #expect(blackout.sources.count == 2)
+        #expect(blackout.sources.map(\.usage) == [.linkOnly, .linkOnly])
+        #expect(blackout.sources.allSatisfy { $0.url.scheme == "https" })
+    }
+
+    @Test("articles for a situation are sorted by priority then period")
+    func sortsArticlesByPriorityAndPeriod() throws {
+        let catalog = try ContentRepository().loadBundledCatalog()
+        let blackout = catalog.articles(for: "blackout")
+
+        #expect(blackout.map(\.priority) == [.critical, .normal])
+        #expect(blackout.map(\.id).first == "blackout-first-actions")
+    }
+
+    @Test("front matter is removed from displayed body")
+    func removesFrontMatter() {
+        let source = """
+        ---
+        id: sample
+        ---
+
+        # 本文
+        """
+
+        #expect(ContentRepository.removingFrontMatter(from: source) == "\n# 本文")
+    }
+
+    @Test("manifest rejects duplicate situation IDs")
+    func rejectsDuplicateSituationIDs() {
+        let situation = GuideSituation(
+            id: "blackout",
+            title: "停電",
+            summary: "summary",
+            systemImage: "bolt.slash",
+            sortOrder: 1
+        )
+        let manifest = Manifest(
+            schemaVersion: 1,
+            situations: [situation, situation],
+            articles: []
+        )
+
+        #expect(throws: ContentRepository.RepositoryError.duplicateSituationID("blackout")) {
+            try ContentRepository.validate(manifest: manifest)
+        }
+    }
+
+    @Test("manifest rejects references to unknown situations")
+    func rejectsUnknownSituation() {
+        let manifest = Manifest(
+            schemaVersion: 1,
+            situations: [],
+            articles: [articleMetadata(situations: ["unknown"])]
+        )
+
+        #expect(
+            throws: ContentRepository.RepositoryError.unknownSituation(
+                articleID: "sample",
+                situationID: "unknown"
+            )
+        ) {
+            try ContentRepository.validate(manifest: manifest)
+        }
+    }
+
+    @Test("approved content requires review evidence")
+    func rejectsIncompleteApprovedReview() {
+        let situation = GuideSituation(
+            id: "blackout",
+            title: "停電",
+            summary: "summary",
+            systemImage: "bolt.slash",
+            sortOrder: 1
+        )
+        let manifest = Manifest(
+            schemaVersion: 1,
+            situations: [situation],
+            articles: [articleMetadata(reviewStatus: .approved)]
+        )
+
+        #expect(throws: ContentRepository.RepositoryError.incompleteApprovedReview("sample")) {
+            try ContentRepository.validate(manifest: manifest)
+        }
+    }
+
+    @Test("sources require https and rights metadata")
+    func rejectsInvalidSourceURL() {
+        let bad = sampleSource(url: URL(string: "http://example.com")!)
+        #expect(
+            throws: ContentRepository.RepositoryError.invalidSource(
+                articleID: "sample",
+                sourceID: "src-1",
+                reason: "url は https である必要があります"
+            )
+        ) {
+            try ContentRepository.validateSource(bad, articleID: "sample")
+        }
+    }
+
+    @Test("short quotes must stay short and present")
+    func rejectsLongShortQuote() {
+        let long = String(repeating: "あ", count: ContentRepository.maxShortQuoteLength + 1)
+        let source = sampleSource(usage: .shortQuote, excerpt: long)
+        #expect(
+            throws: ContentRepository.RepositoryError.invalidSource(
+                articleID: "sample",
+                sourceID: "src-1",
+                reason: "excerpt が \(ContentRepository.maxShortQuoteLength) 文字を超えています（長い転載は禁止）"
+            )
+        ) {
+            try ContentRepository.validateSource(source, articleID: "sample")
+        }
+    }
+
+    @Test("linkOnly sources cannot carry excerpts")
+    func rejectsExcerptOnLinkOnly() {
+        let source = sampleSource(usage: .linkOnly, excerpt: "転載した本文")
+        #expect(
+            throws: ContentRepository.RepositoryError.invalidSource(
+                articleID: "sample",
+                sourceID: "src-1",
+                reason: "linkOnly では excerpt を置かないでください（転載を避けるため）"
+            )
+        ) {
+            try ContentRepository.validateSource(source, articleID: "sample")
+        }
+    }
+
+    @Test("relative Markdown paths cannot escape the content directory")
+    func rejectsEscapingPaths() {
+        #expect(ContentRepository.isValidRelativeMarkdownPath("emergency/guide.md"))
+        #expect(!ContentRepository.isValidRelativeMarkdownPath("../guide.md"))
+        #expect(!ContentRepository.isValidRelativeMarkdownPath("/tmp/guide.md"))
+        #expect(!ContentRepository.isValidRelativeMarkdownPath("emergency/guide.txt"))
+    }
+
+    @Test("priority and period labels are localized for UI")
+    func providesDisplayLabels() {
+        #expect(GuideArticle.Priority.critical.displayName == "最優先")
+        #expect(GuidePeriod.immediate.displayName == "いま")
+        #expect(GuidePeriod.day1.displayName == "初日")
+        #expect(GuideArticle.Source.Usage.paraphrase.displayName == "要約・言い換え")
+    }
+
+    private func articleMetadata(
+        situations: [String] = ["blackout"],
+        reviewStatus: GuideArticle.ReviewStatus = .draft,
+        sources: [GuideArticle.Source] = []
+    ) -> GuideArticle.Metadata {
+        GuideArticle.Metadata(
+            id: "sample",
+            title: "Sample",
+            summary: "Summary",
+            path: "emergency/sample.md",
+            category: "electricity",
+            priority: .normal,
+            situations: situations,
+            periods: ["immediate"],
+            region: "jp",
+            reviewStatus: reviewStatus,
+            reviewedAt: nil,
+            reviewedBy: nil,
+            sources: sources
+        )
+    }
+
+    private func sampleSource(
+        url: URL = URL(string: "https://www.bousai.go.jp/")!,
+        usage: GuideArticle.Source.Usage = .linkOnly,
+        excerpt: String? = nil
+    ) -> GuideArticle.Source {
+        GuideArticle.Source(
+            id: "src-1",
+            title: "内閣府 防災情報",
+            publisher: "内閣府",
+            url: url,
+            accessedAt: "2026-07-20",
+            usage: usage,
+            rightsNote: "参照リンクのみ",
+            excerpt: excerpt
+        )
+    }
+}

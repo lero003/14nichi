@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "situations": [
+    {
+      "id": "earthquake",
+      "title": "地震が起きた",
+      "summary": "揺れの直後から安全確認までの導線を確認します。",
+      "systemImage": "waveform.path.ecg",
+      "sortOrder": 10
+    },
+    {
+      "id": "blackout",
+      "title": "停電した",
+      "summary": "電気が止まったときの記事導線を確認します。",
+      "systemImage": "bolt.slash",
+      "sortOrder": 20
+    },
+    {
+      "id": "water-outage",
+      "title": "水が出ない",
+      "summary": "断水時の記事導線を確認します。",
+      "systemImage": "drop.triangle",
+      "sortOrder": 30
+    },
+    {
+      "id": "communication",
+      "title": "通信できない",
+      "summary": "回線が不安定なときの記事導線を確認します。",
+      "systemImage": "antenna.radiowaves.left.and.right.slash",
+      "sortOrder": 40
+    }
+  ],
+  "articles": [
+    {
+      "id": "earthquake-first-actions",
+      "title": "地震時の画面確認サンプル",
+      "summary": "地震の記事表示を確認するための制作フィクスチャです。",
+      "path": "emergency/earthquake-first-actions.md",
+      "category": "safety",
+      "priority": "critical",
+      "situations": ["earthquake"],
+      "periods": ["immediate"],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照リンクのみ。本文は転載せず、将来の正式記事では自前の要約を作成する。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "blackout-first-actions",
+      "title": "停電時の画面確認サンプル",
+      "summary": "オフライン記事の表示と導線を確認するための制作フィクスチャです。",
+      "path": "emergency/blackout-first-actions.md",
+      "category": "electricity",
+      "priority": "critical",
+      "situations": ["blackout"],
+      "periods": ["immediate"],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "meti-denryoku",
+          "title": "資源エネルギー庁 電力に関する情報",
+          "publisher": "経済産業省 資源エネルギー庁",
+          "url": "https://www.enecho.meti.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "出典UI確認用の参照リンク。公的サイトの本文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "火災・救急関連の一次情報を将来参照するためのリンク枠。現時点の本文は制作フィクスチャ。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "blackout-phone-battery",
+      "title": "停電時の端末電源サンプル",
+      "summary": "優先度の並び替え表示を確認するための通常優先度フィクスチャです。",
+      "path": "emergency/blackout-phone-battery.md",
+      "category": "electricity",
+      "priority": "normal",
+      "situations": ["blackout"],
+      "periods": ["day1"],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": []
+    },
+    {
+      "id": "water-outage-first-actions",
+      "title": "断水時の画面確認サンプル",
+      "summary": "断水の記事表示を確認するための制作フィクスチャです。",
+      "path": "emergency/water-outage-first-actions.md",
+      "category": "water",
+      "priority": "critical",
+      "situations": ["water-outage"],
+      "periods": ["immediate"],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "mhlw-water",
+          "title": "厚生労働省 水道のページ",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/topics/bukyoku/kenkou/suido/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公的情報への参照のみ。水質・保存に関する断定は監修前に書かない。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "communication-first-actions",
+      "title": "通信障害時の画面確認サンプル",
+      "summary": "通信が不安定な状況の記事表示を確認するための制作フィクスチャです。",
+      "path": "emergency/communication-first-actions.md",
+      "category": "communication",
+      "priority": "high",
+      "situations": ["communication"],
+      "periods": ["immediate", "day1"],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "soumu-ict",
+          "title": "総務省 情報通信",
+          "publisher": "総務省",
+          "url": "https://www.soumu.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "通信関連の公式案内を将来参照するためのリンク枠。現時点の本文は制作フィクスチャ。",
+          "excerpt": null
+        }
+      ]
+    }
+  ]
+}

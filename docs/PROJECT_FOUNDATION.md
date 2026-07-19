@@ -1,0 +1,123 @@
+# Project Foundation
+
+最終更新: 2026-07-20
+
+## 現在地
+
+Slice 1「オフライン閲覧基盤」の操作可能な骨格まで進んでいます。状況選択 → 優先度付き記事一覧 → 詳細表示を、同梱の未監修フィクスチャで確認できます。製品コンテンツの監修や備蓄機能はまだです。
+
+### いま動くもの
+
+- 4状況 / 5記事の同梱フィクスチャ（すべて `draft`）
+- manifest と front matter の検証付きローダー
+- 優先度・期間ラベル付きの SwiftUI ブラウザ（iPhone / iPad / Mac）
+- アプリ状態モデル（読み込み / 選択 / About）
+- オフライン対応表示、About、未監修バナー、情報源ブロック
+- AccentColor、Mac 既定ウィンドウサイズ、再試行可能な読み込みエラー
+- `content-lint` によるコンテンツ検証コマンド
+- Git 管理（`main`、XcodeGen 生成物は ignore）
+
+### 2026-07-20 の検証状況
+
+- `swift test --disable-sandbox`: コンテンツ検証テスト
+- `swift run content-lint`: OK（4 situations / 5 articles）
+- `xcodegen generate`: 成功
+- `FourteenDayNoteMac` Debug build（unsigned）: 成功
+- `FourteenDayNote` iOS build: ローカルに iOS 26.5 Platform 未導入のため未実施（`Xcode > Settings > Components` で導入が必要）
+- iOSシミュレータ起動: 同上のため未実施
+
+## プロダクト判断
+
+- 初期対象地域は日本。
+- iPhone / iPad / MacをSwiftUIで提供する。
+- 基本機能はログイン、広告、常時通信なしで利用できる。
+- Markdownをコンテンツ原本とし、検索・表示用メタデータは `manifest.json` へ置く。
+- 個人情報を扱う機能は、閲覧基盤とは別フェーズで脅威モデルと保存方針を決めてから実装する。
+- 災害・医療・食品衛生の文面は、アプリコードと別のレビュー対象にする。
+
+## MVPの切り分け
+
+### Slice 1: オフライン閲覧基盤（現在・骨格完了）
+
+- 同梱manifestの検証と読み込み
+- Markdown本文の読み込み
+- 状況別一覧（優先度・期間で記事を並べ替え）
+- 記事詳細（未監修バナー、要約、本文、情報源ブロック）
+- 情報源メタデータ（publisher / accessedAt / usage / rightsNote / 短文引用上限）
+- iPhone / iPad / Mac共通UI
+- `content-lint` による開発者向け検証
+- Dynamic TypeとVoiceOverの基本確認（コード上の accessibility 付与済み。実機確認は残）
+
+実装済みのmanifest検証: schema version、状況・記事IDの重複、未知の状況ID、Markdown相対パス、front matterのID・監修状態、`approved` の監修情報、出典の https / 日付 / usage と excerpt 整合、短文引用120文字上限。
+
+完成条件: 機内モード相当の通信なし環境で起動し、ホームから対象記事の最初の行動まで30秒以内に到達できる。コード上の導線は用意済み。実機での30秒計測が残作業。
+
+### Slice 2: 探索性
+
+- 全文検索
+- カテゴリ・時間帯フィルタ
+- お気に入り
+- 初期コンテンツ10本の監修フロー
+
+### Slice 3: 備蓄
+
+- 7日・14日の計算ルール
+- 在庫と不足の表示
+- 期限と買い物リスト
+- SwiftData保存
+
+### Slice 4: 個人情報と出力
+
+- 緊急カードのデータ最小化
+- 端末内保護とロック時の挙動
+- エクスポート時の明示的な同意
+- PDF・印刷
+
+## 初期アーキテクチャ
+
+```text
+Markdown + manifest.json
+          |
+          v
+ FourteenDayCore
+  - schema decoding
+  - bundle loading
+  - validation
+          |
+          v
+ SwiftUI app targets
+  - iPhone / iPad
+  - Mac
+```
+
+`FourteenDayCore` はSwift Packageとして単体テストできます。アプリプロジェクトは `project.yml` からXcodeGenで生成し、同じPackageをローカル依存として使います。
+
+## まだ決めないこと
+
+- iCloud同期
+- 署名付きコンテンツ更新
+- 完全オフライン地図
+- 多人数共有
+- Apple Watch
+- 有料追加パック
+
+これらは最初の閲覧基盤の実機評価を終えるまで、設計や依存を先取りしません。
+
+## リスクと対策
+
+| リスク | 最初の対策 |
+|---|---|
+| 誤った安全情報 | `draft` を既定にし、出典・確認日・確認者が揃うまで公開対象外 |
+| 著作権・転載リスク | 転載より `linkOnly` / `paraphrase`。`shortQuote` は120文字上限と権利注記必須 |
+| 緊急時に読みにくい | 行動を先頭に置き、標準テキストスタイルとVoiceOverで確認 |
+| manifestとMarkdownのずれ | ローダー検証とテストを追加し、後続で生成・lintツール化 |
+| 個人情報漏えい | 閲覧基盤から分離し、保存・出力・同期を別レビュー |
+| 機能過多 | Slice 1の30秒到達条件を満たすまで備蓄・PDFを実装しない |
+
+## 次の着手候補
+
+1. iPhone実機またはシミュレータで完全オフライン起動と30秒到達を計測する。
+2. 状況選択と記事選択のUIテストを追加する。
+3. 監修ワークフロー用に、レビュー期限・変更履歴・出典再確認の運用を決める。
+4. 共通情報源レジストリ（`sources.json`）へ重複出典を集約するか検討する。
+5. Slice 2へ進むなら全文検索またはお気に入りから小さく着手する。

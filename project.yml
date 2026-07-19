@@ -26,10 +26,6 @@ targets:
     platform: iOS
     sources:
       - path: Sources/FourteenDayNoteApp
-        excludes:
-          - Resources
-    resources:
-      - path: Sources/FourteenDayNoteApp/Resources
     dependencies:
       - package: FourteenDayCore
         product: FourteenDayCore
@@ -54,10 +50,6 @@ targets:
     platform: macOS
     sources:
       - path: Sources/FourteenDayNoteApp
-        excludes:
-          - Resources
-    resources:
-      - path: Sources/FourteenDayNoteApp/Resources
     dependencies:
       - package: FourteenDayCore
         product: FourteenDayCore

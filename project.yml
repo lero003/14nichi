@@ -26,6 +26,8 @@ targets:
     platform: iOS
     sources:
       - path: Sources/FourteenDayNoteApp
+        excludes:
+          - Resources
     resources:
       - path: Sources/FourteenDayNoteApp/Resources
     dependencies:
@@ -52,6 +54,8 @@ targets:
     platform: macOS
     sources:
       - path: Sources/FourteenDayNoteApp
+        excludes:
+          - Resources
     resources:
       - path: Sources/FourteenDayNoteApp/Resources
     dependencies:

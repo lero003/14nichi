@@ -5,6 +5,7 @@ import SwiftUI
 struct EmergencyCardView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ReadabilitySettings.self) private var readability
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var cards: [EmergencyCardSchemaV1.Card]
 
     @State private var draft = EmergencyCardSnapshot()
@@ -50,6 +51,10 @@ struct EmergencyCardView: View {
                 isUnlocked = true
                 authMessage = nil
             }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase != .active, protection.requiresAuthenticationToReveal else { return }
+            isUnlocked = false
         }
         .confirmationDialog(
             "緊急カードをすべて削除しますか？",

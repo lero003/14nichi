@@ -267,9 +267,11 @@ public enum ExportFileName {
 /// 一時PDFの寿命管理。値やパスに個人情報を埋め込まない。
 public struct TemporaryExportFile: Sendable {
     public let url: URL
+    private let cleanupDirectory: URL?
 
-    public init(url: URL) {
+    public init(url: URL, cleanupDirectory: URL? = nil) {
         self.url = url
+        self.cleanupDirectory = cleanupDirectory
     }
 
     public static func makePDFURL(
@@ -279,18 +281,23 @@ public struct TemporaryExportFile: Sendable {
         let base = directory ?? fileManager.temporaryDirectory
             .appendingPathComponent("FourteenDayNoteExports", isDirectory: true)
         try fileManager.createDirectory(at: base, withIntermediateDirectories: true)
-        // 衝突回避用のUUIDのみ。氏名等は入れない。
-        let url = base
-            .appendingPathComponent(UUID().uuidString, isDirectory: false)
-            .appendingPathExtension("pdf")
-        return TemporaryExportFile(url: url)
+        // 共有時の表示名は固定し、衝突回避用UUIDは専用ディレクトリ側だけに置く。
+        let exportDirectory = base.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try fileManager.createDirectory(at: exportDirectory, withIntermediateDirectories: true)
+        let url = exportDirectory.appendingPathComponent(ExportFileName.pdf, isDirectory: false)
+        return TemporaryExportFile(url: url, cleanupDirectory: exportDirectory)
     }
 
     @discardableResult
     public func removeIfExists(fileManager: FileManager = .default) throws -> Bool {
-        guard fileManager.fileExists(atPath: url.path) else { return false }
-        try fileManager.removeItem(at: url)
-        return true
+        let removedFile = fileManager.fileExists(atPath: url.path)
+        if removedFile {
+            try fileManager.removeItem(at: url)
+        }
+        if let cleanupDirectory, fileManager.fileExists(atPath: cleanupDirectory.path) {
+            try fileManager.removeItem(at: cleanupDirectory)
+        }
+        return removedFile
     }
 }
 

@@ -226,6 +226,8 @@ struct ExportDocumentTests {
         defer { try? FileManager.default.removeItem(at: directory) }
 
         let file = try TemporaryExportFile.makePDFURL(in: directory)
+        let exportDirectory = file.url.deletingLastPathComponent()
+        #expect(file.url.lastPathComponent == ExportFileName.pdf)
         #expect(file.url.lastPathComponent.contains("@") == false)
         #expect(file.url.path.contains("山田") == false)
 
@@ -262,6 +264,7 @@ struct ExportDocumentTests {
 
         #expect(try file.removeIfExists())
         #expect(FileManager.default.fileExists(atPath: file.url.path) == false)
+        #expect(FileManager.default.fileExists(atPath: exportDirectory.path) == false)
         #expect(try file.removeIfExists() == false)
     }
 

@@ -12,6 +12,7 @@ import AppKit
 struct ExportView: View {
     @Environment(\.modelContext) private var stockpileContext
     @Environment(ReadabilitySettings.self) private var readability
+    @Environment(\.scenePhase) private var scenePhase
 
     let emergencyContainer: ModelContainer?
 
@@ -24,6 +25,7 @@ struct ExportView: View {
     @State private var isWorking = false
     @State private var authenticator = LocalAuthenticationService()
     @State private var protection = EmergencyCardProtectionStore().load()
+    @State private var emergencyContentUnlocked = false
 #if os(iOS)
     @State private var sharePayload: SharePayload?
 #endif
@@ -67,6 +69,9 @@ struct ExportView: View {
                             .foregroundStyle(.secondary)
                     } else if canGenerate == false {
                         Text("個人情報を含む出力には、上の確認が必要です。")
+                            .foregroundStyle(.secondary)
+                    } else if requiresEmergencyAuthentication {
+                        Text("個人情報のプレビューは、PDF生成時の端末認証後に表示します。")
                             .foregroundStyle(.secondary)
                     } else {
                         Text(previewText)
@@ -115,15 +120,20 @@ struct ExportView: View {
             .onChange(of: acknowledgedPersonalData) { _, _ in
                 refreshPreview()
             }
+            .onChange(of: scenePhase) { _, phase in
+                guard phase != .active, protection.requiresAuthenticationToReveal else { return }
+                emergencyContentUnlocked = false
+                refreshPreview()
+            }
             .task {
                 loadSources()
                 refreshPreview()
             }
 #if os(iOS)
             .sheet(item: $sharePayload) { payload in
-                ActivityView(items: [payload.url])
+                ActivityView(items: [payload.file.url])
                     .onDisappear {
-                        cleanup(url: payload.url)
+                        cleanup(file: payload.file)
                     }
             }
 #endif
@@ -137,6 +147,12 @@ struct ExportView: View {
             return acknowledgedPersonalData
         }
         return true
+    }
+
+    private var requiresEmergencyAuthentication: Bool {
+        selection.includesPersonalInformation
+            && protection.requiresAuthenticationToReveal
+            && emergencyContentUnlocked == false
     }
 
     private var primaryPlan: StockpileSchemaV1.Plan? {
@@ -154,6 +170,7 @@ struct ExportView: View {
             _ = try? StockpileStore.loadOrCreatePlan(in: stockpileContext)
         }
         protection = EmergencyCardProtectionStore().load()
+        emergencyContentUnlocked = protection.requiresAuthenticationToReveal == false
     }
 
     private func makeDocument() -> ExportDocument {
@@ -213,7 +230,7 @@ struct ExportView: View {
     }
 
     private func refreshPreview() {
-        guard canGenerate else {
+        guard canGenerate, requiresEmergencyAuthentication == false else {
             previewText = ""
             return
         }
@@ -223,17 +240,16 @@ struct ExportView: View {
     private func generateAndShare() async {
         await runExport { file in
 #if os(iOS)
-            sharePayload = SharePayload(url: file.url)
+            sharePayload = SharePayload(file: file)
             statusMessage = "共有シートを開きました。完了後に一時ファイルを削除します。"
 #elseif os(macOS)
             NSWorkspace.shared.activateFileViewerSelecting([file.url])
             statusMessage = "PDFを生成しました。プレビューまたは印刷アプリから扱えます。一時ファイルは手動削除前に共有を終えてください。"
             // macOSではFinder表示後もファイルが必要なので、すぐには消さない。
             // 代わりに短時間後に削除するベストエフォート。
-            let url = file.url
             Task {
                 try? await Task.sleep(for: .seconds(120))
-                cleanup(url: url)
+                cleanup(file: file)
             }
 #endif
         }
@@ -246,10 +262,9 @@ struct ExportView: View {
             statusMessage = did
                 ? "PDFを開きました。印刷ダイアログから用紙へ出力できます。"
                 : "PDFを開けませんでした。"
-            let url = file.url
             Task {
                 try? await Task.sleep(for: .seconds(120))
-                cleanup(url: url)
+                cleanup(file: file)
             }
         }
     }
@@ -261,7 +276,7 @@ struct ExportView: View {
         statusMessage = nil
         defer { isWorking = false }
 
-        if selection.includesPersonalInformation && protection.requiresAuthenticationToReveal {
+        if requiresEmergencyAuthentication {
             let result = await authenticator.authenticate(
                 reason: "個人情報を含むPDFを生成します"
             )
@@ -269,6 +284,8 @@ struct ExportView: View {
                 statusMessage = "認証できなかったため、出力を中止しました。"
                 return
             }
+            emergencyContentUnlocked = true
+            refreshPreview()
         }
 
         let document = makeDocument()
@@ -285,8 +302,7 @@ struct ExportView: View {
         }
     }
 
-    private func cleanup(url: URL) {
-        let file = TemporaryExportFile(url: url)
+    private func cleanup(file: TemporaryExportFile) {
         do {
             _ = try file.removeIfExists()
         } catch {
@@ -298,7 +314,7 @@ struct ExportView: View {
 #if os(iOS)
 private struct SharePayload: Identifiable {
     let id = UUID()
-    let url: URL
+    let file: TemporaryExportFile
 }
 
 private struct ActivityView: UIViewControllerRepresentable {

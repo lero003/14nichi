@@ -6,29 +6,35 @@ struct PrivacyShieldModifier: ViewModifier {
     var enabled: Bool
 
     func body(content: Content) -> some View {
-        content
-            .overlay {
-                if enabled && scenePhase != .active {
-                    ZStack {
-                        Rectangle()
-                            .fill(.ultraThinMaterial)
-                        VStack(spacing: 12) {
-                            Image(systemName: "eye.slash.fill")
-                                .font(.largeTitle)
-                            Text("個人情報を非表示にしています")
-                                .font(.headline)
-                            Text("アプリに戻ると表示を再開します。")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding()
+        ZStack {
+            content
+                .opacity(isShielding ? 0 : 1)
+                .accessibilityHidden(isShielding)
+
+            if isShielding {
+                ZStack {
+                    Rectangle()
+                        .fill(.background)
+                        .ignoresSafeArea()
+                    VStack(spacing: 12) {
+                        Image(systemName: "eye.slash.fill")
+                            .font(.largeTitle)
+                        Text("個人情報を非表示にしています")
+                            .font(.headline)
+                        Text("アプリに戻ってから、必要に応じて認証してください。")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel("個人情報を非表示にしています")
+                    .padding()
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("個人情報を非表示にしています")
             }
-            // キャプチャされにくいよう、非アクティブ時はコンテンツを隠す
-            .opacity(enabled && scenePhase != .active ? 0.02 : 1)
+        }
+    }
+
+    private var isShielding: Bool {
+        enabled && scenePhase != .active
     }
 }
 

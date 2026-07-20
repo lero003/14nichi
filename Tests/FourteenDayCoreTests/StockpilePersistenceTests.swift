@@ -90,6 +90,59 @@ struct StockpilePersistenceTests {
         #expect(loaded.items.count == 3)
     }
 
+    @Test("applying a shortage updates inventory marks prepared and persists")
+    func appliesShortageToInventory() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let plan = try StockpileStore.loadOrCreatePlan(in: context)
+        let item = try #require(plan.items.first { $0.stableID == "drinking-water" })
+        item.dailyAmountPerPerson = 2
+        item.currentAmount = 3
+        try context.save()
+
+        let appliedAmount = try StockpileStore.applyShortageToInventory(
+            for: item,
+            household: plan.household,
+            targetDays: .seven,
+            in: context
+        )
+
+        #expect(appliedAmount == 11)
+        #expect(item.currentAmount == 14)
+        #expect(item.isPrepared)
+
+        let verificationContext = ModelContext(container)
+        let itemID = "drinking-water"
+        let descriptor = FetchDescriptor<StockpileSchemaV1.Item>(
+            predicate: #Predicate { $0.stableID == itemID }
+        )
+        let storedItem = try #require(verificationContext.fetch(descriptor).first)
+        #expect(storedItem.currentAmount == 14)
+        #expect(storedItem.isPrepared)
+    }
+
+    @Test("applying inventory does nothing when there is no shortage")
+    func skipsInventoryWithoutShortage() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let plan = try StockpileStore.loadOrCreatePlan(in: context)
+        let item = try #require(plan.items.first { $0.stableID == "meals" })
+        item.dailyAmountPerPerson = 1
+        item.currentAmount = 10
+        try context.save()
+
+        let appliedAmount = try StockpileStore.applyShortageToInventory(
+            for: item,
+            household: plan.household,
+            targetDays: .seven,
+            in: context
+        )
+
+        #expect(appliedAmount == nil)
+        #expect(item.currentAmount == 10)
+        #expect(item.isPrepared == false)
+    }
+
     private func makeContainer() throws -> ModelContainer {
         let schema = Schema(StockpileSchemaV1.models)
         let configuration = ModelConfiguration(

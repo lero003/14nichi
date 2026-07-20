@@ -144,6 +144,26 @@ public enum StockpileStore {
         try context.save()
     }
 
+    @discardableResult
+    public static func applyShortageToInventory(
+        for item: StockpileSchemaV1.Item,
+        household: HouseholdProfile,
+        targetDays: StockpileTargetDays,
+        in context: ModelContext
+    ) throws -> Double? {
+        let result = StockpileCalculator.calculate(
+            entry: item.calculationEntry,
+            household: household,
+            targetDays: targetDays
+        )
+        guard result.hasShortage else { return nil }
+
+        item.currentAmount = result.requiredAmount
+        item.isPrepared = true
+        try context.save()
+        return result.shortageAmount
+    }
+
     private static func addMissingDefaultItems(
         to plan: StockpileSchemaV1.Plan,
         in context: ModelContext

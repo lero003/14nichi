@@ -94,6 +94,55 @@ struct StockpileCalculatorTests {
         #expect(household.totalPeople == 2)
     }
 
+    @Test("shopping list includes only configured items with a shortage")
+    func buildsShoppingList() {
+        let entries = [
+            StockpileEntry(
+                id: "shortage",
+                name: "不足品",
+                unit: "個",
+                dailyAmountPerPerson: 2,
+                currentAmount: 3
+            ),
+            StockpileEntry(
+                id: "enough",
+                name: "十分な品",
+                unit: "個",
+                dailyAmountPerPerson: 1,
+                currentAmount: 7
+            ),
+            StockpileEntry(id: "unconfigured", name: "未入力", unit: "個"),
+        ]
+
+        let shoppingList = StockpileShoppingList.shortages(
+            entries: entries,
+            household: HouseholdProfile(adultCount: 1, childCount: 0, seniorCount: 0),
+            targetDays: .seven
+        )
+
+        #expect(shoppingList.map(\.id) == ["shortage"])
+        #expect(shoppingList.first?.shortageAmount == 11)
+    }
+
+    @Test("shopping list is empty when the household is missing")
+    func shoppingListRequiresHousehold() {
+        let shoppingList = StockpileShoppingList.shortages(
+            entries: [
+                StockpileEntry(
+                    id: "item",
+                    name: "品目",
+                    unit: "個",
+                    dailyAmountPerPerson: 1,
+                    currentAmount: 0
+                ),
+            ],
+            household: HouseholdProfile(adultCount: 0, childCount: 0, seniorCount: 0),
+            targetDays: .fourteen
+        )
+
+        #expect(shoppingList.isEmpty)
+    }
+
     private func calculate(
         targetDays: StockpileTargetDays,
         dailyAmount: Double,

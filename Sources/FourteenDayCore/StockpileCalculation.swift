@@ -101,3 +101,20 @@ public enum StockpileCalculator {
         return value
     }
 }
+
+public enum StockpileShoppingList {
+    public static func shortages(
+        entries: [StockpileEntry],
+        household: HouseholdProfile,
+        targetDays: StockpileTargetDays
+    ) -> [StockpileResult] {
+        entries.compactMap { entry in
+            let result = StockpileCalculator.calculate(
+                entry: entry,
+                household: household,
+                targetDays: targetDays
+            )
+            return result.hasShortage ? result : nil
+        }
+    }
+}

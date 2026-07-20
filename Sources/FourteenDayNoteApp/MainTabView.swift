@@ -13,6 +13,10 @@ struct MainTabView: View {
             Tab("備蓄", systemImage: "shippingbox", value: .stockpile) {
                 StockpileView()
             }
+
+            Tab("買い物", systemImage: "cart", value: .shopping) {
+                ShoppingListView()
+            }
         }
     }
 }
@@ -20,4 +24,5 @@ struct MainTabView: View {
 private enum AppSection: Hashable {
     case guide
     case stockpile
+    case shopping
 }

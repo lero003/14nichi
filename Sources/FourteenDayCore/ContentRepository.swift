@@ -187,7 +187,7 @@ public struct ContentRepository: Sendable {
             throw fail("rightsNote が空です")
         }
         guard isValidAccessDate(source.accessedAt) else {
-            throw fail("accessedAt は YYYY-MM-DD 形式である必要があります")
+            throw fail("accessedAt は実在する YYYY-MM-DD の日付である必要があります")
         }
         guard let scheme = source.url.scheme?.lowercased(), scheme == "https" else {
             throw fail("url は https である必要があります")
@@ -226,7 +226,27 @@ public struct ContentRepository: Sendable {
         else {
             return false
         }
-        return true
+
+        guard let year = Int(parts[0]),
+              let month = Int(parts[1]),
+              let day = Int(parts[2]),
+              year >= 1
+        else {
+            return false
+        }
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let components = DateComponents(
+            calendar: calendar,
+            timeZone: calendar.timeZone,
+            year: year,
+            month: month,
+            day: day
+        )
+        guard let date = calendar.date(from: components) else { return false }
+        let resolved = calendar.dateComponents([.year, .month, .day], from: date)
+        return resolved.year == year && resolved.month == month && resolved.day == day
     }
 
     private static func parseDocument(_ source: String, path: String) throws -> ParsedDocument {

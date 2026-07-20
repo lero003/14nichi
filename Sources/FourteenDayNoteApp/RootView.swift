@@ -4,6 +4,7 @@ import SwiftUI
 struct RootView: View {
     @State private var model = AppModel()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var systemDynamicTypeSize
 
     var body: some View {
         Group {
@@ -33,13 +34,9 @@ struct RootView: View {
         }
         .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: model.loadState)
         .environment(model.readability)
-        .dynamicTypeSize(model.readability.textSize.dynamicTypeSize)
+        .dynamicTypeSize(model.readability.resolvedDynamicTypeSize(system: systemDynamicTypeSize))
         .task {
             if case .loading = model.loadState {
-                // 一瞬の splash を見せつつ、同梱読み込みはほぼ即時。
-                if !reduceMotion {
-                    try? await Task.sleep(for: .milliseconds(280))
-                }
                 model.load()
             }
         }

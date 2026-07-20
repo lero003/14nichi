@@ -67,28 +67,32 @@ final class ReadabilitySettings {
         static let generousSpacing = "readability.generousSpacing"
     }
 
+    private let defaults: UserDefaults
+
     var textSize: TextSize {
-        didSet { UserDefaults.standard.set(textSize.rawValue, forKey: Keys.textSize) }
+        didSet { defaults.set(textSize.rawValue, forKey: Keys.textSize) }
     }
 
     /// 本文をやや太くしてコントラストを上げる。
     var prefersBoldBody: Bool {
-        didSet { UserDefaults.standard.set(prefersBoldBody, forKey: Keys.boldBody) }
+        didSet { defaults.set(prefersBoldBody, forKey: Keys.boldBody) }
     }
 
     /// 行間と余白をさらに広げる。
     var prefersGenerousSpacing: Bool {
-        didSet { UserDefaults.standard.set(prefersGenerousSpacing, forKey: Keys.generousSpacing) }
+        didSet { defaults.set(prefersGenerousSpacing, forKey: Keys.generousSpacing) }
     }
 
     init(
         textSize: TextSize? = nil,
         prefersBoldBody: Bool? = nil,
-        prefersGenerousSpacing: Bool? = nil
+        prefersGenerousSpacing: Bool? = nil,
+        defaults: UserDefaults = .standard
     ) {
+        self.defaults = defaults
         if let textSize {
             self.textSize = textSize
-        } else if let raw = UserDefaults.standard.string(forKey: Keys.textSize),
+        } else if let raw = defaults.string(forKey: Keys.textSize),
                   let stored = TextSize(rawValue: raw) {
             self.textSize = stored
         } else {
@@ -97,11 +101,16 @@ final class ReadabilitySettings {
         }
 
         self.prefersBoldBody = prefersBoldBody
-            ?? UserDefaults.standard.object(forKey: Keys.boldBody) as? Bool
+            ?? defaults.object(forKey: Keys.boldBody) as? Bool
             ?? false
         self.prefersGenerousSpacing = prefersGenerousSpacing
-            ?? UserDefaults.standard.object(forKey: Keys.generousSpacing) as? Bool
+            ?? defaults.object(forKey: Keys.generousSpacing) as? Bool
             ?? true
+    }
+
+    /// アプリ内設定は下限として扱い、端末側のより大きな文字設定を縮小しない。
+    func resolvedDynamicTypeSize(system: DynamicTypeSize) -> DynamicTypeSize {
+        max(system, textSize.dynamicTypeSize)
     }
 
     var resolvedLineSpacing: CGFloat {

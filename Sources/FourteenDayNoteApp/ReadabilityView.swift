@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ReadabilityView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var systemDynamicTypeSize
     @Bindable var settings: ReadabilitySettings
 
     var body: some View {
@@ -52,7 +54,7 @@ struct ReadabilityView: View {
             VStack(spacing: 10) {
                 ForEach(ReadabilitySettings.TextSize.allCases) { size in
                     Button {
-                        withAnimation(AppTheme.spring(reduceMotion: false)) {
+                        withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
                             settings.textSize = size
                         }
                     } label: {
@@ -163,14 +165,17 @@ struct ReadabilityView: View {
                 VStack(alignment: .leading, spacing: settings.resolvedLineSpacing) {
                     Text("停電した直後にすること")
                         .font(.title2.weight(.bold))
-                    Text("最初の数分で安全を確かめ、次に電源と連絡手段を整えます。文字サイズを変えると、この見出しと本文の見え方が変わります。")
+                    Text("文字サイズを変えると、この見出しと本文の見え方が変わります。長い文章が無理なく折り返されることも確認できます。")
                         .font(settings.prefersBoldBody ? .body.weight(.medium) : .body)
                         .lineSpacing(settings.resolvedLineSpacing)
                         .fixedSize(horizontal: false, vertical: true)
                     OfflineCapabilityBadge()
                 }
             }
-            .environment(\.dynamicTypeSize, settings.textSize.dynamicTypeSize)
+            .environment(
+                \.dynamicTypeSize,
+                settings.resolvedDynamicTypeSize(system: systemDynamicTypeSize)
+            )
         }
     }
 }

@@ -58,12 +58,8 @@ final class AppModel {
     }
 
     var selectedArticle: GuideArticle? {
-        guard let catalog else { return nil }
-        if let selectedArticleID,
-           let match = visibleArticles.first(where: { $0.id == selectedArticleID }) {
-            return match
-        }
-        return catalog.article(id: selectedArticleID)
+        guard let selectedArticleID else { return nil }
+        return visibleArticles.first { $0.id == selectedArticleID }
     }
 
     func load() {

@@ -17,6 +17,7 @@ struct ArticleBrowserView: View {
             detailColumn
         }
         .navigationSplitViewStyle(.balanced)
+        .toolbar { browserToolbar }
         .onAppear {
             guard !appeared else { return }
             appeared = true
@@ -59,7 +60,6 @@ struct ArticleBrowserView: View {
         }
         .listStyle(.sidebar)
         .navigationTitle("いま何が起きていますか？")
-        .toolbar { browserToolbar }
 #if os(macOS)
         .navigationSplitViewColumnWidth(min: 240, ideal: 290, max: 360)
 #endif
@@ -109,7 +109,6 @@ struct ArticleBrowserView: View {
             }
         }
         .animation(AppTheme.spring(reduceMotion: reduceMotion), value: model.selectedSituationID)
-        .toolbar { browserToolbar }
 #if os(macOS)
         .navigationSplitViewColumnWidth(min: 270, ideal: 340, max: 420)
 #endif
@@ -128,14 +127,12 @@ struct ArticleBrowserView: View {
                             removal: .opacity
                         )
                 )
-                .toolbar { browserToolbar }
         } else {
             emptyState(
                 title: "記事を選んでください",
                 systemImage: "book",
                 description: "状況と記事を選ぶと、オフラインで本文を読めます。"
             )
-            .toolbar { browserToolbar }
         }
     }
 
@@ -209,7 +206,7 @@ private struct SituationRow: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Text(articleCount == 0 ? "記事なし" : "記事 \(articleCount)件")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
         }
@@ -226,12 +223,16 @@ private struct ArticleRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: generousSpacing ? 10 : 8) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(article.title)
-                    .font(.headline)
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
-                PriorityBadge(priority: article.priority)
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    articleTitle
+                    Spacer(minLength: 0)
+                    PriorityBadge(priority: article.priority)
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    articleTitle
+                    PriorityBadge(priority: article.priority)
+                }
             }
 
             Text(article.summary)
@@ -251,6 +252,12 @@ private struct ArticleRow: View {
         .padding(.vertical, generousSpacing ? 8 : 4)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
+    }
+
+    private var articleTitle: some View {
+        Text(article.title)
+            .font(.headline)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 

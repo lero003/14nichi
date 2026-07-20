@@ -155,9 +155,22 @@ struct ContentRepositoryTests {
     @Test("relative Markdown paths cannot escape the content directory")
     func rejectsEscapingPaths() {
         #expect(ContentRepository.isValidRelativeMarkdownPath("emergency/guide.md"))
-        #expect(!ContentRepository.isValidRelativeMarkdownPath("../guide.md"))
-        #expect(!ContentRepository.isValidRelativeMarkdownPath("/tmp/guide.md"))
-        #expect(!ContentRepository.isValidRelativeMarkdownPath("emergency/guide.txt"))
+        #expect(ContentRepository.isValidRelativeMarkdownPath("../guide.md") == false)
+        #expect(ContentRepository.isValidRelativeMarkdownPath("/tmp/guide.md") == false)
+        #expect(ContentRepository.isValidRelativeMarkdownPath("emergency/guide.txt") == false)
+    }
+
+    @Test(
+        "access dates must be real Gregorian dates",
+        arguments: ["0000-01-01", "2026-02-30", "2026-13-01", "2026-7-20", "not-a-date"]
+    )
+    func rejectsInvalidAccessDates(_ value: String) {
+        #expect(ContentRepository.isValidAccessDate(value) == false)
+    }
+
+    @Test("access dates accept leap days")
+    func acceptsValidLeapDay() {
+        #expect(ContentRepository.isValidAccessDate("2024-02-29"))
     }
 
     @Test("priority and period labels are localized for UI")

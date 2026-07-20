@@ -7,13 +7,6 @@ struct ArticleDetailView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var revealed = false
 
-    private var renderedBody: AttributedString {
-        (try? AttributedString(
-            markdown: article.bodyMarkdown,
-            options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .full)
-        )) ?? AttributedString(article.bodyMarkdown)
-    }
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: readability.sectionSpacing) {
@@ -62,7 +55,6 @@ struct ArticleDetailView: View {
 
             Text(article.title)
                 .font(.largeTitle.weight(.bold))
-                .tracking(-0.4)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
         }
@@ -105,15 +97,11 @@ struct ArticleDetailView: View {
     }
 
     private var bodyBlock: some View {
-        Text(renderedBody)
-            .font(readability.prefersBoldBody ? .body.weight(.medium) : .body)
-            .lineSpacing(readability.resolvedLineSpacing)
-            .textSelection(.enabled)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .environment(\.openURL, OpenURLAction { _ in
-                // Offline-first: keep users inside the note while reading.
-                .discarded
-            })
+        ArticleMarkdownView(
+            markdown: article.bodyMarkdown,
+            prefersBoldBody: readability.prefersBoldBody,
+            lineSpacing: readability.resolvedLineSpacing
+        )
     }
 
     private var sourcesBlock: some View {
@@ -159,16 +147,16 @@ private struct SourceCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(source.title)
-                    .font(.body.weight(.semibold))
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
-                Text(source.usage.displayName)
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(.quaternary, in: Capsule())
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    sourceTitle
+                    Spacer(minLength: 0)
+                    usageBadge
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    sourceTitle
+                    usageBadge
+                }
             }
 
             Text(source.publisher)
@@ -179,6 +167,12 @@ private struct SourceCard: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
+
+            Link(destination: source.url) {
+                Label("公式サイトを開く（オンライン）", systemImage: "arrow.up.right.square")
+            }
+            .font(.body.weight(.semibold))
+            .accessibilityHint("通信を使用して外部サイトを開きます")
 
             Text("確認日: \(source.accessedAt)")
                 .font(.caption)
@@ -200,7 +194,21 @@ private struct SourceCard: View {
             }
         }
         .padding(.vertical, 2)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
+    }
+
+    private var sourceTitle: some View {
+        Text(source.title)
+            .font(.body.weight(.semibold))
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var usageBadge: some View {
+        Text(source.usage.displayName)
+            .font(.caption.weight(.semibold))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(.quaternary, in: Capsule())
     }
 }
 

@@ -51,7 +51,6 @@ struct AboutView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("14日ノート")
                 .font(.largeTitle.weight(.bold))
-                .tracking(-0.4)
             Text("数週間の生活混乱を乗り切るためのオフライン生活ガイド")
                 .font(.title3)
                 .foregroundStyle(.secondary)

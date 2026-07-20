@@ -42,7 +42,7 @@ struct StockpileView: View {
                 SelectionSummary(plan: plan)
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("必要量の目安")
+                    Text("備蓄チェック")
                         .font(.title2.weight(.bold))
                         .accessibilityAddTraits(.isHeader)
 
@@ -51,15 +51,22 @@ struct StockpileView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    ForEach(sortedItems(for: plan)) { item in
-                        if let recommendation = StockpileRecommendations.recommendation(id: item.stableID) {
-                            RecommendationCard(
-                                item: item,
-                                recommendation: recommendation,
-                                household: plan.household,
-                                targetDays: plan.targetDays,
-                                save: saveChanges
-                            )
+                    ForEach(StockpileRecommendations.groups, id: \.self) { group in
+                        Text(group)
+                            .font(.title3.weight(.semibold))
+                            .padding(.top, 8)
+                            .accessibilityAddTraits(.isHeader)
+
+                        ForEach(items(in: group, plan: plan)) { item in
+                            if let recommendation = StockpileRecommendations.recommendation(id: item.stableID) {
+                                RecommendationCard(
+                                    item: item,
+                                    recommendation: recommendation,
+                                    household: plan.household,
+                                    targetDays: plan.targetDays,
+                                    save: saveChanges
+                                )
+                            }
                         }
                     }
                 }
@@ -78,11 +85,11 @@ struct StockpileView: View {
                     .font(.title2.weight(.bold))
                     .accessibilityAddTraits(.isHeader)
 
-                Text("水・食料・携帯トイレの大まかな必要量を自動で計算します。在庫数や1日量の入力は必要ありません。")
+                Text("水・食料・携帯トイレは公的な1人1日の目安から必要量を自動計算します。その他の生活用品は数量を決めず、家に足りないものだけチェックして買い物リストへ載せます。")
                     .font(.body)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Label("表示する数量は公的情報をもとにした一般的な目安です。年齢、健康状態、食事制限などに合わせて調整してください。", systemImage: "info.circle.fill")
+                Label("数量は一般的な目安です。年齢、健康状態、食事制限、季節などに合わせて家庭で調整してください。", systemImage: "info.circle.fill")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -104,10 +111,17 @@ struct StockpileView: View {
         }
     }
 
-    private func sortedItems(for plan: StockpileSchema.Plan) -> [StockpileSchema.Item] {
-        plan.items.sorted {
-            $0.sortOrder == $1.sortOrder ? $0.stableID < $1.stableID : $0.sortOrder < $1.sortOrder
-        }
+    private func items(in group: String, plan: StockpileSchema.Plan) -> [StockpileSchema.Item] {
+        let ids = Set(
+            StockpileRecommendations.all
+                .filter { $0.group == group }
+                .map(\.id)
+        )
+        return plan.items
+            .filter { ids.contains($0.stableID) }
+            .sorted {
+                $0.sortOrder == $1.sortOrder ? $0.stableID < $1.stableID : $0.sortOrder < $1.sortOrder
+            }
     }
 
     private func loadPlan() {
@@ -230,15 +244,27 @@ private struct RecommendationCard: View {
                         .font(.title3.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                     Spacer(minLength: 12)
-                    Text("\(formatted(result.requiredAmount)) \(recommendation.unit)")
-                        .font(.title3.weight(.bold))
-                        .foregroundStyle(.tint)
+                    if recommendation.isQuantified {
+                        Text("\(formatted(result.requiredAmount)) \(recommendation.unit)")
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(.tint)
+                    } else {
+                        Text("チェック")
+                            .font(.callout.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Text(recommendation.example)
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+
+                if recommendation.isQuantified {
+                    Text("\(household.totalPeople)人 × \(targetDays.displayName)の一般的な目安")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
 
                 Toggle("家に足りない", isOn: shortageBinding)
                     .font(.headline)
@@ -255,7 +281,10 @@ private struct RecommendationCard: View {
                 Divider()
 
                 Link(destination: recommendation.source.url) {
-                    Label("目安の根拠を確認（オンライン）", systemImage: "arrow.up.right.square")
+                    Label(
+                        recommendation.isQuantified ? "数量目安の根拠を確認（オンライン）" : "備蓄の考え方を確認（オンライン）",
+                        systemImage: "arrow.up.right.square"
+                    )
                 }
                 .font(.callout)
 

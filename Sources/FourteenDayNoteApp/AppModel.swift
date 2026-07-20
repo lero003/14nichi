@@ -28,10 +28,16 @@ final class AppModel {
     var selectedSituationID: GuideSituation.ID?
     var selectedArticleID: GuideArticle.ID?
     var searchQuery = "" {
-        didSet { syncDisplayedArticleSelection() }
+        didSet {
+            pruneArticleFiltersToAvailableOptions()
+            syncDisplayedArticleSelection()
+        }
     }
     var showsFavoritesOnly = false {
-        didSet { syncDisplayedArticleSelection() }
+        didSet {
+            pruneArticleFiltersToAvailableOptions()
+            syncDisplayedArticleSelection()
+        }
     }
     var selectedCategory: String? {
         didSet { syncDisplayedArticleSelection() }
@@ -74,20 +80,28 @@ final class AppModel {
         !searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    var displayedArticles: [GuideArticle] {
+    /// カテゴリ・時期フィルタを掛ける前の候補（状況・検索・お気に入りまで反映）。
+    var filterBaseArticles: [GuideArticle] {
         guard let catalog else { return [] }
 
         let articles: [GuideArticle]
-        if !hasSearchQuery {
-            articles = showsFavoritesOnly ? catalog.articles : visibleArticles
-        } else {
+        if hasSearchQuery {
             articles = catalog.searchArticles(matching: searchQuery)
+        } else if showsFavoritesOnly {
+            articles = catalog.articles
+        } else {
+            articles = visibleArticles
         }
 
-        let favoritesFiltered = showsFavoritesOnly
-            ? articles.filter { favoriteArticleIDs.contains($0.id) }
-            : articles
-        return catalog.filterArticles(favoritesFiltered, using: articleFilter)
+        if showsFavoritesOnly {
+            return articles.filter { favoriteArticleIDs.contains($0.id) }
+        }
+        return articles
+    }
+
+    var displayedArticles: [GuideArticle] {
+        guard let catalog else { return [] }
+        return catalog.filterArticles(filterBaseArticles, using: articleFilter)
     }
 
     var articleFilter: GuideArticleFilter {
@@ -98,12 +112,18 @@ final class AppModel {
         articleFilter.isActive
     }
 
+    /// いまの候補集合から選べるカテゴリだけを返す（他状況のカテゴリで空振りしない）。
     var availableCategories: [String] {
-        catalog?.availableCategories ?? []
+        Array(Set(filterBaseArticles.map(\.category))).sorted {
+            GuideCategory.displayName(for: $0)
+                .localizedStandardCompare(GuideCategory.displayName(for: $1)) == .orderedAscending
+        }
     }
 
     var availablePeriods: [GuidePeriod] {
-        catalog?.availablePeriods ?? []
+        GuidePeriod.allCases.filter { period in
+            filterBaseArticles.contains { $0.periods.contains(period.rawValue) }
+        }
     }
 
     var articleFilterSummary: String {
@@ -133,17 +153,26 @@ final class AppModel {
 
     var selectedArticle: GuideArticle? {
         guard let selectedArticleID else { return nil }
-        return displayedArticles.first { $0.id == selectedArticleID }
+        // Split では一覧にある記事を優先。詳細復元では catalog からも引ける。
+        if let displayed = displayedArticles.first(where: { $0.id == selectedArticleID }) {
+            return displayed
+        }
+        return catalog?.article(id: selectedArticleID)
     }
 
     func load() {
         do {
             let catalog = try repository.loadBundledCatalog()
             loadState = .ready(catalog)
-            if selectedSituationID == nil {
-                selectedSituationID = catalog.situations.first?.id
+            // 起動時は状況・記事とも未選択。iPhone で状況 index を飛ばして詳細へ入らない。
+            // （wide レイアウトでは左に状況一覧、中央は「状況を選んでください」。）
+            if selectedSituationID != nil,
+               catalog.situation(id: selectedSituationID) == nil {
+                selectedSituationID = nil
             }
+            selectedArticleID = nil
             reconcileFavorites(with: catalog)
+            pruneArticleFiltersToAvailableOptions()
             syncDisplayedArticleSelection()
         } catch {
             loadState = .failed(error.localizedDescription)
@@ -151,19 +180,68 @@ final class AppModel {
     }
 
     func selectSituation(_ id: GuideSituation.ID?) {
+        // 検索・お気に入りは状況ドリルダウンと排他
         searchQuery = ""
         showsFavoritesOnly = false
         selectedSituationID = id
+        // 状況を変えたら記事選択を外す（一覧へ戻す）
+        selectedArticleID = nil
+        pruneArticleFiltersToAvailableOptions()
         syncDisplayedArticleSelection()
     }
 
-    func selectArticle(_ id: GuideArticle.ID?) {
+    /// ナビ階層の復元用。検索・お気に入りは触らず、状況IDだけ合わせる。
+    func alignSelectedSituation(_ id: GuideSituation.ID) {
+        guard selectedSituationID != id else { return }
+        selectedSituationID = id
+        selectedArticleID = nil
+        pruneArticleFiltersToAvailableOptions()
+        syncDisplayedArticleSelection()
+    }
+
+    /// - Parameter requireDisplayed: `true` のとき一覧上の記事だけ選択可（Split の選択用）。
+    ///   詳細画面の復元では `false` にして catalog 上のIDを許す。
+    func selectArticle(_ id: GuideArticle.ID?, requireDisplayed: Bool = true) {
         guard let id else {
             selectedArticleID = nil
             return
         }
-        guard displayedArticles.contains(where: { $0.id == id }) else { return }
+        if requireDisplayed {
+            guard displayedArticles.contains(where: { $0.id == id }) else { return }
+        } else {
+            guard catalog?.article(id: id) != nil else { return }
+        }
         selectedArticleID = id
+    }
+
+    /// 詳細を閉じる／一覧に戻るとき用。
+    func clearArticleSelection() {
+        selectedArticleID = nil
+    }
+
+    /// Compact の NavigationStack path を正として選択状態を合わせる。
+    /// 戻るジェスチャで path だけが変わったときに、状況・記事の選択が取り残されないようにする。
+    func reconcileCompactRoute(
+        situationID: GuideSituation.ID?,
+        articleID: GuideArticle.ID?
+    ) {
+        if let situationID {
+            if selectedSituationID != situationID {
+                selectedSituationID = situationID
+                pruneArticleFiltersToAvailableOptions()
+            }
+        } else if showsFavoritesOnly == false, hasSearchQuery == false, selectedSituationID != nil {
+            // ルート（状況一覧）に戻ったとき。検索・お気に入り表示中は状況IDを触らない。
+            selectedSituationID = nil
+            pruneArticleFiltersToAvailableOptions()
+        }
+
+        if let articleID {
+            // 詳細が path に残っている間は一覧フィルタ外でも保持する
+            selectArticle(articleID, requireDisplayed: false)
+        } else if selectedArticleID != nil {
+            clearArticleSelection()
+        }
     }
 
     func isFavorite(_ articleID: GuideArticle.ID) -> Bool {
@@ -194,11 +272,22 @@ final class AppModel {
             selectedArticleID = nil
             return
         }
+        // 一覧に無い選択は捨てる。先頭記事への自動ジャンプはしない（状況 index を飛ばす原因になる）。
         if let selectedArticleID,
            displayedArticles.contains(where: { $0.id == selectedArticleID }) {
             return
         }
-        selectedArticleID = displayedArticles.first?.id
+        selectedArticleID = nil
+    }
+
+    /// いまの候補に存在しないカテゴリ・時期が残っていると一覧が空になるため落とす。
+    private func pruneArticleFiltersToAvailableOptions() {
+        if let selectedCategory, availableCategories.contains(selectedCategory) == false {
+            self.selectedCategory = nil
+        }
+        if let selectedPeriod, availablePeriods.contains(selectedPeriod) == false {
+            self.selectedPeriod = nil
+        }
     }
 
     private func reconcileFavorites(with catalog: ContentCatalog) {

@@ -66,6 +66,15 @@ public enum GuideCategory: String, CaseIterable, Sendable {
     case electricity
     case water
     case communication
+    case weather
+    case gas
+    case hygiene
+    case food
+    case firstAid
+    case evacuation
+    case information
+    case preparedness
+    case personal
 
     public var displayName: String {
         switch self {
@@ -73,6 +82,15 @@ public enum GuideCategory: String, CaseIterable, Sendable {
         case .electricity: "電気"
         case .water: "水"
         case .communication: "通信"
+        case .weather: "気象・暑さ寒さ"
+        case .gas: "ガス"
+        case .hygiene: "衛生"
+        case .food: "食事"
+        case .firstAid: "応急手当"
+        case .evacuation: "避難・在宅"
+        case .information: "情報確認"
+        case .preparedness: "備え"
+        case .personal: "個人情報"
         }
     }
 

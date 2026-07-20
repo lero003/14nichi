@@ -64,7 +64,7 @@ struct ShoppingListView: View {
                         Label("買うものは \(rows.count)品目", systemImage: "cart.fill")
                             .font(.title2.weight(.bold))
                             .accessibilityAddTraits(.isHeader)
-                        Text("\(plan.household.totalPeople)人 × \(plan.targetDays.displayName)の目安です。買った品目をチェックすると一覧から外れます。")
+                        Text("数量がある品目は \(plan.household.totalPeople)人 × \(plan.targetDays.displayName) の目安です。チェックリスト品目は必要数を家庭で決めてください。買った品目は一覧から外れます。")
                             .font(.body)
                             .foregroundStyle(.secondary)
                     }
@@ -102,13 +102,26 @@ struct ShoppingListView: View {
                 $0.sortOrder == $1.sortOrder ? $0.stableID < $1.stableID : $0.sortOrder < $1.sortOrder
             }
             .compactMap { item in
-                guard let recommendation = StockpileRecommendations.recommendation(id: item.stableID) else { return nil }
-                let result = StockpileCalculator.calculate(
-                    entry: recommendation.entry(),
-                    household: plan.household,
-                    targetDays: plan.targetDays
+                guard let recommendation = StockpileRecommendations.recommendation(id: item.stableID) else {
+                    return nil
+                }
+                if recommendation.isQuantified {
+                    let result = StockpileCalculator.calculate(
+                        entry: recommendation.entry(),
+                        household: plan.household,
+                        targetDays: plan.targetDays
+                    )
+                    return ShoppingRow(
+                        item: item,
+                        recommendation: recommendation,
+                        quantifiedResult: result
+                    )
+                }
+                return ShoppingRow(
+                    item: item,
+                    recommendation: recommendation,
+                    quantifiedResult: nil
                 )
-                return ShoppingRow(item: item, result: result)
             }
     }
 
@@ -133,7 +146,8 @@ struct ShoppingListView: View {
 
 private struct ShoppingRow: Identifiable {
     let item: StockpileSchema.Item
-    let result: StockpileResult
+    let recommendation: StockpileRecommendation
+    let quantifiedResult: StockpileResult?
     var id: String { item.stableID }
 }
 
@@ -147,9 +161,16 @@ private struct ShoppingItemCard: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(row.item.name)
                         .font(.title3.weight(.semibold))
-                    Text("\(formatted(row.result.requiredAmount)) \(row.result.entry.unit)")
-                        .font(.headline)
-                        .foregroundStyle(.orange)
+                    if let result = row.quantifiedResult {
+                        Text("\(formatted(result.requiredAmount)) \(result.entry.unit)")
+                            .font(.headline)
+                            .foregroundStyle(.orange)
+                    } else {
+                        Text(row.recommendation.example)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
 
                 Spacer(minLength: 8)

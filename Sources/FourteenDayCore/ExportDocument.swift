@@ -64,6 +64,8 @@ public struct ExportStockpileItem: Equatable, Sendable, Identifiable {
     public var shortageAmount: Double
     public var isPrepared: Bool
     public var expirationText: String?
+    /// 数量自動計算のないチェックリスト品目。PDFでは数量0と誤解されない文言にする。
+    public var isChecklistOnly: Bool
 
     public init(
         id: String,
@@ -73,7 +75,8 @@ public struct ExportStockpileItem: Equatable, Sendable, Identifiable {
         currentAmount: Double,
         shortageAmount: Double,
         isPrepared: Bool,
-        expirationText: String? = nil
+        expirationText: String? = nil,
+        isChecklistOnly: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -83,6 +86,7 @@ public struct ExportStockpileItem: Equatable, Sendable, Identifiable {
         self.shortageAmount = shortageAmount
         self.isPrepared = isPrepared
         self.expirationText = expirationText
+        self.isChecklistOnly = isChecklistOnly
     }
 }
 
@@ -225,9 +229,14 @@ public struct ExportDocument: Equatable, Sendable {
                     lines.append("（品目なし）")
                 } else {
                     for item in stockpile.items {
-                        let prepared = item.isPrepared ? "準備済" : "未準備"
-                        var line =
-                            "- \(item.name): 必要 \(format(item.requiredAmount))\(item.unit) / 現在 \(format(item.currentAmount))\(item.unit) / 不足 \(format(item.shortageAmount))\(item.unit)（\(prepared)）"
+                        let prepared = item.isPrepared ? "購入済/準備済" : "不足・要用意"
+                        var line: String
+                        if item.isChecklistOnly {
+                            line = "- \(item.name): \(prepared)（数量は家庭で調整）"
+                        } else {
+                            line =
+                                "- \(item.name): 目安 \(format(item.requiredAmount))\(item.unit) / 状態 \(prepared)"
+                        }
                         if let expirationText = item.expirationText, expirationText.isEmpty == false {
                             line += " 期限: \(expirationText)"
                         }

@@ -6,7 +6,7 @@
 - 緊急カードの非アクティブ時秘匿・復帰時再ロックと、PDF個人情報プレビューの認証境界を脅威モデルどおりに修正済み。
 - 備蓄・買い物は入力中心から、人数・期間の選択、一般目安の確認、不足品目の選択、購入済みチェックだけの導線へ変更済み。
 - iOS Simulator（iPhone 17 / iPad A16）ビルドと起動スモーク成功。
-- 同梱記事はすべて `draft`。一般公開は監修後。
+- 同梱13状況・30記事はすべて `draft`。一般公開は監修後。
 - Team 選択、実機、Archive Validate / Upload は本人操作。
 
 ## Recent Changes
@@ -20,6 +20,8 @@
 - PDFの共有名を `14nichi-export.pdf` に固定し、UUID専用ディレクトリごと後片付けするようにした。認証前は個人情報プレビューを組み立てない。
 - 備蓄の詳細入力（年齢区分、1日量、現在量、期限）を主導線から除去。水3L・食料3食・携帯トイレ5回分（各1人1日）だけを出典付き目安として自動計算する。
 - SwiftDataをV2へ更新し、旧V1の不足・準備済み状態を新しい不足選択・購入済み状態へ一度だけ変換する。
+- 状況・記事を13状況・30記事へ拡充し、検索・絞り込み・ナビゲーションを更新。津波の即時避難と119/AED/胸骨圧迫の記述は該当する気象庁・消防庁一次情報へ合わせた。
+- 数量根拠のある水・食料・携帯トイレと、数量を家庭で決める生活用品チェックリストを分離した。
 
 ## Decisions
 
@@ -31,10 +33,11 @@
 
 ## Tests
 
-- `swift test --disable-sandbox`: 63 tests 成功（V1永続ストアからV2への実移行テストを含む）。
-- `FourteenDayNote` iOS Simulator Debug unsigned build: 成功（新しい備蓄・買い物画面とSwiftData V2を含む）。
-- `swift run --disable-sandbox content-lint`: 成功（5記事は意図どおり `draft`）。
-- Mac Debug unsigned: 成功（修正後に再検証）。
+- `swift test --disable-sandbox`: 65 tests / 12 suites 成功（V1永続ストアからV2への実移行テストを含む）。
+- `FourteenDayNote` generic iOS Simulator Release unsigned build: 成功（新しい備蓄・買い物画面とSwiftData V2を含む）。
+- `swift run --disable-sandbox content-lint`: 成功（13状況・30記事は意図どおり `draft`）。
+- Mac Release unsigned: 成功（修正後に再検証）。
+- iOS / Mac Release app bundleで共有 Bundle ID、`0.1.0 (1)`、暗号化フラグ、Privacy Manifest同梱を確認。
 - iPhone 17 / iOS 26.5 Simulator Debug unsigned + `simctl launch`: 成功（修正後に再検証）。過去の Release / iPad も成功済み。
 
 ## Risks / Unknowns
@@ -44,6 +47,7 @@
 - 失効 Development 証明書（lero003）が identity に残存。使わない。
 - 一般公開用の公開 Web ページ・スクショ・記事監修が未着手。
 - V1からV2への実データ移行と新しい備蓄→買い物導線は、既存データがある実機での手動スモークが必要。
+- `content-lint --distribution` は30記事が `draft` のため意図どおり失敗する。内部TestFlight限定の候補であり、一般公開可能とは扱わない。
 
 ## Next Actions
 

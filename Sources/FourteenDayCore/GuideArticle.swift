@@ -171,7 +171,9 @@ public struct ContentCatalog: Hashable, Sendable {
         guard let situationID else { return [] }
         return articles
             .filter { $0.situations.contains(situationID) }
-            .sorted(by: Self.articleSort)
+            .sorted { lhs, rhs in
+                Self.articleSort(lhs, rhs, preferredSituationID: situationID)
+            }
     }
 
     public func situation(id: GuideSituation.ID?) -> GuideSituation? {
@@ -184,7 +186,22 @@ public struct ContentCatalog: Hashable, Sendable {
         return articles.first { $0.id == id }
     }
 
-    private static func articleSort(_ lhs: GuideArticle, _ rhs: GuideArticle) -> Bool {
+    /// 状況一覧用の並び。いま選んでいる状況を主対象とする記事を先に出す。
+    ///
+    /// 複数状況にまたがる記事は関連導線として残すが、タイトル順だけで先頭を占有しない。
+    static func articleSort(
+        _ lhs: GuideArticle,
+        _ rhs: GuideArticle,
+        preferredSituationID: GuideSituation.ID?
+    ) -> Bool {
+        if let preferredSituationID {
+            let lhsAffinity = situationAffinity(lhs, preferred: preferredSituationID)
+            let rhsAffinity = situationAffinity(rhs, preferred: preferredSituationID)
+            if lhsAffinity != rhsAffinity {
+                return lhsAffinity < rhsAffinity
+            }
+        }
+
         if lhs.priority.sortIndex != rhs.priority.sortIndex {
             return lhs.priority.sortIndex < rhs.priority.sortIndex
         }
@@ -194,5 +211,22 @@ public struct ContentCatalog: Hashable, Sendable {
             return lhsPeriod < rhsPeriod
         }
         return lhs.title.localizedStandardCompare(rhs.title) == .orderedAscending
+    }
+
+    /// 小さいほど、その状況の「本体」記事に近い。
+    private static func situationAffinity(
+        _ article: GuideArticle,
+        preferred: GuideSituation.ID
+    ) -> Int {
+        if article.situations == [preferred] {
+            return 0
+        }
+        if article.situations.first == preferred {
+            return 1
+        }
+        if article.situations.contains(preferred) {
+            return 2
+        }
+        return 3
     }
 }

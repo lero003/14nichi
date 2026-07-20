@@ -8,34 +8,42 @@ struct ContentRepositoryTests {
     func loadsBundledArticle() throws {
         let catalog = try ContentRepository().loadBundledCatalog()
 
-        #expect(
-            catalog.situations.map(\.id) == [
-                "earthquake",
-                "blackout",
-                "water-outage",
-                "communication",
-            ]
-        )
-        #expect(catalog.articles.count == 5)
+        #expect(catalog.situations.map(\.id).contains("earthquake"))
+        #expect(catalog.situations.map(\.id).contains("blackout"))
+        #expect(catalog.situations.count >= 10)
+        #expect(catalog.articles.count >= 25)
         #expect(catalog.articles.allSatisfy { $0.reviewStatus == .draft })
-        #expect(catalog.articles(for: "blackout").map(\.id) == [
-            "blackout-first-actions",
-            "blackout-phone-battery",
-        ])
+        #expect(catalog.articles(for: "blackout").map(\.id).contains("blackout-first-actions"))
+        #expect(catalog.articles(for: "blackout").map(\.id).contains("blackout-phone-battery"))
 
         let blackout = try #require(catalog.articles.first { $0.id == "blackout-first-actions" })
-        #expect(blackout.sources.count == 2)
-        #expect(blackout.sources.map(\.usage) == [.linkOnly, .linkOnly])
+        #expect(blackout.sources.count >= 2)
         #expect(blackout.sources.allSatisfy { $0.url.scheme == "https" })
+        #expect(blackout.title.contains("停電"))
     }
 
-    @Test("articles for a situation are sorted by priority then period")
-    func sortsArticlesByPriorityAndPeriod() throws {
+    @Test("articles for a situation prefer primary-situation content first")
+    func sortsArticlesBySituationAffinityThenPriority() throws {
         let catalog = try ContentRepository().loadBundledCatalog()
         let blackout = catalog.articles(for: "blackout")
+        let earthquake = catalog.articles(for: "earthquake")
 
-        #expect(blackout.map(\.priority) == [.critical, .normal])
+        #expect(blackout.isEmpty == false)
         #expect(blackout.map(\.id).first == "blackout-first-actions")
+        #expect(blackout.map(\.id).contains("blackout-phone-battery"))
+
+        // 複数状況に紐づく関連記事が、当該状況の本体記事より前に来ない
+        #expect(earthquake.map(\.id).first == "earthquake-first-actions")
+        if let gasIndex = earthquake.map(\.id).firstIndex(of: "gas-outage-first-actions"),
+           let primaryIndex = earthquake.map(\.id).firstIndex(of: "earthquake-first-actions") {
+            #expect(primaryIndex < gasIndex)
+        }
+
+        let priorities = blackout.map(\.priority)
+        if let firstCritical = priorities.firstIndex(of: .critical),
+           let firstNormal = priorities.firstIndex(of: .normal) {
+            #expect(firstCritical < firstNormal)
+        }
     }
 
     @Test("front matter is removed from displayed body")

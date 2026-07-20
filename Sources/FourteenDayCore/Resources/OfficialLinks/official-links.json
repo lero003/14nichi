@@ -13,6 +13,24 @@
           "purpose": "国の防災施策・啓発情報を確認する"
         },
         {
+          "id": "cao-check",
+          "title": "内閣府 備えのチェック",
+          "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
+          "purpose": "家庭での備えの確認項目を見る"
+        },
+        {
+          "id": "kantei-sonae",
+          "title": "首相官邸 災害が起きる前にできること",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "purpose": "備蓄・非常持ち出しの公的な考え方を確認する"
+        },
+        {
+          "id": "gov-prep",
+          "title": "政府広報 災害に事前に備える",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "purpose": "家庭備蓄と生活インフラ代替の案内を確認する"
+        },
+        {
           "id": "kokuminhogo",
           "title": "国民保護ポータルサイト",
           "url": "https://www.kokuminhogo.go.jp/",
@@ -28,25 +46,79 @@
     },
     {
       "id": "weather",
-      "title": "気象・地震",
+      "title": "気象・地震・水害",
       "links": [
         {
           "id": "jma",
           "title": "気象庁",
           "url": "https://www.jma.go.jp/",
           "purpose": "気象警報・地震・津波などの公式発表を確認する"
+        },
+        {
+          "id": "jma-bosai",
+          "title": "気象庁 防災情報",
+          "url": "https://www.jma.go.jp/bosai/",
+          "purpose": "警報・注意報や雨雲など防災向けの情報を確認する"
+        },
+        {
+          "id": "mlit-river",
+          "title": "国土交通省 防災情報（河川等）",
+          "url": "https://www.mlit.go.jp/river/bousai/",
+          "purpose": "水害・土砂に関する公的情報を確認する"
+        },
+        {
+          "id": "wbgt",
+          "title": "熱中症予防情報サイト",
+          "url": "https://www.wbgt.env.go.jp/",
+          "purpose": "暑さ指数など熱中症予防の公式情報を確認する"
         }
       ]
     },
     {
       "id": "stockpile",
-      "title": "食料・備蓄",
+      "title": "食料・備蓄・衛生",
       "links": [
         {
           "id": "maff-foodstock",
           "title": "農林水産省 災害時に備えた食品ストックガイド",
           "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
           "purpose": "家庭での食品備蓄の公的な考え方を確認する"
+        },
+        {
+          "id": "mhlw-water",
+          "title": "厚生労働省 水道",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/topics/bukyoku/kenkou/suido/index.html",
+          "purpose": "水道・水質に関する公的情報を確認する"
+        },
+        {
+          "id": "tokyo-toilet",
+          "title": "東京都 災害時のトイレ備え",
+          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
+          "purpose": "携帯トイレの必要性など公的な啓発資料を確認する"
+        }
+      ]
+    },
+    {
+      "id": "lifeline",
+      "title": "電力・通信",
+      "links": [
+        {
+          "id": "enecho",
+          "title": "資源エネルギー庁",
+          "url": "https://www.enecho.meti.go.jp/",
+          "purpose": "電力・エネルギーに関する公的情報を確認する"
+        },
+        {
+          "id": "soumu",
+          "title": "総務省",
+          "url": "https://www.soumu.go.jp/",
+          "purpose": "通信・情報政策に関する公的案内を確認する"
+        },
+        {
+          "id": "soumu-dengon",
+          "title": "災害用伝言サービス（総務省案内）",
+          "url": "https://www.soumu.go.jp/menu_seisaku/ictseisaku/net_anzen/hijyo/dengon.html",
+          "purpose": "災害用伝言ダイヤル等の案内を確認する"
         }
       ]
     },

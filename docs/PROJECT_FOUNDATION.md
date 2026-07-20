@@ -4,11 +4,11 @@
 
 ## 現在地
 
-フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）まで完了しています。同梱コンテンツは制作フィクスチャのまま `draft` です。記事本文の拡充・監修は次の独立フェーズです。内部TestFlightはコードと文書の準備まで完了し、Appleアカウント側の署名・Archive・Uploadは利用者操作が残っています。
+フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）まで完了しています。同梱コンテンツは `draft` のまま**情報量を拡充した草案**です（状況・記事・備蓄チェック・公式リンク）。監修と `approved` 化は別フェーズです。内部TestFlightはコードと文書の準備まで完了し、Appleアカウント側の署名・Archive・Uploadは利用者操作が残っています。
 
 ### いま動くもの
 
-- 4状況 / 5記事の同梱フィクスチャ（すべて `draft`）
+- 13状況 / 30記事の同梱草案（すべて `draft`。監修前のため製品コンテンツ扱いしない）
 - manifest と front matter の検証付きローダー
 - 優先度・期間ラベル付きの SwiftUI ブラウザ（iPhone / iPad / Mac）
 - アプリ状態モデル（読み込み / 選択 / About / 読みやすさ）
@@ -23,6 +23,7 @@
 - お気に入り登録・絞り込み（記事IDだけを端末内保存）
 - 合計人数と7日・14日の計画期間だけを使う備蓄計算
 - 公的情報に基づく飲料水3L・食料3食・携帯トイレ5回分（いずれも1人1日）の一般的な目安を自動表示
+- 生活用品・持ち出し品などチェックリスト品目（数量は自動計算せず不足チェックのみ）を同梱
 - 利用者は家に足りない品目だけを選択し、選択状態と購入済み状態をSwiftDataへ端末内保存
 - 足りない品目だけを表示する買い物リストと、1タップの購入済み操作
 - 旧V1の詳細入力はV2へ軽量移行し、当時の不足・準備済み状態を新しい選択へ一度だけ変換
@@ -34,14 +35,14 @@
 
 ### 2026-07-20 の検証状況
 
-- `swift test --disable-sandbox`: 63 tests / 12 suites 成功
-- `swift run --disable-sandbox content-lint`: OK（4 situations / 5 articles, all draft）
+- `swift test --disable-sandbox`: 65 tests / 12 suites 成功
+- `swift run --disable-sandbox content-lint`: OK（13 situations / 30 articles, all draft）
 - `swift run --disable-sandbox content-lint --distribution`: 期待どおり失敗（draft混在）
 - `xcodegen generate`: 成功
-- `FourteenDayNoteMac` Debug build（unsigned, App Sandbox）: 成功
-- `FourteenDayNote` iPhone 17 / iPad (A16) Simulator Debug・iPhone Release: 成功
+- `FourteenDayNoteMac` Release build（unsigned, App Sandbox）: 成功
+- `FourteenDayNote` iPhone 17 / iPad (A16) Simulator Debug・generic iOS Simulator Release: 成功
 - Simulator 起動スモーク（`simctl launch`）: 成功
-- Info.plist: 共有 Bundle ID、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false` を確認
+- Release app bundle: 共有 Bundle ID、`0.1.0 (1)`、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
 - 実機30秒計測 / VoiceOver実機 / Archive Validate: 未実施（手順は `docs/MANUAL_SMOKE_CHECKLIST.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md`）
 
 ## プロダクト判断
@@ -150,5 +151,5 @@ OfficialLinks JSON
 
 1. Xcode で Team を選択し、実機ビルドと `docs/MANUAL_SMOKE_CHECKLIST.md` を記録する。
 2. `docs/TESTFLIGHT_HANDOFF.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md` に従い Archive → Validate → 内部TestFlight Upload。
-3. 記事本文の拡充・監修と `approved` 化（独立フェーズ）。
+3. 拡充した draft 記事の内容レビュー・出典再確認・`approved` 化（独立フェーズ）。
 4. App Store 一般公開条件の充足（全製品記事の監修、プライバシーポリシーURL、実機a11y）。

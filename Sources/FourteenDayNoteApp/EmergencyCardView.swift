@@ -145,15 +145,27 @@ struct EmergencyCardView: View {
                     .font(.title2.weight(.bold))
                     .accessibilityAddTraits(.isHeader)
 
-                Text("連絡先・集合場所・アレルギーなど、緊急時にすぐ必要な項目だけを端末内へ保存します。健康保険番号や生年月日は扱いません。")
+                Text("連絡先・集合場所・アレルギーなど、緊急時にすぐ必要な項目だけを端末内へ保存します。健康保険番号・マイナンバー・生年月日・暗証番号は扱いません（脅威モデルの最小項目）。")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("診断や処方の代替ではありません。救急時は119と現場の指示を優先してください。")
+                Text("診断や処方の代替ではありません。救急時は119と現場の指示を優先してください。書き方の例はガイド「緊急カードに書いておくこと」も参照できます。")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("記入のヒント")
+                        .font(.subheadline.weight(.semibold))
+                    Text("・連絡先は「呼べる番号」を優先（家族・近所・勤務先など）")
+                    Text("・集合場所は土地勘のある短い地名で（精密住所の常時保存は避ける）")
+                    Text("・薬は名称まで。用量の細かい変更指示は書かない")
+                    Text("・注意メモはブレーカー／元栓／備蓄の大まかな場所など1欄に集約")
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -259,9 +271,13 @@ struct EmergencyCardView: View {
                     Text("基本")
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
-                    TextField("表示名（任意）", text: $draft.displayName)
-                    TextField("集合場所（任意）", text: $draft.meetingPlace, axis: .vertical)
-                    TextField("避難予定場所（任意）", text: $draft.evacuationPlace, axis: .vertical)
+                    TextField("表示名（任意・例: 太郎のカード）", text: $draft.displayName)
+                    TextField("集合場所（任意・例: 区立○公園の噴水前）", text: $draft.meetingPlace, axis: .vertical)
+                    TextField("避難予定場所（任意・例: ○○小学校の体育館）", text: $draft.evacuationPlace, axis: .vertical)
+                    Text("集合・避難は「迷わず辿れる短文」で十分です。普段使わない精密な自宅住所を増やす必要はありません。")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
 
@@ -308,11 +324,12 @@ struct EmergencyCardView: View {
                     Text("健康関連（任意・最小）")
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
-                    TextField("アレルギー", text: $draft.allergies, axis: .vertical)
-                    TextField("常用薬（名称レベル）", text: $draft.medications, axis: .vertical)
-                    Text("用量・保険証番号・マイナンバーは書かないでください。")
+                    TextField("アレルギー（例: ペニシリン、そば）", text: $draft.allergies, axis: .vertical)
+                    TextField("常用薬（名称レベル・例: ○○錠）", text: $draft.medications, axis: .vertical)
+                    Text("用量の自己調整指示・保険証番号・マイナンバー・詳細な病歴の丸写しは書かないでください。診断書の代替ではありません。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
 
@@ -321,10 +338,11 @@ struct EmergencyCardView: View {
                     Text("注意メモ（任意）")
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
-                    TextField("ブレーカーや元栓など短いメモ", text: $draft.notes, axis: .vertical)
-                    Text("暗証番号やクレジットカード番号は書かないでください。")
+                    TextField("例: ブレーカーは玄関靴箱上／ガス元栓はキッチン下／備蓄は押入れ下段", text: $draft.notes, axis: .vertical)
+                    Text("暗証番号・パスワード・クレジットカード番号・マイナンバーは書かないでください。ペットや車両が必要なら短い一言までに留めます。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }

@@ -14,12 +14,11 @@ struct StockpilePersistenceTests {
         #expect(plan.stableID == StockpileStore.primaryPlanID)
         #expect(plan.household.totalPeople == 1)
         #expect(plan.targetDays == .seven)
-        #expect(plan.items.map(\.stableID).sorted() == [
-            "drinking-water",
-            "meals",
-            "portable-toilet",
-        ])
+        #expect(plan.items.map(\.stableID).sorted() == StockpileRecommendations.all.map(\.id).sorted())
+        #expect(plan.items.count == StockpileRecommendations.all.count)
         #expect(plan.items.allSatisfy { !$0.isShortage && !$0.isPurchased })
+        #expect(StockpileRecommendations.all.contains { $0.isQuantified })
+        #expect(StockpileRecommendations.all.contains { $0.kind == .checklist })
     }
 
     @Test("loading again reuses the plan without duplicating checklist items")
@@ -31,7 +30,7 @@ struct StockpilePersistenceTests {
         let second = try StockpileStore.loadOrCreatePlan(in: context)
 
         #expect(first.persistentModelID == second.persistentModelID)
-        #expect(second.items.count == 3)
+        #expect(second.items.count == StockpileRecommendations.all.count)
     }
 
     @Test("people period shortage selection and purchase state persist")
@@ -79,7 +78,7 @@ struct StockpilePersistenceTests {
 
         #expect(loaded.household.totalPeople == 4)
         #expect(loaded.targetDays == .fourteen)
-        #expect(loaded.items.count == 3)
+        #expect(loaded.items.count == StockpileRecommendations.all.count)
     }
 
     @Test("legacy detailed input becomes a one-time shortage selection")
@@ -218,6 +217,22 @@ struct StockpileRecommendationTests {
             #expect(!recommendation.source.accessedAt.isEmpty)
             #expect(!recommendation.source.usage.isEmpty)
             #expect(!recommendation.source.rightsNote.isEmpty)
+            #expect(!recommendation.group.isEmpty)
+        }
+    }
+
+    @Test("checklist items never produce auto-calculated quantities")
+    func checklistItemsAreNotQuantified() {
+        let household = HouseholdProfile(adultCount: 2, childCount: 0, seniorCount: 0)
+        for recommendation in StockpileRecommendations.all where recommendation.kind == .checklist {
+            #expect(recommendation.isQuantified == false)
+            let result = StockpileCalculator.calculate(
+                entry: recommendation.entry(),
+                household: household,
+                targetDays: .fourteen
+            )
+            #expect(result.isConfigured == false)
+            #expect(result.requiredAmount == 0)
         }
     }
 }

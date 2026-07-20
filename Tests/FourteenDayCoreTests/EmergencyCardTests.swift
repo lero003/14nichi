@@ -218,6 +218,45 @@ struct ExportDocumentTests {
         }
     }
 
+    @Test("checklist-only stockpile items do not look like zero-quantity requirements")
+    func checklistExportWording() {
+        let document = ExportDocument(
+            selection: ExportSelection(includeStockpileChecklist: true),
+            stockpile: ExportStockpileSnapshot(
+                adultCount: 2,
+                childCount: 0,
+                seniorCount: 0,
+                targetDays: 7,
+                items: [
+                    ExportStockpileItem(
+                        id: "flashlight",
+                        name: "懐中電灯・ランタン",
+                        unit: "式",
+                        requiredAmount: 0,
+                        currentAmount: 0,
+                        shortageAmount: 0,
+                        isPrepared: false,
+                        isChecklistOnly: true
+                    ),
+                    ExportStockpileItem(
+                        id: "drinking-water",
+                        name: "飲料水",
+                        unit: "L",
+                        requiredAmount: 42,
+                        currentAmount: 0,
+                        shortageAmount: 42,
+                        isPrepared: false,
+                        isChecklistOnly: false
+                    ),
+                ]
+            )
+        )
+        let text = document.plainTextPreview()
+        #expect(text.contains("懐中電灯・ランタン: 不足・要用意（数量は家庭で調整）"))
+        #expect(text.contains("飲料水: 目安 42L"))
+        #expect(text.contains("必要 0") == false)
+    }
+
     @Test("PDF write and temporary file cleanup leave no residual file")
     func writesAndCleansTemporaryFile() throws {
         let directory = FileManager.default.temporaryDirectory

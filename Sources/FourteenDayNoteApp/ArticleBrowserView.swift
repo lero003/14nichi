@@ -4,46 +4,297 @@ import SwiftUI
 struct ArticleBrowserView: View {
     @Bindable var model: AppModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(ReadabilitySettings.self) private var readability
+
+    /// コンパクト幅専用。選択の再タップ不能や詳細への引き戻しを避ける。
+    @State private var compactPath: [GuideCompactRoute] = []
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var appeared = false
 
+    /// iPhone / 狭い幅は NavigationStack。広い幅と Mac は Split。
+    private var usesCompactNavigation: Bool {
+#if os(iOS)
+        horizontalSizeClass != .regular
+#else
+        false
+#endif
+    }
+
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            situationColumn
-        } content: {
-            articleColumn
-        } detail: {
-            detailColumn
+        Group {
+            if usesCompactNavigation {
+                compactBrowser
+            } else {
+                splitBrowser
+            }
         }
-        .navigationSplitViewStyle(.balanced)
-        .toolbar { browserToolbar }
         .sensoryFeedback(.selection, trigger: model.favoriteArticleIDs)
         .onAppear {
             guard !appeared else { return }
             appeared = true
         }
+        .onChange(of: model.showsFavoritesOnly) { _, isFavorites in
+            guard usesCompactNavigation else { return }
+            if isFavorites {
+                // お気に入りはルート直下の一覧として見せる
+                compactPath = []
+            }
+        }
+        .onChange(of: model.searchQuery) { _, query in
+            guard usesCompactNavigation else { return }
+            if !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                // 検索開始時は状況ドリルダウンを解除して結果をルートに出す
+                compactPath = []
+            }
+        }
+        .onChange(of: horizontalSizeClass) { _, _ in
+            // 幅切り替え後は model を正として compact path を組み直す（取り残し・空 path での詳細残留を防ぐ）
+            if usesCompactNavigation {
+                rebuildCompactPathFromModel()
+            }
+        }
+        .onChange(of: compactPath) { _, newPath in
+            guard usesCompactNavigation else { return }
+            reconcileModel(with: newPath)
+        }
     }
 
-    private var situationColumn: some View {
+    // MARK: - Compact (iPhone): NavigationStack
+
+    private var compactBrowser: some View {
+        NavigationStack(path: $compactPath) {
+            situationRootList
+                .navigationTitle("いま何が起きていますか？")
+                .navigationDestination(for: GuideCompactRoute.self) { route in
+                    switch route {
+                    case .situation(let situationID):
+                        articleListScreen(situationID: situationID)
+                    case .article(let articleID):
+                        detailScreen(articleID: articleID)
+                    }
+                }
+                .toolbar { browserToolbar }
+        }
+        .searchable(text: $model.searchQuery, prompt: "記事を検索")
+    }
+
+    private var situationRootList: some View {
+        List {
+            if model.showsFavoritesOnly || model.hasSearchQuery {
+                articleSection(title: model.articleListTitle)
+            } else {
+                Section {
+                    ForEach(Array((model.catalog?.situations ?? []).enumerated()), id: \.element.id) { index, situation in
+                        Button {
+                            openSituation(situation.id)
+                        } label: {
+                            SituationRow(
+                                situation: situation,
+                                articleCount: model.catalog?.articles(for: situation.id).count ?? 0,
+                                generousSpacing: readability.prefersGenerousSpacing
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                        .opacity(appeared || reduceMotion ? 1 : 0)
+                        .offset(y: appeared || reduceMotion ? 0 : 8)
+                        .animation(
+                            reduceMotion
+                                ? nil
+                                : .spring(response: 0.42, dampingFraction: 0.86).delay(Double(index) * 0.04),
+                            value: appeared
+                        )
+                    }
+                } header: {
+                    Text("状況を選ぶ")
+                        .font(.subheadline.weight(.semibold))
+                } footer: {
+                    VStack(alignment: .leading, spacing: 10) {
+                        OfflineCapabilityBadge()
+                        Text("通信なしで、いま必要な記事へ進めます。文字サイズは右上のボタンから変えられます。")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.top, 6)
+                }
+            }
+        }
+#if os(iOS)
+        .listStyle(.insetGrouped)
+#else
+        .listStyle(.sidebar)
+#endif
+        .overlay {
+            if model.showsFavoritesOnly || model.hasSearchQuery {
+                articleEmptyOverlay
+            }
+        }
+    }
+
+    private func articleListScreen(situationID: GuideSituation.ID) -> some View {
+        List {
+            articleSection(title: model.articleListTitle)
+        }
+#if os(iOS)
+        .listStyle(.insetGrouped)
+#else
+        .listStyle(.sidebar)
+#endif
+        .navigationTitle(model.catalog?.situation(id: situationID)?.title ?? "記事")
+        .overlay { articleEmptyOverlay }
+        .onAppear {
+            // スタック戻り後も一覧の候補集合をこの状況に合わせる（検索状態は壊さない）
+            model.alignSelectedSituation(situationID)
+        }
+    }
+
+    @ViewBuilder
+    private func articleSection(title: String) -> some View {
+        Section {
+            ForEach(model.displayedArticles) { article in
+                Button {
+                    openArticle(article.id)
+                } label: {
+                    ArticleRow(
+                        article: article,
+                        isFavorite: model.isFavorite(article.id),
+                        generousSpacing: readability.prefersGenerousSpacing
+                    )
+                }
+                .buttonStyle(.plain)
+                .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+            }
+        } header: {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                if model.hasActiveArticleFilters {
+                    Text("絞り込み: \(model.articleFilterSummary)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } footer: {
+            if !model.displayedArticles.isEmpty {
+                Text("記事 \(model.displayedArticles.count)件")
+                    .font(.callout)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func detailScreen(articleID: GuideArticle.ID) -> some View {
+        if let article = model.catalog?.article(id: articleID) {
+            ArticleDetailView(
+                article: article,
+                isFavorite: model.isFavorite(article.id),
+                onToggleFavorite: { model.toggleFavorite(article.id) }
+            )
+            .onAppear {
+                model.selectArticle(articleID, requireDisplayed: false)
+            }
+        } else {
+            emptyState(
+                title: "記事を開けません",
+                systemImage: "doc",
+                description: "記事が見つかりません。一覧に戻って選び直してください。"
+            )
+        }
+    }
+
+    private func openSituation(_ id: GuideSituation.ID) {
+        withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+            model.selectSituation(id)
+            compactPath = [.situation(id)]
+        }
+    }
+
+    private func openArticle(_ id: GuideArticle.ID) {
+        // catalog 上に存在する記事なら詳細へ進む（一覧フィルタで弾かれて固まるのを防ぐ）
+        guard model.catalog?.article(id: id) != nil else { return }
+        withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+            model.selectArticle(id, requireDisplayed: false)
+            // 検索・お気に入り中はルートから記事へ。状況経由なら situation の上に積む。
+            if model.showsFavoritesOnly || model.hasSearchQuery {
+                compactPath = [.article(id)]
+            } else if let situationID = model.selectedSituationID {
+                compactPath = [.situation(situationID), .article(id)]
+            } else {
+                compactPath = [.article(id)]
+            }
+        }
+    }
+
+    /// model の選択から compact 用 path を復元する（サイズクラス切り替え用）。
+    private func rebuildCompactPathFromModel() {
+        if model.showsFavoritesOnly || model.hasSearchQuery {
+            if let articleID = model.selectedArticleID,
+               model.catalog?.article(id: articleID) != nil {
+                compactPath = [.article(articleID)]
+            } else {
+                compactPath = []
+            }
+            return
+        }
+
+        if let situationID = model.selectedSituationID {
+            if let articleID = model.selectedArticleID,
+               model.catalog?.article(id: articleID) != nil {
+                compactPath = [.situation(situationID), .article(articleID)]
+            } else {
+                compactPath = [.situation(situationID)]
+            }
+        } else if let articleID = model.selectedArticleID,
+                  model.catalog?.article(id: articleID) != nil {
+            compactPath = [.article(articleID)]
+        } else {
+            compactPath = []
+        }
+    }
+
+    /// path を正として model を同期（システム戻るで path だけ変わったとき用）。
+    private func reconcileModel(with path: [GuideCompactRoute]) {
+        var situationID: GuideSituation.ID?
+        var articleID: GuideArticle.ID?
+        for route in path {
+            switch route {
+            case .situation(let id):
+                situationID = id
+            case .article(let id):
+                articleID = id
+            }
+        }
+        model.reconcileCompactRoute(situationID: situationID, articleID: articleID)
+    }
+
+    // MARK: - Regular / Mac: NavigationSplitView
+
+    private var splitBrowser: some View {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            splitSituationColumn
+        } content: {
+            splitArticleColumn
+        } detail: {
+            splitDetailColumn
+        }
+        .navigationSplitViewStyle(.balanced)
+        .toolbar { browserToolbar }
+    }
+
+    private var splitSituationColumn: some View {
         List(selection: situationSelection) {
             Section {
-                ForEach(Array((model.catalog?.situations ?? []).enumerated()), id: \.element.id) { index, situation in
+                ForEach(model.catalog?.situations ?? [], id: \.id) { situation in
                     SituationRow(
                         situation: situation,
                         articleCount: model.catalog?.articles(for: situation.id).count ?? 0,
-                        generousSpacing: readability.prefersGenerousSpacing
+                        generousSpacing: readability.prefersGenerousSpacing,
+                        isSelected: model.selectedSituationID == situation.id
                     )
-                    .tag(situation.id)
+                    .tag(Optional(situation.id))
                     .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
-                    .opacity(appeared || reduceMotion ? 1 : 0)
-                    .offset(y: appeared || reduceMotion ? 0 : 8)
-                    .animation(
-                        reduceMotion
-                            ? nil
-                            : .spring(response: 0.42, dampingFraction: 0.86).delay(Double(index) * 0.04),
-                        value: appeared
-                    )
                 }
             } header: {
                 Text("状況を選ぶ")
@@ -51,7 +302,7 @@ struct ArticleBrowserView: View {
             } footer: {
                 VStack(alignment: .leading, spacing: 10) {
                     OfflineCapabilityBadge()
-                    Text("通信なしで、いま必要な記事へ進めます。文字サイズは右上のボタンから変えられます。")
+                    Text("通信なしで、いま必要な記事へ進めます。")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -66,7 +317,7 @@ struct ArticleBrowserView: View {
 #endif
     }
 
-    private var articleColumn: some View {
+    private var splitArticleColumn: some View {
         List(selection: articleSelection) {
             if model.catalog != nil {
                 Section {
@@ -76,7 +327,7 @@ struct ArticleBrowserView: View {
                             isFavorite: model.isFavorite(article.id),
                             generousSpacing: readability.prefersGenerousSpacing
                         )
-                        .tag(article.id)
+                        .tag(Optional(article.id))
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                     }
                 } header: {
@@ -100,61 +351,58 @@ struct ArticleBrowserView: View {
         .listStyle(.sidebar)
         .navigationTitle(model.articleListTitle)
         .searchable(text: $model.searchQuery, prompt: "記事を検索")
-        .overlay {
-            if model.hasActiveArticleFilters, model.displayedArticles.isEmpty {
-                filteredEmptyState
-            } else if model.hasSearchQuery, model.displayedArticles.isEmpty {
-                ContentUnavailableView.search(text: model.searchQuery)
-            } else if model.showsFavoritesOnly, model.displayedArticles.isEmpty {
-                emptyState(
-                    title: "お気に入りはまだありません",
-                    systemImage: "heart",
-                    description: "記事を開いて「お気に入りに追加」を選ぶと、ここからすぐ確認できます。"
-                )
-            } else if model.selectedSituationID == nil {
-                emptyState(
-                    title: "状況を選んでください",
-                    systemImage: "checklist",
-                    description: "左側からいまの状況を選ぶと、関連記事が表示されます。"
-                )
-            } else if model.displayedArticles.isEmpty {
-                emptyState(
-                    title: "記事がありません",
-                    systemImage: "doc",
-                    description: "この状況の制作コンテンツはまだありません。"
-                )
-            }
-        }
-        .animation(AppTheme.spring(reduceMotion: reduceMotion), value: model.selectedSituationID)
-        .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: model.showsFavoritesOnly)
-        .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: model.articleFilter)
+        .overlay { articleEmptyOverlay }
 #if os(macOS)
         .navigationSplitViewColumnWidth(min: 270, ideal: 340, max: 420)
 #endif
     }
 
     @ViewBuilder
-    private var detailColumn: some View {
+    private var splitDetailColumn: some View {
         if let article = model.selectedArticle {
             ArticleDetailView(
                 article: article,
                 isFavorite: model.isFavorite(article.id),
                 onToggleFavorite: { model.toggleFavorite(article.id) }
             )
-                .id(article.id)
-                .transition(
-                    reduceMotion
-                        ? .opacity
-                        : .asymmetric(
-                            insertion: .opacity.combined(with: .move(edge: .trailing)).combined(with: .offset(y: 6)),
-                            removal: .opacity
-                        )
-                )
+            .id(article.id)
         } else {
             emptyState(
                 title: "記事を選んでください",
                 systemImage: "book",
                 description: "状況と記事を選ぶと、オフラインで本文を読めます。"
+            )
+        }
+    }
+
+    // MARK: - Shared chrome
+
+    @ViewBuilder
+    private var articleEmptyOverlay: some View {
+        if model.hasActiveArticleFilters, model.displayedArticles.isEmpty {
+            filteredEmptyState
+        } else if model.hasSearchQuery, model.displayedArticles.isEmpty {
+            ContentUnavailableView.search(text: model.searchQuery)
+        } else if model.showsFavoritesOnly, model.displayedArticles.isEmpty {
+            emptyState(
+                title: "お気に入りはまだありません",
+                systemImage: "heart",
+                description: "記事を開いて「お気に入りに追加」を選ぶと、ここからすぐ確認できます。"
+            )
+        } else if !model.showsFavoritesOnly,
+                  !model.hasSearchQuery,
+                  model.selectedSituationID == nil,
+                  usesCompactNavigation == false {
+            emptyState(
+                title: "状況を選んでください",
+                systemImage: "checklist",
+                description: "左側からいまの状況を選ぶと、関連記事が表示されます。"
+            )
+        } else if model.selectedSituationID != nil, model.displayedArticles.isEmpty {
+            emptyState(
+                title: "記事がありません",
+                systemImage: "doc",
+                description: "この状況の制作コンテンツはまだありません。"
             )
         }
     }
@@ -221,6 +469,9 @@ struct ArticleBrowserView: View {
             Button {
                 withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
                     model.toggleFavoritesFilter()
+                    if usesCompactNavigation {
+                        compactPath = []
+                    }
                 }
             } label: {
                 Label(
@@ -268,7 +519,7 @@ struct ArticleBrowserView: View {
             get: { model.selectedArticleID },
             set: { newValue in
                 withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
-                    model.selectArticle(newValue)
+                    model.selectArticle(newValue, requireDisplayed: true)
                 }
             }
         )
@@ -289,10 +540,17 @@ struct ArticleBrowserView: View {
     }
 }
 
+/// iPhone のガイド階層。
+private enum GuideCompactRoute: Hashable {
+    case situation(GuideSituation.ID)
+    case article(GuideArticle.ID)
+}
+
 private struct SituationRow: View {
     let situation: GuideSituation
     let articleCount: Int
     var generousSpacing: Bool
+    var isSelected: Bool = false
 
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
@@ -300,6 +558,7 @@ private struct SituationRow: View {
             VStack(alignment: .leading, spacing: generousSpacing ? 6 : 4) {
                 Text(situation.title)
                     .font(.headline)
+                    .foregroundStyle(.primary)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(situation.summary)
                     .font(.subheadline)
@@ -310,11 +569,17 @@ private struct SituationRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
+            }
         }
         .padding(.vertical, generousSpacing ? 8 : 4)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityValue(articleCount == 0 ? "記事なし" : "記事 \(articleCount)件")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -362,6 +627,7 @@ private struct ArticleRow: View {
     private var articleTitle: some View {
         Text(article.title)
             .font(.headline)
+            .foregroundStyle(.primary)
             .fixedSize(horizontal: false, vertical: true)
     }
 }
@@ -371,7 +637,6 @@ private struct FlowChips<Content: View>: View {
     @ViewBuilder var content: () -> Content
 
     var body: some View {
-        // macOS / iOS 共通で自然に折り返す
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) { content() }
             VStack(alignment: .leading, spacing: 8) { content() }

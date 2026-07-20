@@ -6,12 +6,18 @@
 Sources/FourteenDayCore/Resources/Content/
 ├── manifest.json
 └── emergency/
-    ├── earthquake-first-actions.md
-    ├── blackout-first-actions.md
-    ├── blackout-phone-battery.md
-    ├── water-outage-first-actions.md
-    └── communication-first-actions.md
+    ├── earthquake-*.md
+    ├── blackout-*.md
+    ├── water-*.md
+    ├── communication-*.md
+    ├── flood-*.md
+    ├── heat-*.md / cold-*.md / gas-*.md
+    ├── shelter-*.md / evacuation-*.md
+    ├── misinfo-*.md / first-aid-*.md
+    └── preparedness-*.md / food-*.md / hygiene-*.md
 ```
+
+`manifest.json` の situations / articles が索引の正です。ファイル名は `emergency/` 配下の相対パスとして manifest の `path` と一致させてください。現状の同梱記事は **draft の拡充草案** であり、App Store 製品コンテンツとしては `approved` 化と監修が別フェーズです。
 
 検証コマンド:
 
@@ -30,9 +36,9 @@ swift run content-lint Sources/FourteenDayCore/Resources/Content
 - `title`: 画面表示名
 - `summary`: 一覧で読める短い要約
 - `path`: Contentディレクトリからの相対パス
-- `category`: 大分類
+- `category`: 大分類（例: `safety` / `electricity` / `water` / `communication` / `weather` / `gas` / `hygiene` / `food` / `firstAid` / `evacuation` / `information` / `preparedness` / `personal`。未知の文字列も読み込めるが、表示名は `GuideLabels` に追加するとよい）
 - `priority`: `critical` / `high` / `normal`
-- `situations`: 状況IDの配列
+- `situations`: 状況IDの配列（manifest の situations に存在するIDのみ）
 - `periods`: `immediate` / `day1` / `day3` / `day7` / `day14`
 - `region`: 初期版は `jp`
 - `reviewStatus`: `draft` / `reviewed` / `approved`

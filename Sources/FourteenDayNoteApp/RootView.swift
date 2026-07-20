@@ -34,7 +34,8 @@ struct RootView: View {
                 .transition(.opacity)
             }
         }
-        .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: model.loadState)
+        // loadState 全体（巨大な catalog 本文）を animation value にすると比較コストが大きい
+        .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: loadPhase)
         .environment(model.readability)
         .dynamicTypeSize(model.readability.resolvedDynamicTypeSize(system: systemDynamicTypeSize))
         .task {
@@ -59,6 +60,15 @@ struct RootView: View {
 #if os(macOS)
                 .frame(minWidth: 460, minHeight: 560)
 #endif
+        }
+    }
+
+    /// ready の catalog 全文比較を避け、遷移フェーズだけ見る。
+    private var loadPhase: String {
+        switch model.loadState {
+        case .loading: "loading"
+        case .ready: "ready"
+        case .failed: "failed"
         }
     }
 }

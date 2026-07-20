@@ -40,13 +40,25 @@ struct ExportView: View {
                 }
 
                 Section("緊急カード") {
+                    if emergencyContainer == nil {
+                        Text("緊急カードの保存領域を開けていないため、個人情報は出力できません。")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
                     Toggle("表示名", isOn: $selection.includeDisplayName)
+                        .disabled(emergencyContainer == nil)
                     Toggle("緊急連絡先", isOn: $selection.includeContacts)
+                        .disabled(emergencyContainer == nil)
                     Toggle("集合場所", isOn: $selection.includeMeetingPlace)
+                        .disabled(emergencyContainer == nil)
                     Toggle("避難予定場所", isOn: $selection.includeEvacuationPlace)
+                        .disabled(emergencyContainer == nil)
                     Toggle("アレルギー", isOn: $selection.includeAllergies)
+                        .disabled(emergencyContainer == nil)
                     Toggle("常用薬", isOn: $selection.includeMedications)
+                        .disabled(emergencyContainer == nil)
                     Toggle("注意メモ", isOn: $selection.includeNotes)
+                        .disabled(emergencyContainer == nil)
                 }
 
                 Section("備蓄") {
@@ -129,6 +141,11 @@ struct ExportView: View {
                 loadSources()
                 refreshPreview()
             }
+            .onAppear {
+                // スタックから戻って再表示したときに、編集済みの緊急カードを取り直す
+                loadSources()
+                refreshPreview()
+            }
 #if os(iOS)
             .sheet(item: $sharePayload) { payload in
                 ActivityView(items: [payload.file.url])
@@ -144,6 +161,8 @@ struct ExportView: View {
     private var canGenerate: Bool {
         guard selection.hasAnySelection else { return false }
         if selection.includesPersonalInformation {
+            // ストアが開けない状態で空の個人情報PDFを出さない
+            guard emergencyContainer != nil else { return false }
             return acknowledgedPersonalData
         }
         return true
@@ -165,6 +184,17 @@ struct ExportView: View {
             if let card = try? EmergencyCardStore.loadOrCreateCard(in: context) {
                 emergencyCard = card.snapshot
             }
+        } else {
+            emergencyCard = EmergencyCardSnapshot()
+            // 個人情報トグルが残っていても出力できないよう落とす
+            selection.includeDisplayName = false
+            selection.includeContacts = false
+            selection.includeMeetingPlace = false
+            selection.includeEvacuationPlace = false
+            selection.includeAllergies = false
+            selection.includeMedications = false
+            selection.includeNotes = false
+            acknowledgedPersonalData = false
         }
         if primaryPlan == nil {
             _ = try? StockpileStore.loadOrCreatePlan(in: stockpileContext)
@@ -190,6 +220,21 @@ struct ExportView: View {
         }
         .filter(\.isShortage)
         .map { item in
+            let recommendation = StockpileRecommendations.recommendation(id: item.stableID)
+            let isChecklist = recommendation?.isQuantified == false
+            if isChecklist {
+                return ExportStockpileItem(
+                    id: item.stableID,
+                    name: item.name,
+                    unit: item.unit,
+                    requiredAmount: 0,
+                    currentAmount: 0,
+                    shortageAmount: 0,
+                    isPrepared: item.isPurchased,
+                    expirationText: nil,
+                    isChecklistOnly: true
+                )
+            }
             let result = StockpileCalculator.calculate(
                 entry: item.calculationEntry,
                 household: household,
@@ -203,7 +248,8 @@ struct ExportView: View {
                 currentAmount: item.isPurchased ? result.requiredAmount : 0,
                 shortageAmount: item.isPurchased ? 0 : result.requiredAmount,
                 isPrepared: item.isPurchased,
-                expirationText: nil
+                expirationText: nil,
+                isChecklistOnly: false
             )
         }
 

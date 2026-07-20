@@ -4,42 +4,109 @@
     {
       "id": "earthquake",
       "title": "地震が起きた",
-      "summary": "揺れの直後から安全確認までの導線を確認します。",
+      "summary": "揺れの直後から安全確認、余震、在宅か避難かの判断まで。",
       "systemImage": "waveform.path.ecg",
       "sortOrder": 10
     },
     {
       "id": "blackout",
       "title": "停電した",
-      "summary": "電気が止まったときの記事導線を確認します。",
+      "summary": "照明・電源・火気・冷蔵食品など、電気が止まったときの行動。",
       "systemImage": "bolt.slash",
       "sortOrder": 20
     },
     {
       "id": "water-outage",
       "title": "水が出ない",
-      "summary": "断水時の記事導線を確認します。",
+      "summary": "飲料水の確保、生活用水、簡易トイレ、衛生の優先順位。",
       "systemImage": "drop.triangle",
       "sortOrder": 30
     },
     {
       "id": "communication",
       "title": "通信できない",
-      "summary": "回線が不安定なときの記事導線を確認します。",
+      "summary": "回線が不安定なときの連絡手段、電池節約、情報確認。",
       "systemImage": "antenna.radiowaves.left.and.right.slash",
       "sortOrder": 40
+    },
+    {
+      "id": "flood",
+      "title": "大雨・洪水・土砂",
+      "summary": "浸水や土砂災害のおそれがあるときの早めの行動と避難判断。",
+      "systemImage": "cloud.heavyrain",
+      "sortOrder": 50
+    },
+    {
+      "id": "heat",
+      "title": "猛暑・熱中症",
+      "summary": "停電時も含め、暑さから身を守るための確認事項。",
+      "systemImage": "sun.max.trianglebadge.exclamationmark",
+      "sortOrder": 60
+    },
+    {
+      "id": "cold",
+      "title": "大雪・寒波",
+      "summary": "低体温を避け、在宅で暖を取るときの注意。",
+      "systemImage": "snowflake",
+      "sortOrder": 70
+    },
+    {
+      "id": "gas-outage",
+      "title": "ガスが止まった",
+      "summary": "ガス漏れの疑い、元栓、代替調理の注意。",
+      "systemImage": "flame",
+      "sortOrder": 80
+    },
+    {
+      "id": "shelter",
+      "title": "自宅に留まる",
+      "summary": "在宅避難で数日を過ごすときの生活継続の要点。",
+      "systemImage": "house",
+      "sortOrder": 90
+    },
+    {
+      "id": "evacuation",
+      "title": "避難を考える",
+      "summary": "避難の判断材料、持ち出し、移動時の安全。",
+      "systemImage": "figure.walk",
+      "sortOrder": 100
+    },
+    {
+      "id": "misinfo",
+      "title": "情報が錯綜している",
+      "summary": "デマや古い情報に惑わされず、一次情報を確認する。",
+      "systemImage": "exclamationmark.bubble",
+      "sortOrder": 110
+    },
+    {
+      "id": "first-aid",
+      "title": "ケガ・体調不良",
+      "summary": "専門診断の代替ではない、最初に取るべき確認と通報判断。",
+      "systemImage": "cross.case",
+      "sortOrder": 120
+    },
+    {
+      "id": "preparedness",
+      "title": "事前に備えたい",
+      "summary": "平時の備蓄、緊急カード、公式情報の整理。",
+      "systemImage": "checklist",
+      "sortOrder": 130
     }
   ],
   "articles": [
     {
       "id": "earthquake-first-actions",
-      "title": "地震時の画面確認サンプル",
-      "summary": "地震の記事表示を確認するための制作フィクスチャです。",
+      "title": "地震：最初の数分ですること",
+      "summary": "揺れの最中と直後に、身の安全を守るための確認リスト。",
       "path": "emergency/earthquake-first-actions.md",
       "category": "safety",
       "priority": "critical",
-      "situations": ["earthquake"],
-      "periods": ["immediate"],
+      "situations": [
+        "earthquake"
+      ],
+      "periods": [
+        "immediate"
+      ],
       "region": "jp",
       "reviewStatus": "draft",
       "reviewedAt": null,
@@ -52,33 +119,17 @@
           "url": "https://www.bousai.go.jp/",
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
-          "rightsNote": "公式ポータルへの参照リンクのみ。本文は転載せず、将来の正式記事では自前の要約を作成する。",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
           "excerpt": null
-        }
-      ]
-    },
-    {
-      "id": "blackout-first-actions",
-      "title": "停電時の画面確認サンプル",
-      "summary": "オフライン記事の表示と導線を確認するための制作フィクスチャです。",
-      "path": "emergency/blackout-first-actions.md",
-      "category": "electricity",
-      "priority": "critical",
-      "situations": ["blackout"],
-      "periods": ["immediate"],
-      "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
-      "sources": [
+        },
         {
-          "id": "meti-denryoku",
-          "title": "資源エネルギー庁 電力に関する情報",
-          "publisher": "経済産業省 資源エネルギー庁",
-          "url": "https://www.enecho.meti.go.jp/",
+          "id": "jma-tsunami-guidance",
+          "title": "津波警報・注意報と避難のポイント",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/jishin/joho/tsunamiinfo.html",
           "accessedAt": "2026-07-20",
-          "usage": "linkOnly",
-          "rightsNote": "出典UI確認用の参照リンク。公的サイトの本文は転載しない。",
+          "usage": "paraphrase",
+          "rightsNote": "強い揺れや弱くても長い揺れを感じた場合の即時避難と、解除まで避難を続ける要点を自前の言葉で案内。",
           "excerpt": null
         },
         {
@@ -88,35 +139,210 @@
           "url": "https://www.fdma.go.jp/",
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
-          "rightsNote": "火災・救急関連の一次情報を将来参照するためのリンク枠。現時点の本文は制作フィクスチャ。",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "earthquake-aftershocks-home",
+      "title": "地震：余震と在宅の安全確認",
+      "summary": "揺れが収まったあとに家の中で確認することと、余震への備え。",
+      "path": "emergency/earthquake-aftershocks-home.md",
+      "category": "safety",
+      "priority": "high",
+      "situations": [
+        "earthquake",
+        "shelter"
+      ],
+      "periods": [
+        "day1",
+        "day3"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        },
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-portal",
+          "title": "気象庁",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "blackout-first-actions",
+      "title": "停電：最初に確認すること",
+      "summary": "電気が止まった直後の安全確認、照明、火気、連絡の優先順位。",
+      "path": "emergency/blackout-first-actions.md",
+      "category": "electricity",
+      "priority": "critical",
+      "situations": [
+        "blackout"
+      ],
+      "periods": [
+        "immediate"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "meti-enecho",
+          "title": "資源エネルギー庁",
+          "publisher": "経済産業省 資源エネルギー庁",
+          "url": "https://www.enecho.meti.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "電力・エネルギーに関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
           "excerpt": null
         }
       ]
     },
     {
       "id": "blackout-phone-battery",
-      "title": "停電時の端末電源サンプル",
-      "summary": "優先度の並び替え表示を確認するための通常優先度フィクスチャです。",
+      "title": "停電：スマホの電池を延ばす",
+      "summary": "通信と電源が限られるときの端末利用の優先順位。",
       "path": "emergency/blackout-phone-battery.md",
       "category": "electricity",
-      "priority": "normal",
-      "situations": ["blackout"],
-      "periods": ["day1"],
+      "priority": "high",
+      "situations": [
+        "blackout",
+        "communication"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
       "region": "jp",
       "reviewStatus": "draft",
       "reviewedAt": null,
       "reviewedBy": null,
-      "sources": []
+      "sources": [
+        {
+          "id": "soumu-portal",
+          "title": "総務省",
+          "publisher": "総務省",
+          "url": "https://www.soumu.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "通信・情報に関する公的案内への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "blackout-food-fridge",
+      "title": "停電：冷蔵・冷凍食品の扱い",
+      "summary": "冷蔵庫が止まったときの確認の考え方（断定的な保存時間は示さない）。",
+      "path": "emergency/blackout-food-fridge.md",
+      "category": "food",
+      "priority": "high",
+      "situations": [
+        "blackout",
+        "shelter"
+      ],
+      "periods": [
+        "day1",
+        "day3"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "maff-foodstock",
+          "title": "農林水産省 災害時に備えた食品ストックガイド",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        }
+      ]
     },
     {
       "id": "water-outage-first-actions",
-      "title": "断水時の画面確認サンプル",
-      "summary": "断水の記事表示を確認するための制作フィクスチャです。",
+      "title": "断水：最初にすること",
+      "summary": "水が止まった直後の飲料確保と、生活用水の分け方。",
       "path": "emergency/water-outage-first-actions.md",
       "category": "water",
       "priority": "critical",
-      "situations": ["water-outage"],
-      "periods": ["immediate"],
+      "situations": [
+        "water-outage"
+      ],
+      "periods": [
+        "immediate"
+      ],
       "region": "jp",
       "reviewStatus": "draft",
       "reviewedAt": null,
@@ -129,33 +355,1256 @@
           "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/topics/bukyoku/kenkou/suido/index.html",
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
-          "rightsNote": "公的情報への参照のみ。水質・保存に関する断定は監修前に書かない。",
+          "rightsNote": "水道・水質に関する公的情報への参照。断定的な保存期間は監修前に書かない。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "tokyo-toilet",
+          "title": "災害時、トイレには駆け込めないかも！災害に備えて",
+          "publisher": "東京都総務局総合防災部",
+          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "携帯トイレの必要性と一般的な回数想定を自前で要約。",
           "excerpt": null
         }
       ]
     },
     {
-      "id": "communication-first-actions",
-      "title": "通信障害時の画面確認サンプル",
-      "summary": "通信が不安定な状況の記事表示を確認するための制作フィクスチャです。",
-      "path": "emergency/communication-first-actions.md",
-      "category": "communication",
-      "priority": "high",
-      "situations": ["communication"],
-      "periods": ["immediate", "day1"],
+      "id": "water-outage-toilet-hygiene",
+      "title": "断水：トイレと衛生",
+      "summary": "水が使えないときの排泄と手指衛生の基本。",
+      "path": "emergency/water-outage-toilet-hygiene.md",
+      "category": "hygiene",
+      "priority": "critical",
+      "situations": [
+        "water-outage",
+        "shelter"
+      ],
+      "periods": [
+        "immediate",
+        "day1",
+        "day3"
+      ],
       "region": "jp",
       "reviewStatus": "draft",
       "reviewedAt": null,
       "reviewedBy": null,
       "sources": [
         {
-          "id": "soumu-ict",
-          "title": "総務省 情報通信",
+          "id": "tokyo-toilet",
+          "title": "災害時、トイレには駆け込めないかも！災害に備えて",
+          "publisher": "東京都総務局総合防災部",
+          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "携帯トイレの必要性と一般的な回数想定を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "kantei-sonae",
+          "title": "災害が起きる前にできること",
+          "publisher": "首相官邸",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "water-priority-uses",
+      "title": "水の使い方の優先順位",
+      "summary": "限られた水を、飲む・食べる・清潔の順で使う考え方。",
+      "path": "emergency/water-priority-uses.md",
+      "category": "water",
+      "priority": "high",
+      "situations": [
+        "water-outage",
+        "shelter"
+      ],
+      "periods": [
+        "day1",
+        "day3",
+        "day7"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "mhlw-water",
+          "title": "厚生労働省 水道のページ",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/topics/bukyoku/kenkou/suido/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "水道・水質に関する公的情報への参照。断定的な保存期間は監修前に書かない。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "communication-first-actions",
+      "title": "通信障害：最初の連絡手段",
+      "summary": "つながりにくいときに試す順序と、電池を守る連絡。",
+      "path": "emergency/communication-first-actions.md",
+      "category": "communication",
+      "priority": "critical",
+      "situations": [
+        "communication"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "soumu-portal",
+          "title": "総務省",
           "publisher": "総務省",
           "url": "https://www.soumu.go.jp/",
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
-          "rightsNote": "通信関連の公式案内を将来参照するためのリンク枠。現時点の本文は制作フィクスチャ。",
+          "rightsNote": "通信・情報に関する公的案内への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "soumu-disaster-message",
+          "title": "災害用伝言サービス（総務省案内）",
+          "publisher": "総務省",
+          "url": "https://www.soumu.go.jp/menu_seisaku/ictseisaku/net_anzen/hijyo/dengon.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "災害用伝言ダイヤル等の存在と使いどころを自前で要約。操作手順の長い転載はしない。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "communication-family-plan",
+      "title": "家族の連絡・集合ルール",
+      "summary": "平時に決めておくと混乱時に効く、短い家族ルール。",
+      "path": "emergency/communication-family-plan.md",
+      "category": "communication",
+      "priority": "high",
+      "situations": [
+        "communication",
+        "preparedness",
+        "evacuation"
+      ],
+      "periods": [
+        "day1",
+        "day7"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "cao-check",
+          "title": "自然災害への備えは万全ですか？チェックしてみよう！",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "soumu-disaster-message",
+          "title": "災害用伝言サービス（総務省案内）",
+          "publisher": "総務省",
+          "url": "https://www.soumu.go.jp/menu_seisaku/ictseisaku/net_anzen/hijyo/dengon.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "災害用伝言ダイヤル等の存在と使いどころを自前で要約。操作手順の長い転載はしない。",
+          "excerpt": null
+        },
+        {
+          "id": "kantei-sonae",
+          "title": "災害が起きる前にできること",
+          "publisher": "首相官邸",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "flood-first-actions",
+      "title": "大雨・洪水：早めの行動",
+      "summary": "浸水の前に取る確認と、危険な場所から離れる判断材料。",
+      "path": "emergency/flood-first-actions.md",
+      "category": "weather",
+      "priority": "critical",
+      "situations": [
+        "flood"
+      ],
+      "periods": [
+        "immediate"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "jma-portal",
+          "title": "気象庁",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "mlit-bousai",
+          "title": "国土交通省 防災情報",
+          "publisher": "国土交通省",
+          "url": "https://www.mlit.go.jp/river/bousai/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "水害・土砂に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "gsi-hazard",
+          "title": "ハザードマップポータルサイト",
+          "publisher": "国土地理院",
+          "url": "https://disaportal.gsi.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "浸水・土砂などのハザードマップ確認用リンク。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "flood-evacuation-timing",
+      "title": "水害：避難のタイミング",
+      "summary": "明るいうち・安全なうちに動くための確認リスト。",
+      "path": "emergency/flood-evacuation-timing.md",
+      "category": "evacuation",
+      "priority": "high",
+      "situations": [
+        "flood",
+        "evacuation"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "jma-portal",
+          "title": "気象庁",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "mlit-bousai",
+          "title": "国土交通省 防災情報",
+          "publisher": "国土交通省",
+          "url": "https://www.mlit.go.jp/river/bousai/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "水害・土砂に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "heat-first-actions",
+      "title": "猛暑：熱中症を防ぐ確認",
+      "summary": "暑い環境での休息・水分・冷却の基本（診断はしない）。",
+      "path": "emergency/heat-first-actions.md",
+      "category": "weather",
+      "priority": "critical",
+      "situations": [
+        "heat",
+        "blackout"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "cao-heatstroke",
+          "title": "熱中症予防情報（関係府省庁の取組）",
+          "publisher": "環境省・関係府省庁",
+          "url": "https://www.wbgt.env.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "暑さ指数・熱中症予防の公式情報への参照。診断は行わない。",
+          "excerpt": null
+        },
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "jrc-portal",
+          "title": "日本赤十字社",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "cold-first-actions",
+      "title": "寒波：低体温を防ぐ",
+      "summary": "暖房が弱いときの保温と安全な暖の取り方。",
+      "path": "emergency/cold-first-actions.md",
+      "category": "weather",
+      "priority": "critical",
+      "situations": [
+        "cold",
+        "blackout"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "jrc-portal",
+          "title": "日本赤十字社",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "gas-outage-first-actions",
+      "title": "ガス停止・ガス臭のときの行動",
+      "summary": "ガス漏れが疑われるときの火気禁止と換気、通報の優先。",
+      "path": "emergency/gas-outage-first-actions.md",
+      "category": "gas",
+      "priority": "critical",
+      "situations": [
+        "gas-outage",
+        "earthquake"
+      ],
+      "periods": [
+        "immediate"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "meti-enecho",
+          "title": "資源エネルギー庁",
+          "publisher": "経済産業省 資源エネルギー庁",
+          "url": "https://www.enecho.meti.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "電力・エネルギーに関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "shelter-in-place-basics",
+      "title": "在宅避難で数日を過ごす",
+      "summary": "自宅に留まる判断をしたあとの生活リズムと資源管理。",
+      "path": "emergency/shelter-in-place-basics.md",
+      "category": "evacuation",
+      "priority": "high",
+      "situations": [
+        "shelter",
+        "preparedness"
+      ],
+      "periods": [
+        "day1",
+        "day3",
+        "day7"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-check",
+          "title": "自然災害への備えは万全ですか？チェックしてみよう！",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "maff-foodstock",
+          "title": "農林水産省 災害時に備えた食品ストックガイド",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "evacuation-go-bag",
+      "title": "避難時の持ち出しチェック",
+      "summary": "すぐ持てる最小セットと、あると安心なもの。",
+      "path": "emergency/evacuation-go-bag.md",
+      "category": "evacuation",
+      "priority": "critical",
+      "situations": [
+        "evacuation",
+        "preparedness"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "kantei-sonae",
+          "title": "災害が起きる前にできること",
+          "publisher": "首相官邸",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-check",
+          "title": "自然災害への備えは万全ですか？チェックしてみよう！",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "evacuation-decision",
+      "title": "避難するか、留まるか",
+      "summary": "アプリは判断を代行しない。考えるための確認項目。",
+      "path": "emergency/evacuation-decision.md",
+      "category": "evacuation",
+      "priority": "high",
+      "situations": [
+        "evacuation",
+        "shelter",
+        "flood",
+        "earthquake"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-portal",
+          "title": "気象庁",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "gsi-hazard",
+          "title": "ハザードマップポータルサイト",
+          "publisher": "国土地理院",
+          "url": "https://disaportal.gsi.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "浸水・土砂などのハザードマップ確認用リンク。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "misinfo-check-steps",
+      "title": "情報の真偽を確かめる手順",
+      "summary": "不安な投稿に触れたときに踏む、短い確認ステップ。",
+      "path": "emergency/misinfo-check-steps.md",
+      "category": "information",
+      "priority": "high",
+      "situations": [
+        "misinfo",
+        "communication"
+      ],
+      "periods": [
+        "immediate",
+        "day1",
+        "day3"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-portal",
+          "title": "気象庁",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "soumu-portal",
+          "title": "総務省",
+          "publisher": "総務省",
+          "url": "https://www.soumu.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "通信・情報に関する公的案内への参照。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "first-aid-call-119",
+      "title": "救急を呼ぶ判断の目安",
+      "summary": "専門診断の代替ではない。ためらわず通報を検討する状況の整理。",
+      "path": "emergency/first-aid-call-119.md",
+      "category": "firstAid",
+      "priority": "critical",
+      "situations": [
+        "first-aid"
+      ],
+      "periods": [
+        "immediate"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "fdma-first-aid-web-course",
+          "title": "一般市民向け 応急手当WEB講習",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/relocation/kyukyukikaku/oukyu/pages/shinpai/shinpai_04.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "119番通報、AEDの手配、呼吸判断に迷う場合の胸骨圧迫という一般市民向け救命手順を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "jrc-portal",
+          "title": "日本赤十字社",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "first-aid-bleeding-basics",
+      "title": "出血への初期対応（基本）",
+      "summary": "安全確保と圧迫止血の考え方。重度は救急要請を優先。",
+      "path": "emergency/first-aid-bleeding-basics.md",
+      "category": "firstAid",
+      "priority": "high",
+      "situations": [
+        "first-aid"
+      ],
+      "periods": [
+        "immediate"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "jrc-portal",
+          "title": "日本赤十字社",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
+          "excerpt": null
+        },
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "first-aid-medications-shortage",
+      "title": "常用薬が足りなくなりそうなとき",
+      "summary": "自己判断での飲み方変更はせず、相談先を探すための確認。",
+      "path": "emergency/first-aid-medications-shortage.md",
+      "category": "firstAid",
+      "priority": "high",
+      "situations": [
+        "first-aid",
+        "preparedness",
+        "shelter"
+      ],
+      "periods": [
+        "day1",
+        "day3",
+        "day7"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "kantei-sonae",
+          "title": "災害が起きる前にできること",
+          "publisher": "首相官邸",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "jrc-portal",
+          "title": "日本赤十字社",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "preparedness-stockpile-basics",
+      "title": "家庭備蓄の始め方",
+      "summary": "最低限から1週間・2週間へ広げる、現実的な備え方。",
+      "path": "emergency/preparedness-stockpile-basics.md",
+      "category": "preparedness",
+      "priority": "high",
+      "situations": [
+        "preparedness"
+      ],
+      "periods": [
+        "day7",
+        "day14"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-check",
+          "title": "自然災害への備えは万全ですか？チェックしてみよう！",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "maff-foodstock",
+          "title": "農林水産省 災害時に備えた食品ストックガイド",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "kantei-sonae",
+          "title": "災害が起きる前にできること",
+          "publisher": "首相官邸",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "preparedness-emergency-card",
+      "title": "緊急カードに書いておくこと",
+      "summary": "脅威モデルで定めた最小項目の書き方と、書いてはいけないもの。",
+      "path": "emergency/preparedness-emergency-card.md",
+      "category": "personal",
+      "priority": "high",
+      "situations": [
+        "preparedness"
+      ],
+      "periods": [
+        "day7",
+        "day14"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "cao-check",
+          "title": "自然災害への備えは万全ですか？チェックしてみよう！",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "kantei-sonae",
+          "title": "災害が起きる前にできること",
+          "publisher": "首相官邸",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "preparedness-official-info",
+      "title": "平時に確認しておく公式情報",
+      "summary": "ハザードマップ、避難場所、インフラの問い合わせ先を先に押さえる。",
+      "path": "emergency/preparedness-official-info.md",
+      "category": "information",
+      "priority": "normal",
+      "situations": [
+        "preparedness",
+        "misinfo"
+      ],
+      "periods": [
+        "day7",
+        "day14"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "gsi-hazard",
+          "title": "ハザードマップポータルサイト",
+          "publisher": "国土地理院",
+          "url": "https://disaportal.gsi.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "浸水・土砂などのハザードマップ確認用リンク。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-portal",
+          "title": "気象庁",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "kokuminhogo",
+          "title": "国民保護ポータルサイト",
+          "publisher": "内閣官房",
+          "url": "https://www.kokuminhogo.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "国民保護に関する公的案内への参照。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "food-no-cook-priority",
+      "title": "火や電気が使えないときの食事",
+      "summary": "調理条件から考える、食べる順番と注意。",
+      "path": "emergency/food-no-cook-priority.md",
+      "category": "food",
+      "priority": "high",
+      "situations": [
+        "shelter",
+        "blackout",
+        "gas-outage"
+      ],
+      "periods": [
+        "day1",
+        "day3",
+        "day7"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "maff-foodstock",
+          "title": "農林水産省 災害時に備えた食品ストックガイド",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "hygiene-without-bathing",
+      "title": "入浴できない期間の清潔",
+      "summary": "水が少ないときの身体と口腔の清潔のとり方。",
+      "path": "emergency/hygiene-without-bathing.md",
+      "category": "hygiene",
+      "priority": "normal",
+      "situations": [
+        "water-outage",
+        "shelter"
+      ],
+      "periods": [
+        "day3",
+        "day7",
+        "day14"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "kantei-sonae",
+          "title": "災害が起きる前にできること",
+          "publisher": "首相官邸",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "tokyo-toilet",
+          "title": "災害時、トイレには駆け込めないかも！災害に備えて",
+          "publisher": "東京都総務局総合防災部",
+          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "携帯トイレの必要性と一般的な回数想定を自前で要約。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "earthquake-tsunami-coast",
+      "title": "沿岸部：津波が心配なとき",
+      "summary": "揺れのあと、海岸や川から離れる判断の材料。",
+      "path": "emergency/earthquake-tsunami-coast.md",
+      "category": "safety",
+      "priority": "critical",
+      "situations": [
+        "earthquake",
+        "evacuation"
+      ],
+      "periods": [
+        "immediate"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "jma-tsunami-guidance",
+          "title": "津波警報・注意報と避難のポイント",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/jishin/joho/tsunamiinfo.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "強い揺れや弱くても長い揺れを感じた場合の即時避難と、解除まで避難を続ける要点を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-earthquake",
+          "title": "気象庁 地震情報",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/bosai/map.html#contents=earthquake_map",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "地震・津波情報の公式発表へのリンク。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-bousai-portal",
+          "title": "内閣府 防災情報のページ",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "blackout-fire-safety",
+      "title": "停電時の火気と一酸化炭素",
+      "summary": "ろうそく、発電機、燃焼系暖房の注意点。",
+      "path": "emergency/blackout-fire-safety.md",
+      "category": "electricity",
+      "priority": "critical",
+      "situations": [
+        "blackout",
+        "cold"
+      ],
+      "periods": [
+        "immediate",
+        "day1"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "fdma-portal",
+          "title": "消防庁",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "meti-enecho",
+          "title": "資源エネルギー庁",
+          "publisher": "経済産業省 資源エネルギー庁",
+          "url": "https://www.enecho.meti.go.jp/",
+          "accessedAt": "2026-07-20",
+          "usage": "linkOnly",
+          "rightsNote": "電力・エネルギーに関する公的情報への参照。",
+          "excerpt": null
+        }
+      ]
+    },
+    {
+      "id": "shelter-day7-to-day14",
+      "title": "7日を超えそうなときの見直し",
+      "summary": "短期想定から少し長い混乱へ移るときの資源と情報の見直し。",
+      "path": "emergency/shelter-day7-to-day14.md",
+      "category": "preparedness",
+      "priority": "normal",
+      "situations": [
+        "shelter",
+        "preparedness"
+      ],
+      "periods": [
+        "day7",
+        "day14"
+      ],
+      "region": "jp",
+      "reviewStatus": "draft",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "sources": [
+        {
+          "id": "gov-prep",
+          "title": "防災特集 ACTION01 災害に事前に備える",
+          "publisher": "政府広報オンライン",
+          "url": "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "maff-foodstock",
+          "title": "農林水産省 災害時に備えた食品ストックガイド",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
+          "excerpt": null
+        },
+        {
+          "id": "cao-check",
+          "title": "自然災害への備えは万全ですか？チェックしてみよう！",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
           "excerpt": null
         }
       ]

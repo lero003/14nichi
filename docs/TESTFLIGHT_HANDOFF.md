@@ -108,7 +108,7 @@ xcodebuild -project FourteenDayNote.xcodeproj -scheme FourteenDayNote \
 
 ## 5. コンテンツ監修状態
 
-- 同梱 5 記事はすべて `draft`。
+- 同梱 30 記事はすべて `draft`。
 - 内部TestFlightでは未監修バナーを維持したまま配布してよい（フィクスチャと明示）。
 - App Store 一般公開前は:
 

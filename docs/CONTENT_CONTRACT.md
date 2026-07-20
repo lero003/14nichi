@@ -130,7 +130,7 @@ review_status: draft
 出典が1件以上ある場合、各件について次を検証します。
 
 - `id` / `title` / `publisher` / `rightsNote` が空でない
-- `accessedAt` が `YYYY-MM-DD`
+- `accessedAt` が実在する `YYYY-MM-DD` の日付
 - `url` が `https`
 - 記事内で `id` が重複しない
 - `linkOnly` / `paraphrase` では `excerpt` を置かない

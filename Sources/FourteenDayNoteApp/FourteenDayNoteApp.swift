@@ -4,24 +4,7 @@ import SwiftUI
 
 @main
 struct FourteenDayNoteApp: App {
-    private let stockpileContainer: Result<ModelContainer, any Error>
-
-    init() {
-        let schema = Schema(StockpileSchemaV1.models)
-        let configuration = ModelConfiguration(schema: schema)
-
-        do {
-            stockpileContainer = .success(
-                try ModelContainer(
-                    for: schema,
-                    migrationPlan: StockpileMigrationPlan.self,
-                    configurations: [configuration]
-                )
-            )
-        } catch {
-            stockpileContainer = .failure(error)
-        }
-    }
+    private let containers = AppContainers.live()
 
     var body: some Scene {
         WindowGroup {
@@ -56,10 +39,10 @@ struct FourteenDayNoteApp: App {
 
     @ViewBuilder
     private var rootContent: some View {
-        switch stockpileContainer {
-        case .success(let container):
-            RootView()
-                .modelContainer(container)
+        switch containers.stockpile {
+        case .success(let stockpileContainer):
+            RootView(emergencyContainer: emergencyContainerOrNil)
+                .modelContainer(stockpileContainer)
         case .failure(let error):
             ContentUnavailableView {
                 Label("保存領域を開けません", systemImage: "externaldrive.badge.exclamationmark")
@@ -67,6 +50,13 @@ struct FourteenDayNoteApp: App {
                 Text("備蓄データの保存領域を準備できませんでした。アプリを終了して、もう一度開いてください。\n\(error.localizedDescription)")
             }
         }
+    }
+
+    private var emergencyContainerOrNil: ModelContainer? {
+        if case .success(let container) = containers.emergencyCard {
+            return container
+        }
+        return nil
     }
 }
 

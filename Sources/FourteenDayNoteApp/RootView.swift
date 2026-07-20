@@ -1,7 +1,9 @@
 import FourteenDayCore
+import SwiftData
 import SwiftUI
 
 struct RootView: View {
+    var emergencyContainer: ModelContainer? = nil
     @State private var model = AppModel()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var systemDynamicTypeSize
@@ -13,7 +15,7 @@ struct RootView: View {
                 LoadingSplashView()
                     .transition(.opacity)
             case .ready:
-                MainTabView(appModel: model)
+                MainTabView(appModel: model, emergencyContainer: emergencyContainer)
                     .transition(.opacity.combined(with: .scale(scale: 0.985)))
             case .failed(let message):
                 ContentUnavailableView {

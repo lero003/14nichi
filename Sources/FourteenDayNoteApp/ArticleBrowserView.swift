@@ -80,8 +80,15 @@ struct ArticleBrowserView: View {
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                     }
                 } header: {
-                    Text(model.articleListTitle)
-                        .font(.subheadline.weight(.semibold))
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(model.articleListTitle)
+                            .font(.subheadline.weight(.semibold))
+                        if model.hasActiveArticleFilters {
+                            Text("絞り込み: \(model.articleFilterSummary)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 } footer: {
                     if !model.displayedArticles.isEmpty {
                         Text("記事 \(model.displayedArticles.count)件")
@@ -94,7 +101,9 @@ struct ArticleBrowserView: View {
         .navigationTitle(model.articleListTitle)
         .searchable(text: $model.searchQuery, prompt: "記事を検索")
         .overlay {
-            if model.hasSearchQuery, model.displayedArticles.isEmpty {
+            if model.hasActiveArticleFilters, model.displayedArticles.isEmpty {
+                filteredEmptyState
+            } else if model.hasSearchQuery, model.displayedArticles.isEmpty {
                 ContentUnavailableView.search(text: model.searchQuery)
             } else if model.showsFavoritesOnly, model.displayedArticles.isEmpty {
                 emptyState(
@@ -118,6 +127,7 @@ struct ArticleBrowserView: View {
         }
         .animation(AppTheme.spring(reduceMotion: reduceMotion), value: model.selectedSituationID)
         .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: model.showsFavoritesOnly)
+        .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: model.articleFilter)
 #if os(macOS)
         .navigationSplitViewColumnWidth(min: 270, ideal: 340, max: 420)
 #endif
@@ -158,9 +168,56 @@ struct ArticleBrowserView: View {
         }
     }
 
+    private var filteredEmptyState: some View {
+        ContentUnavailableView {
+            Label("条件に一致する記事がありません", systemImage: "line.3.horizontal.decrease.circle")
+        } description: {
+            Text("現在の検索・お気に入り・状況に「\(model.articleFilterSummary)」を重ねた結果です。")
+                .font(.body)
+        } actions: {
+            Button("絞り込みを解除") {
+                withAnimation(AppTheme.gentle(reduceMotion: reduceMotion)) {
+                    model.clearArticleFilters()
+                }
+            }
+        }
+    }
+
     @ToolbarContentBuilder
     private var browserToolbar: some ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
+            Menu {
+                Picker("カテゴリ", selection: categoryFilterSelection) {
+                    Text("すべてのカテゴリ").tag(nil as String?)
+                    ForEach(model.availableCategories, id: \.self) { category in
+                        Text(GuideCategory.displayName(for: category)).tag(Optional(category))
+                    }
+                }
+
+                Picker("行動時期", selection: periodFilterSelection) {
+                    Text("すべての時期").tag(nil as GuidePeriod?)
+                    ForEach(model.availablePeriods, id: \.rawValue) { period in
+                        Text(period.displayName).tag(Optional(period))
+                    }
+                }
+
+                if model.hasActiveArticleFilters {
+                    Divider()
+                    Button("絞り込みを解除", systemImage: "xmark.circle") {
+                        model.clearArticleFilters()
+                    }
+                }
+            } label: {
+                Label(
+                    model.hasActiveArticleFilters ? "絞り込み中" : "記事を絞り込む",
+                    systemImage: model.hasActiveArticleFilters
+                        ? "line.3.horizontal.decrease.circle.fill"
+                        : "line.3.horizontal.decrease.circle"
+                )
+            }
+            .help(model.hasActiveArticleFilters ? model.articleFilterSummary : "カテゴリと行動時期で絞り込む")
+            .accessibilityValue(model.articleFilterSummary)
+
             Button {
                 withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
                     model.toggleFavoritesFilter()
@@ -214,6 +271,20 @@ struct ArticleBrowserView: View {
                     model.selectArticle(newValue)
                 }
             }
+        )
+    }
+
+    private var categoryFilterSelection: Binding<String?> {
+        Binding(
+            get: { model.selectedCategory },
+            set: { model.selectedCategory = $0 }
+        )
+    }
+
+    private var periodFilterSelection: Binding<GuidePeriod?> {
+        Binding(
+            get: { model.selectedPeriod },
+            set: { model.selectedPeriod = $0 }
         )
     }
 }

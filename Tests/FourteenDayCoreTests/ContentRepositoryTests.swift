@@ -178,6 +178,8 @@ struct ContentRepositoryTests {
         #expect(GuideArticle.Priority.critical.displayName == "最優先")
         #expect(GuidePeriod.immediate.displayName == "いま")
         #expect(GuidePeriod.day1.displayName == "初日")
+        #expect(GuideCategory.electricity.displayName == "電気")
+        #expect(GuideCategory.displayName(for: "future-category") == "future-category")
         #expect(GuideArticle.Source.Usage.paraphrase.displayName == "要約・言い換え")
     }
 

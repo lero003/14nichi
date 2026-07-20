@@ -61,6 +61,26 @@ public enum GuidePeriod: String, CaseIterable, Sendable {
     }
 }
 
+public enum GuideCategory: String, CaseIterable, Sendable {
+    case safety
+    case electricity
+    case water
+    case communication
+
+    public var displayName: String {
+        switch self {
+        case .safety: "安全確認"
+        case .electricity: "電気"
+        case .water: "水"
+        case .communication: "通信"
+        }
+    }
+
+    public static func displayName(for rawValue: String) -> String {
+        GuideCategory(rawValue: rawValue)?.displayName ?? rawValue
+    }
+}
+
 public extension GuideArticle {
     var periodLabels: [String] {
         periods.compactMap { raw in

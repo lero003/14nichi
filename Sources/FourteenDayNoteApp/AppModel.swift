@@ -33,6 +33,12 @@ final class AppModel {
     var showsFavoritesOnly = false {
         didSet { syncDisplayedArticleSelection() }
     }
+    var selectedCategory: String? {
+        didSet { syncDisplayedArticleSelection() }
+    }
+    var selectedPeriod: GuidePeriod? {
+        didSet { syncDisplayedArticleSelection() }
+    }
     private(set) var favoriteArticleIDs: Set<GuideArticle.ID>
     var isAboutPresented = false
     var isReadabilityPresented = false
@@ -78,8 +84,37 @@ final class AppModel {
             articles = catalog.searchArticles(matching: searchQuery)
         }
 
-        guard showsFavoritesOnly else { return articles }
-        return articles.filter { favoriteArticleIDs.contains($0.id) }
+        let favoritesFiltered = showsFavoritesOnly
+            ? articles.filter { favoriteArticleIDs.contains($0.id) }
+            : articles
+        return catalog.filterArticles(favoritesFiltered, using: articleFilter)
+    }
+
+    var articleFilter: GuideArticleFilter {
+        GuideArticleFilter(category: selectedCategory, period: selectedPeriod)
+    }
+
+    var hasActiveArticleFilters: Bool {
+        articleFilter.isActive
+    }
+
+    var availableCategories: [String] {
+        catalog?.availableCategories ?? []
+    }
+
+    var availablePeriods: [GuidePeriod] {
+        catalog?.availablePeriods ?? []
+    }
+
+    var articleFilterSummary: String {
+        var labels: [String] = []
+        if let selectedCategory {
+            labels.append(GuideCategory.displayName(for: selectedCategory))
+        }
+        if let selectedPeriod {
+            labels.append(selectedPeriod.displayName)
+        }
+        return labels.isEmpty ? "絞り込みなし" : labels.joined(separator: "・")
     }
 
     var articleListTitle: String {
@@ -147,6 +182,11 @@ final class AppModel {
 
     func toggleFavoritesFilter() {
         showsFavoritesOnly.toggle()
+    }
+
+    func clearArticleFilters() {
+        selectedCategory = nil
+        selectedPeriod = nil
     }
 
     private func syncDisplayedArticleSelection() {

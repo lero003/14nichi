@@ -1,5 +1,29 @@
 import Foundation
 
+public struct GuideArticleFilter: Equatable, Sendable {
+    public var category: String?
+    public var period: GuidePeriod?
+
+    public init(category: String? = nil, period: GuidePeriod? = nil) {
+        self.category = category
+        self.period = period
+    }
+
+    public var isActive: Bool {
+        category != nil || period != nil
+    }
+
+    public func matches(_ article: GuideArticle) -> Bool {
+        if let category, article.category != category {
+            return false
+        }
+        if let period, article.periods.contains(period.rawValue) == false {
+            return false
+        }
+        return true
+    }
+}
+
 public extension ContentCatalog {
     /// 同梱済み記事だけを対象にした、通信不要の全文検索。
     func searchArticles(matching query: String) -> [GuideArticle] {
@@ -20,6 +44,27 @@ public extension ContentCatalog {
                 .foldedForGuideSearch
 
             return tokens.allSatisfy(searchableText.contains)
+        }
+    }
+
+    func filterArticles(
+        _ candidates: [GuideArticle],
+        using filter: GuideArticleFilter
+    ) -> [GuideArticle] {
+        guard filter.isActive else { return candidates }
+        return candidates.filter(filter.matches)
+    }
+
+    var availableCategories: [String] {
+        Array(Set(articles.map(\.category))).sorted {
+            GuideCategory.displayName(for: $0)
+                .localizedStandardCompare(GuideCategory.displayName(for: $1)) == .orderedAscending
+        }
+    }
+
+    var availablePeriods: [GuidePeriod] {
+        GuidePeriod.allCases.filter { period in
+            articles.contains { $0.periods.contains(period.rawValue) }
         }
     }
 

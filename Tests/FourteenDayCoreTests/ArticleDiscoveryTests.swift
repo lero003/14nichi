@@ -31,6 +31,31 @@ struct ArticleDiscoveryTests {
         #expect(catalog.searchArticles(matching: "  \n ").isEmpty)
     }
 
+    @Test("category and period filters can be combined")
+    func combinesFilters() {
+        let electricityNow = GuideArticleFilter(category: "electricity", period: .immediate)
+        let electricityDayOne = GuideArticleFilter(category: "electricity", period: .day1)
+
+        #expect(catalog.filterArticles(catalog.articles, using: electricityNow).map(\.id) == ["blackout"])
+        #expect(catalog.filterArticles(catalog.articles, using: electricityDayOne).isEmpty)
+    }
+
+    @Test("an inactive filter preserves candidate order")
+    func inactiveFilterPreservesCandidates() {
+        let candidates = Array(catalog.articles.reversed())
+
+        #expect(
+            catalog.filterArticles(candidates, using: GuideArticleFilter()).map(\.id)
+                == candidates.map(\.id)
+        )
+    }
+
+    @Test("available filter options come only from bundled metadata")
+    func derivesAvailableOptions() {
+        #expect(Set(catalog.availableCategories) == ["electricity", "water"])
+        #expect(catalog.availablePeriods == [.immediate, .day1])
+    }
+
     private var catalog: ContentCatalog {
         ContentCatalog(
             situations: [
@@ -56,7 +81,9 @@ struct ArticleDiscoveryTests {
                     summary: "読み上げを確認する記事",
                     situation: "blackout",
                     body: "VoiceOverで本文を確認する",
-                    publisher: "総務省"
+                    publisher: "総務省",
+                    category: "electricity",
+                    periods: ["immediate"]
                 ),
                 article(
                     id: "water",
@@ -64,7 +91,9 @@ struct ArticleDiscoveryTests {
                     summary: "表示サンプル",
                     situation: "water-outage",
                     body: "制作確認用の本文",
-                    publisher: "厚生労働省"
+                    publisher: "厚生労働省",
+                    category: "water",
+                    periods: ["day1"]
                 ),
             ]
         )
@@ -76,7 +105,9 @@ struct ArticleDiscoveryTests {
         summary: String,
         situation: String,
         body: String,
-        publisher: String
+        publisher: String,
+        category: String,
+        periods: [String]
     ) -> GuideArticle {
         GuideArticle(
             metadata: GuideArticle.Metadata(
@@ -84,10 +115,10 @@ struct ArticleDiscoveryTests {
                 title: title,
                 summary: summary,
                 path: "emergency/\(id).md",
-                category: "fixture",
+                category: category,
                 priority: .normal,
                 situations: [situation],
-                periods: ["immediate"],
+                periods: periods,
                 region: "jp",
                 reviewStatus: .draft,
                 reviewedAt: nil,

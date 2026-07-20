@@ -7,9 +7,11 @@
 3. `docs/CONTENT_CONTRACT.md`
 4. `14日note.md`（企画の原本。実装済みとは限らない）
 
+フルMVP完遂とTestFlight準備をまとめて依頼された場合は、追加で `docs/FULL_MVP_COMPLETION_BRIEF.md` を実行仕様として読んでください。
+
 ## Current lane
 
-フルMVPを機能優先で実装中です。Slice 1「オフライン閲覧基盤」とSlice 3「備蓄」は完了し、Slice 2は「全文検索・お気に入り」まで動作します。次はSlice 2の「カテゴリ・時間帯フィルタ」を、小さな検証可能な縦スライスで追加してSlice 2を閉じます。記事の本格拡充と監修、TestFlight準備はフルMVPの機能完成後です。
+フルMVPを機能優先で実装中です。Slice 1「オフライン閲覧基盤」、Slice 2「探索性」、Slice 3「備蓄」は完了しています。次は `docs/FULL_MVP_COMPLETION_BRIEF.md` に従い、Slice 4「個人情報と出力」の実装前に、緊急カードの脅威モデル、最小データ、端末内保護、ロック時挙動、出力同意を文書で確定します。方針確定前に個人情報を保存しないでください。記事の本格拡充と監修、TestFlight準備はフルMVPの機能完成後です。
 
 ## Safety boundary
 

@@ -22,7 +22,7 @@
 - 出典を付けるなら publisher・accessedAt・usage・rightsNote を揃える。`shortQuote` 以外に excerpt を置かない。
 - ネットワーク、アカウント、解析、広告SDKを黙って追加しない。
 - 個人情報は脅威モデルの採用項目だけを、備蓄・お気に入りと分離したストアへ保存する。iCloud同期や外部送信を追加しない。
-- 未監修の備蓄数量を推奨値として初期入力しない。数量は利用者入力とし、将来の正式な既定値はコンテンツ監修の対象にする。
+- 備蓄数量は、公的一次情報で数量まで確認し、出典・確認日・権利上の利用形態を記録した一般的な目安だけを自動計算する。根拠のない品目別内訳や個数配分は追加しない。
 - App Store 提出前は `swift run content-lint --distribution` が通る状態（全記事 approved）を要求する。内部TestFlightの draft フィクスチャとは分ける。
 
 ## Development loop

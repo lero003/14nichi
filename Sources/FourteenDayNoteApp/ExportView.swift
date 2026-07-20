@@ -16,7 +16,7 @@ struct ExportView: View {
 
     let emergencyContainer: ModelContainer?
 
-    @Query private var plans: [StockpileSchemaV1.Plan]
+    @Query private var plans: [StockpileSchema.Plan]
     @State private var selection = ExportSelection.privacySafeDefault
     @State private var emergencyCard = EmergencyCardSnapshot()
     @State private var acknowledgedPersonalData = false
@@ -155,7 +155,7 @@ struct ExportView: View {
             && emergencyContentUnlocked == false
     }
 
-    private var primaryPlan: StockpileSchemaV1.Plan? {
+    private var primaryPlan: StockpileSchema.Plan? {
         plans.first { $0.stableID == StockpileStore.primaryPlanID }
     }
 
@@ -188,22 +188,22 @@ struct ExportView: View {
             if $0.sortOrder == $1.sortOrder { return $0.stableID < $1.stableID }
             return $0.sortOrder < $1.sortOrder
         }
+        .filter(\.isShortage)
         .map { item in
             let result = StockpileCalculator.calculate(
                 entry: item.calculationEntry,
                 household: household,
                 targetDays: plan.targetDays
             )
-            let status = StockpileExpirationStatus.evaluate(expirationDate: item.expirationDate)
             return ExportStockpileItem(
                 id: item.stableID,
                 name: item.name,
                 unit: item.unit,
                 requiredAmount: result.requiredAmount,
-                currentAmount: result.currentAmount,
-                shortageAmount: result.shortageAmount,
-                isPrepared: item.isPrepared,
-                expirationText: expirationLabel(status)
+                currentAmount: item.isPurchased ? result.requiredAmount : 0,
+                shortageAmount: item.isPurchased ? 0 : result.requiredAmount,
+                isPrepared: item.isPurchased,
+                expirationText: nil
             )
         }
 
@@ -214,19 +214,6 @@ struct ExportView: View {
             targetDays: plan.targetDays.rawValue,
             items: items
         )
-    }
-
-    private func expirationLabel(_ status: StockpileExpirationStatus) -> String? {
-        switch status {
-        case .none:
-            nil
-        case .expired(let daysAgo):
-            "期限切れ（\(daysAgo)日前）"
-        case .dueSoon(let daysRemaining):
-            "残り\(daysRemaining)日"
-        case .scheduled(let daysRemaining):
-            "残り\(daysRemaining)日"
-        }
     }
 
     private func refreshPreview() {

@@ -17,7 +17,7 @@ struct AppContainers {
 
     private static func openStockpile() -> Result<ModelContainer, any Error> {
         Result {
-            let schema = Schema(StockpileSchemaV1.models)
+            let schema = Schema(StockpileSchema.models)
             let configuration = ModelConfiguration(schema: schema)
             return try ModelContainer(
                 for: schema,

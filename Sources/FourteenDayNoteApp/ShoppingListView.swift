@@ -5,9 +5,8 @@ import SwiftUI
 struct ShoppingListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ReadabilitySettings.self) private var readability
-    @Query private var plans: [StockpileSchemaV1.Plan]
+    @Query private var plans: [StockpileSchema.Plan]
     @State private var persistenceError: String?
-    @State private var pendingItemID: String?
 
     var body: some View {
         NavigationStack {
@@ -28,157 +27,89 @@ struct ShoppingListView: View {
             }
             .navigationTitle("買い物リスト")
         }
-        .task {
-            loadPlan()
-        }
-        .confirmationDialog(
-            confirmationTitle,
-            isPresented: confirmationIsPresented,
-            titleVisibility: .visible
-        ) {
-            Button("購入分を在庫へ反映") {
-                applyPendingItem()
-            }
-            Button("キャンセル", role: .cancel) {
-                pendingItemID = nil
-            }
-        } message: {
-            Text(confirmationMessage)
-        }
+        .task { loadPlan() }
     }
 
-    private var primaryPlan: StockpileSchemaV1.Plan? {
+    private var primaryPlan: StockpileSchema.Plan? {
         plans.first { $0.stableID == StockpileStore.primaryPlanID }
     }
 
     @ViewBuilder
-    private func content(for plan: StockpileSchemaV1.Plan) -> some View {
+    private func content(for plan: StockpileSchema.Plan) -> some View {
         let rows = shoppingRows(for: plan)
+        let selectedCount = plan.items.count(where: \.isShortage)
 
-        if plan.household.totalPeople == 0 {
+        if selectedCount == 0 {
             ContentUnavailableView(
-                "家族の人数が未入力です",
-                systemImage: "person.2",
-                description: Text("備蓄タブで1人以上を入力すると、買い物リストを計算できます。")
-            )
-        } else if configuredItemCount(for: plan) == 0 {
-            ContentUnavailableView(
-                "1日量が未入力です",
-                systemImage: "pencil.and.list.clipboard",
-                description: Text("備蓄タブで品目の1人1日量を入力してください。")
+                "足りないものは未選択です",
+                systemImage: "checklist",
+                description: Text("備蓄タブで必要量を確認し、家に足りない品目だけをチェックしてください。")
             )
         } else if rows.isEmpty {
             ContentUnavailableView(
-                "不足品目はありません",
+                "買い物は完了です",
                 systemImage: "checkmark.circle",
-                description: Text("現在の人数・日数・在庫量では、入力済みの品目に不足はありません。")
+                description: Text("チェックした品目はすべて購入済みです。")
             )
         } else {
             shoppingList(rows: rows, plan: plan)
         }
     }
 
-    private func shoppingList(
-        rows: [ShoppingRow],
-        plan: StockpileSchemaV1.Plan
-    ) -> some View {
+    private func shoppingList(rows: [ShoppingRow], plan: StockpileSchema.Plan) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: readability.sectionSpacing) {
                 SurfaceCard {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Label("不足しているもの", systemImage: "cart.fill")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("買うものは \(rows.count)品目", systemImage: "cart.fill")
                             .font(.title2.weight(.bold))
                             .accessibilityAddTraits(.isHeader)
-
-                        Text("\(plan.household.totalPeople)人 × \(plan.targetDays.displayName)の計画で、\(rows.count)品目が不足しています。")
+                        Text("\(plan.household.totalPeople)人 × \(plan.targetDays.displayName)の目安です。買った品目をチェックすると一覧から外れます。")
                             .font(.body)
-                            .fixedSize(horizontal: false, vertical: true)
-
-                        Text("購入後に「購入分を在庫へ反映」を押すと、現在量を必要量まで更新し、この一覧から外します。")
-                            .font(.callout)
                             .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
 
                 ForEach(rows) { row in
-                    ShoppingItemCard(row: row) {
-                        pendingItemID = row.id
-                    }
+                    ShoppingItemCard(row: row) { markPurchased(row.item) }
                 }
             }
             .padding(AppTheme.contentGutter)
             .frame(maxWidth: 760, alignment: .leading)
             .frame(maxWidth: .infinity, alignment: .top)
         }
-        .overlay(alignment: .bottom) {
-            if let persistenceError {
-                Label(persistenceError, systemImage: "exclamationmark.triangle.fill")
-                    .font(.callout)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(.red, in: .capsule)
-                    .padding()
-                    .accessibilityElement(children: .combine)
+        .overlay(alignment: .bottom) { persistenceErrorOverlay }
+    }
+
+    @ViewBuilder
+    private var persistenceErrorOverlay: some View {
+        if let persistenceError {
+            Label(persistenceError, systemImage: "exclamationmark.triangle.fill")
+                .font(.callout)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(.red, in: .capsule)
+                .padding()
+                .accessibilityElement(children: .combine)
+        }
+    }
+
+    private func shoppingRows(for plan: StockpileSchema.Plan) -> [ShoppingRow] {
+        plan.items
+            .filter { $0.isShortage && !$0.isPurchased }
+            .sorted {
+                $0.sortOrder == $1.sortOrder ? $0.stableID < $1.stableID : $0.sortOrder < $1.sortOrder
             }
-        }
-    }
-
-    private func shoppingRows(for plan: StockpileSchemaV1.Plan) -> [ShoppingRow] {
-        let items = plan.items.sorted {
-            if $0.sortOrder == $1.sortOrder {
-                return $0.stableID < $1.stableID
+            .compactMap { item in
+                guard let recommendation = StockpileRecommendations.recommendation(id: item.stableID) else { return nil }
+                let result = StockpileCalculator.calculate(
+                    entry: recommendation.entry(),
+                    household: plan.household,
+                    targetDays: plan.targetDays
+                )
+                return ShoppingRow(item: item, result: result)
             }
-            return $0.sortOrder < $1.sortOrder
-        }
-        let results = StockpileShoppingList.shortages(
-            entries: items.map(\.calculationEntry),
-            household: plan.household,
-            targetDays: plan.targetDays
-        )
-        let itemsByID = Dictionary(uniqueKeysWithValues: items.map { ($0.stableID, $0) })
-
-        return results.compactMap { result in
-            guard let item = itemsByID[result.id] else { return nil }
-            return ShoppingRow(item: item, result: result)
-        }
-    }
-
-    private func configuredItemCount(for plan: StockpileSchemaV1.Plan) -> Int {
-        plan.items.count {
-            StockpileCalculator.calculate(
-                entry: $0.calculationEntry,
-                household: plan.household,
-                targetDays: plan.targetDays
-            ).isConfigured
-        }
-    }
-
-    private var pendingRow: ShoppingRow? {
-        guard let plan = primaryPlan, let pendingItemID else { return nil }
-        return shoppingRows(for: plan).first { $0.id == pendingItemID }
-    }
-
-    private var confirmationIsPresented: Binding<Bool> {
-        Binding(
-            get: { pendingItemID != nil },
-            set: { isPresented in
-                if isPresented == false {
-                    pendingItemID = nil
-                }
-            }
-        )
-    }
-
-    private var confirmationTitle: String {
-        guard let pendingRow else { return "在庫へ反映しますか？" }
-        return "\(pendingRow.item.name)を在庫へ反映しますか？"
-    }
-
-    private var confirmationMessage: String {
-        guard let pendingRow else { return "現在量を更新します。" }
-        return "不足分 \(formatted(pendingRow.result.shortageAmount)) \(pendingRow.item.unit)を現在量へ反映し、準備済みにします。元に戻す場合は備蓄タブで現在量を編集してください。"
     }
 
     private func loadPlan() {
@@ -190,100 +121,54 @@ struct ShoppingListView: View {
         }
     }
 
-    private func applyPendingItem() {
-        defer { pendingItemID = nil }
-        guard let plan = primaryPlan, let pendingRow else { return }
-
+    private func markPurchased(_ item: StockpileSchema.Item) {
         do {
-            try StockpileStore.applyShortageToInventory(
-                for: pendingRow.item,
-                household: plan.household,
-                targetDays: plan.targetDays,
-                in: modelContext
-            )
+            try StockpileStore.markPurchased(item, in: modelContext)
             persistenceError = nil
         } catch {
-            persistenceError = "購入分を在庫へ反映できませんでした。\(error.localizedDescription)"
+            persistenceError = "購入済みとして保存できませんでした。\(error.localizedDescription)"
         }
-    }
-
-    private func formatted(_ value: Double) -> String {
-        value.formatted(.number.precision(.fractionLength(0...2)))
     }
 }
 
 private struct ShoppingRow: Identifiable {
-    let item: StockpileSchemaV1.Item
+    let item: StockpileSchema.Item
     let result: StockpileResult
-
     var id: String { item.stableID }
 }
 
 private struct ShoppingItemCard: View {
     let row: ShoppingRow
-    let applyToInventory: () -> Void
+    let markPurchased: () -> Void
 
     var body: some View {
         SurfaceCard {
-            VStack(alignment: .leading, spacing: 14) {
-                Text(row.item.name)
-                    .font(.title3.weight(.semibold))
-                    .accessibilityAddTraits(.isHeader)
-
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 24) { metrics }
-                    VStack(alignment: .leading, spacing: 10) { metrics }
+            HStack(alignment: .center, spacing: 16) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(row.item.name)
+                        .font(.title3.weight(.semibold))
+                    Text("\(formatted(row.result.requiredAmount)) \(row.result.entry.unit)")
+                        .font(.headline)
+                        .foregroundStyle(.orange)
                 }
 
-                Button("購入分を在庫へ反映", systemImage: "checkmark.circle", action: applyToInventory)
-                    .buttonStyle(.borderedProminent)
-                    .accessibilityHint("不足分を現在の在庫量に加え、買い物リストから外します")
-            }
-        }
-    }
+                Spacer(minLength: 8)
 
-    @ViewBuilder
-    private var metrics: some View {
-        ShoppingMetric(
-            title: "買う量",
-            value: "\(formatted(row.result.shortageAmount)) \(row.item.unit)",
-            emphasized: true
-        )
-        ShoppingMetric(
-            title: "現在量",
-            value: "\(formatted(row.result.currentAmount)) \(row.item.unit)"
-        )
-        ShoppingMetric(
-            title: "必要量",
-            value: "\(formatted(row.result.requiredAmount)) \(row.item.unit)"
-        )
+                Button("買った", systemImage: "checkmark.circle", action: markPurchased)
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityHint("購入済みにして買い物リストから外します")
+            }
+            .accessibilityElement(children: .contain)
+        }
     }
 
     private func formatted(_ value: Double) -> String {
-        value.formatted(.number.precision(.fractionLength(0...2)))
-    }
-}
-
-private struct ShoppingMetric: View {
-    let title: String
-    let value: String
-    var emphasized = false
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Text(value)
-                .font(.body.weight(emphasized ? .bold : .semibold))
-                .foregroundStyle(emphasized ? .orange : .primary)
-        }
-        .accessibilityElement(children: .combine)
+        value.formatted(.number.precision(.fractionLength(0...1)))
     }
 }
 
 #Preview {
     ShoppingListView()
         .environment(ReadabilitySettings())
-        .modelContainer(for: StockpileSchemaV1.models, inMemory: true)
+        .modelContainer(for: StockpileSchema.models, inMemory: true)
 }

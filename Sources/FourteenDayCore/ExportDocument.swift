@@ -216,9 +216,7 @@ public struct ExportDocument: Equatable, Sendable {
         if let stockpile = sanitizedStockpile() {
             lines.append("■ 備蓄")
             if selection.includeStockpileHousehold {
-                lines.append(
-                    "家族構成: 大人\(stockpile.adultCount)・子ども\(stockpile.childCount)・高齢者\(stockpile.seniorCount)"
-                )
+                lines.append("人数: \(stockpile.adultCount + stockpile.childCount + stockpile.seniorCount)人")
                 lines.append("計画日数: \(stockpile.targetDays)日")
             }
             if selection.includeStockpileChecklist {

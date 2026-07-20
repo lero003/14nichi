@@ -6,23 +6,20 @@ import Testing
 @MainActor
 @Suite("Stockpile persistence")
 struct StockpilePersistenceTests {
-    @Test("the first load creates one plan with the default checklist")
+    @Test("the first load creates the simplified recommendation checklist")
     func createsDefaultPlan() throws {
         let container = try makeContainer()
-        let context = container.mainContext
-
-        let plan = try StockpileStore.loadOrCreatePlan(in: context)
+        let plan = try StockpileStore.loadOrCreatePlan(in: container.mainContext)
 
         #expect(plan.stableID == StockpileStore.primaryPlanID)
-        #expect(plan.adultCount == 1)
+        #expect(plan.household.totalPeople == 1)
         #expect(plan.targetDays == .seven)
         #expect(plan.items.map(\.stableID).sorted() == [
             "drinking-water",
             "meals",
             "portable-toilet",
         ])
-        #expect(plan.items.allSatisfy { $0.dailyAmountPerPerson == 0 })
-        #expect(plan.items.allSatisfy { $0.expirationDate == nil })
+        #expect(plan.items.allSatisfy { !$0.isShortage && !$0.isPurchased })
     }
 
     @Test("loading again reuses the plan without duplicating checklist items")
@@ -37,45 +34,40 @@ struct StockpilePersistenceTests {
         #expect(second.items.count == 3)
     }
 
-    @Test("household quantities checklist state and expiration persist")
-    func persistsChanges() throws {
+    @Test("people period shortage selection and purchase state persist")
+    func persistsSimplifiedFlow() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let plan = try StockpileStore.loadOrCreatePlan(in: context)
-        let item = try #require(plan.items.first { $0.stableID == "drinking-water" })
-        let expiration = try #require(date(year: 2026, month: 12, day: 31))
+        let water = try #require(plan.items.first { $0.stableID == "drinking-water" })
 
-        plan.adultCount = 2
-        plan.childCount = 1
+        plan.adultCount = 3
+        plan.childCount = 0
+        plan.seniorCount = 0
         plan.targetDays = .fourteen
-        item.dailyAmountPerPerson = 1.5
-        item.currentAmount = 8
-        item.isPrepared = true
-        item.expirationDate = expiration
+        water.isShortage = true
         try StockpileStore.save(context)
+        try StockpileStore.markPurchased(water, in: context)
 
         let verificationContext = ModelContext(container)
         let planID = StockpileStore.primaryPlanID
-        let descriptor = FetchDescriptor<StockpileSchemaV1.Plan>(
+        let descriptor = FetchDescriptor<StockpileSchema.Plan>(
             predicate: #Predicate { $0.stableID == planID }
         )
         let storedPlan = try #require(verificationContext.fetch(descriptor).first)
-        let storedItem = try #require(storedPlan.items.first { $0.stableID == "drinking-water" })
+        let storedWater = try #require(storedPlan.items.first { $0.stableID == "drinking-water" })
 
-        #expect(storedPlan.adultCount == 2)
-        #expect(storedPlan.childCount == 1)
+        #expect(storedPlan.household.totalPeople == 3)
         #expect(storedPlan.targetDays == .fourteen)
-        #expect(storedItem.dailyAmountPerPerson == 1.5)
-        #expect(storedItem.currentAmount == 8)
-        #expect(storedItem.isPrepared)
-        #expect(storedItem.expirationDate == expiration)
+        #expect(storedWater.isShortage)
+        #expect(storedWater.isPurchased)
     }
 
-    @Test("missing default items are restored without resetting existing values")
+    @Test("missing default items are restored without resetting the plan")
     func restoresMissingDefaultItems() throws {
         let container = try makeContainer()
         let context = container.mainContext
-        let plan = StockpileSchemaV1.Plan(
+        let plan = StockpileSchema.Plan(
             stableID: StockpileStore.primaryPlanID,
             adultCount: 4,
             targetDays: .fourteen
@@ -85,81 +77,148 @@ struct StockpilePersistenceTests {
 
         let loaded = try StockpileStore.loadOrCreatePlan(in: context)
 
-        #expect(loaded.adultCount == 4)
+        #expect(loaded.household.totalPeople == 4)
         #expect(loaded.targetDays == .fourteen)
         #expect(loaded.items.count == 3)
     }
 
-    @Test("applying a shortage updates inventory marks prepared and persists")
-    func appliesShortageToInventory() throws {
+    @Test("legacy detailed input becomes a one-time shortage selection")
+    func upgradesLegacyState() throws {
         let container = try makeContainer()
         let context = container.mainContext
-        let plan = try StockpileStore.loadOrCreatePlan(in: context)
-        let item = try #require(plan.items.first { $0.stableID == "drinking-water" })
-        item.dailyAmountPerPerson = 2
-        item.currentAmount = 3
+        let plan = StockpileSchema.Plan(
+            stableID: StockpileStore.primaryPlanID,
+            adultCount: 2,
+            targetDays: .seven,
+            simplifiedFlowVersion: nil
+        )
+        let water = StockpileSchema.Item(
+            stableID: "drinking-water",
+            name: "飲料水",
+            unit: "L",
+            sortOrder: 0,
+            dailyAmountPerPerson: 3,
+            currentAmount: 10,
+            plan: plan
+        )
+        context.insert(plan)
+        context.insert(water)
+        plan.items.append(water)
         try context.save()
 
-        let appliedAmount = try StockpileStore.applyShortageToInventory(
-            for: item,
-            household: plan.household,
-            targetDays: .seven,
-            in: context
-        )
+        let loaded = try StockpileStore.loadOrCreatePlan(in: context)
+        let loadedWater = try #require(loaded.items.first { $0.stableID == "drinking-water" })
 
-        #expect(appliedAmount == 11)
-        #expect(item.currentAmount == 14)
-        #expect(item.isPrepared)
-
-        let verificationContext = ModelContext(container)
-        let itemID = "drinking-water"
-        let descriptor = FetchDescriptor<StockpileSchemaV1.Item>(
-            predicate: #Predicate { $0.stableID == itemID }
-        )
-        let storedItem = try #require(verificationContext.fetch(descriptor).first)
-        #expect(storedItem.currentAmount == 14)
-        #expect(storedItem.isPrepared)
+        #expect(loaded.simplifiedFlowVersion == 1)
+        #expect(loadedWater.isShortage)
+        #expect(!loadedWater.isPurchased)
     }
 
-    @Test("applying inventory does nothing when there is no shortage")
-    func skipsInventoryWithoutShortage() throws {
+    @Test("a persisted V1 store opens through the V2 migration plan")
+    func migratesPersistedV1Store() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("StockpileMigrationTests-\(UUID().uuidString)", isDirectory: true)
+        let storeURL = directory.appendingPathComponent("stockpile.store")
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        do {
+            let schema = Schema(StockpileSchemaV1.models)
+            let configuration = ModelConfiguration(
+                "StockpileV1",
+                schema: schema,
+                url: storeURL,
+                cloudKitDatabase: .none
+            )
+            let container = try ModelContainer(for: schema, configurations: [configuration])
+            let plan = StockpileSchemaV1.Plan(
+                stableID: StockpileStore.primaryPlanID,
+                adultCount: 2,
+                targetDays: .seven
+            )
+            let water = StockpileSchemaV1.Item(
+                stableID: "drinking-water",
+                name: "飲料水",
+                unit: "L",
+                sortOrder: 0,
+                dailyAmountPerPerson: 3,
+                currentAmount: 10,
+                plan: plan
+            )
+            container.mainContext.insert(plan)
+            container.mainContext.insert(water)
+            plan.items.append(water)
+            try container.mainContext.save()
+        }
+
+        do {
+            let schema = Schema(StockpileSchema.models)
+            let configuration = ModelConfiguration(
+                "StockpileV2",
+                schema: schema,
+                url: storeURL,
+                cloudKitDatabase: .none
+            )
+            let container = try ModelContainer(
+                for: schema,
+                migrationPlan: StockpileMigrationPlan.self,
+                configurations: [configuration]
+            )
+            let plan = try StockpileStore.loadOrCreatePlan(in: container.mainContext)
+            let water = try #require(plan.items.first { $0.stableID == "drinking-water" })
+
+            #expect(plan.household.totalPeople == 2)
+            #expect(plan.simplifiedFlowVersion == 1)
+            #expect(water.isShortage)
+        }
+    }
+
+    @Test("purchase action ignores an item that was not selected as short")
+    func skipsUnselectedItem() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let plan = try StockpileStore.loadOrCreatePlan(in: context)
-        let item = try #require(plan.items.first { $0.stableID == "meals" })
-        item.dailyAmountPerPerson = 1
-        item.currentAmount = 10
-        try context.save()
+        let food = try #require(plan.items.first { $0.stableID == "meals" })
 
-        let appliedAmount = try StockpileStore.applyShortageToInventory(
-            for: item,
-            household: plan.household,
-            targetDays: .seven,
-            in: context
-        )
+        try StockpileStore.markPurchased(food, in: context)
 
-        #expect(appliedAmount == nil)
-        #expect(item.currentAmount == 10)
-        #expect(item.isPrepared == false)
+        #expect(!food.isPurchased)
     }
 
     private func makeContainer() throws -> ModelContainer {
-        let schema = Schema(StockpileSchemaV1.models)
-        let configuration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: true
-        )
+        let schema = Schema(StockpileSchema.models)
+        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         return try ModelContainer(
             for: schema,
             migrationPlan: StockpileMigrationPlan.self,
             configurations: [configuration]
         )
     }
+}
 
-    private func date(year: Int, month: Int, day: Int) -> Date? {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
-        return calendar.date(from: DateComponents(year: year, month: month, day: day))
+@Suite("Stockpile recommendation rules")
+struct StockpileRecommendationTests {
+    @Test("official baseline rates produce a seven-day one-person overview")
+    func calculatesBaseline() throws {
+        let household = HouseholdProfile(adultCount: 1, childCount: 0, seniorCount: 0)
+        let results = StockpileRecommendations.all.map {
+            StockpileCalculator.calculate(entry: $0.entry(), household: household, targetDays: .seven)
+        }
+
+        #expect(results.first { $0.id == "drinking-water" }?.requiredAmount == 21)
+        #expect(results.first { $0.id == "meals" }?.requiredAmount == 21)
+        #expect(results.first { $0.id == "portable-toilet" }?.requiredAmount == 35)
+    }
+
+    @Test("every recommendation has complete https source metadata")
+    func validatesSourceMetadata() {
+        for recommendation in StockpileRecommendations.all {
+            #expect(recommendation.source.url.scheme == "https")
+            #expect(!recommendation.source.publisher.isEmpty)
+            #expect(!recommendation.source.accessedAt.isEmpty)
+            #expect(!recommendation.source.usage.isEmpty)
+            #expect(!recommendation.source.rightsNote.isEmpty)
+        }
     }
 }
 

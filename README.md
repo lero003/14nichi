@@ -2,7 +2,7 @@
 
 災害、停電、断水、通信障害などで日常生活が一時的に機能しなくなったとき、個人や家庭が次の行動をオフラインで確認するためのiPhone・iPad・Macアプリです。
 
-フルMVPの機能実装まで完了しています（オフライン閲覧、探索、備蓄、緊急カード、公式リンク集、PDF・印刷）。企画の原本は [`14日note.md`](./14日note.md)、実装範囲と判断事項は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md) を参照してください。AIエージェントは作業前に [`AGENTS.md`](./AGENTS.md) を確認してください。内部TestFlightの本人操作は [`docs/TESTFLIGHT_HANDOFF.md`](./docs/TESTFLIGHT_HANDOFF.md) です。
+フルMVPの機能実装と、内部TestFlight前のリポジトリ側提出準備まで完了しています（オフライン閲覧、探索、備蓄、緊急カード、公式リンク集、PDF・印刷、共有 Bundle ID、Mac Sandbox、Face ID 利用目的）。企画の原本は [`14日note.md`](./14日note.md)、実装範囲は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md) を参照してください。AIエージェントは [`AGENTS.md`](./AGENTS.md) を確認し、提出手順は [`docs/RELEASE_SUBMISSION_CHECKLIST.md`](./docs/RELEASE_SUBMISSION_CHECKLIST.md) を正本にしてください。
 
 ## 現在の実装スライス
 

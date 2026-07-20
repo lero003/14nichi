@@ -38,9 +38,11 @@
 - `swift run --disable-sandbox content-lint`: OK（4 situations / 5 articles, all draft）
 - `swift run --disable-sandbox content-lint --distribution`: 期待どおり失敗（draft混在）
 - `xcodegen generate`: 成功
-- `FourteenDayNoteMac` Debug build（unsigned）: 成功
-- `FourteenDayNote` iOS build: ローカル destination が「iOS 26.5 is not installed」のため未実施（Xcode > Settings > Components）
-- iOSシミュレータ / 実機30秒計測 / VoiceOver実機: 未実施（手順は `docs/MANUAL_SMOKE_CHECKLIST.md`）
+- `FourteenDayNoteMac` Debug build（unsigned, App Sandbox）: 成功
+- `FourteenDayNote` iPhone 17 / iPad (A16) Simulator Debug・iPhone Release: 成功
+- Simulator 起動スモーク（`simctl launch`）: 成功
+- Info.plist: 共有 Bundle ID、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false` を確認
+- 実機30秒計測 / VoiceOver実機 / Archive Validate: 未実施（手順は `docs/MANUAL_SMOKE_CHECKLIST.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md`）
 
 ## プロダクト判断
 
@@ -137,9 +139,16 @@ OfficialLinks JSON
 | 個人情報漏えい | 最小データ、分離ストア、出力同意、ログ非記録、脅威モデル |
 | 機能過多 | 30秒到達のガイド導線を維持し、拡張はスライス単位 |
 
+## 提出前のリポジトリ方針（2026-07-20 確定）
+
+- iOS / Mac は **同一 Bundle ID** `jp.hazakura.FourteenDayNote`（同一商品・ユニバーサル購入）。
+- Mac App Sandbox 必須。PDF のユーザー任意パス直接保存は未実装のため file 権限は付けない。
+- Face ID 利用目的文と非免除暗号なしフラグを Infop に設定。
+- 提出手順の正本: [`RELEASE_SUBMISSION_CHECKLIST.md`](./RELEASE_SUBMISSION_CHECKLIST.md)
+
 ## 次の着手候補
 
-1. iOS Platform導入、Simulator / 実機ビルド、`docs/MANUAL_SMOKE_CHECKLIST.md` の記録。
-2. `docs/TESTFLIGHT_HANDOFF.md` に従い Team 選択、Archive Validate、内部TestFlight Upload。
+1. Xcode で Team を選択し、実機ビルドと `docs/MANUAL_SMOKE_CHECKLIST.md` を記録する。
+2. `docs/TESTFLIGHT_HANDOFF.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md` に従い Archive → Validate → 内部TestFlight Upload。
 3. 記事本文の拡充・監修と `approved` 化（独立フェーズ）。
 4. App Store 一般公開条件の充足（全製品記事の監修、プライバシーポリシーURL、実機a11y）。

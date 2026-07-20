@@ -11,7 +11,7 @@
 
 ## Current lane
 
-フルMVP機能（Slice 1〜4、公式リンク集、PDF・印刷）は実装済みです。次は iOS Platform 導入と実機スモーク、内部TestFlightの本人操作（Team / Archive / Upload）、その後の記事拡充・監修フェーズです。手順は `docs/MANUAL_SMOKE_CHECKLIST.md` と `docs/TESTFLIGHT_HANDOFF.md` を参照してください。
+フルMVP機能と提出前リポジトリ修正（共有 Bundle ID、Face ID 文、Mac Sandbox、暗号化 Infop）は完了しています。iOS Simulator ビルドも成功しています。次は本人による Team 選択・実機スモーク・Archive / Validate / Upload です。手順の正本は `docs/RELEASE_SUBMISSION_CHECKLIST.md`。関連: `docs/MANUAL_SMOKE_CHECKLIST.md`、`docs/TESTFLIGHT_HANDOFF.md`。
 
 ## Safety boundary
 

@@ -27,14 +27,15 @@ targets:
     sources:
       - path: Sources/FourteenDayNoteApp
         excludes:
-          - Resources/PrivacyInfo.xcprivacy
-    resources:
-      - path: Sources/FourteenDayNoteApp/Resources/PrivacyInfo.xcprivacy
+          # Mac 専用 entitlements。PrivacyInfo.xcprivacy は XcodeGen が resource として取り込む。
+          - FourteenDayNoteMac.entitlements
     dependencies:
       - package: FourteenDayCore
         product: FourteenDayCore
     settings:
       base:
+        # iOS / Mac 同一商品（ユニバーサル購入）向けに共有 Bundle ID。
+        # 初回 Upload 前に確定。変更は Upload 後不可。
         PRODUCT_BUNDLE_IDENTIFIER: jp.hazakura.FourteenDayNote
         PRODUCT_NAME: 14日ノート
         GENERATE_INFOPLIST_FILE: true
@@ -43,6 +44,9 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: true
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_NSFaceIDUsageDescription: 緊急カードを表示する際の本人確認に使用します。
+        # OS 標準の暗号化のみ（独自暗号プロトコル・通信SDKなし）。Connect の回答と一致させること。
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: false
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1,2"
         SUPPORTS_MACCATALYST: false
@@ -57,26 +61,32 @@ targets:
     sources:
       - path: Sources/FourteenDayNoteApp
         excludes:
-          - Resources/PrivacyInfo.xcprivacy
-    resources:
-      - path: Sources/FourteenDayNoteApp/Resources/PrivacyInfo.xcprivacy
+          - FourteenDayNoteMac.entitlements
+    entitlements:
+      path: Sources/FourteenDayNoteApp/FourteenDayNoteMac.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
     dependencies:
       - package: FourteenDayCore
         product: FourteenDayCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: jp.hazakura.FourteenDayNote.mac
+        # iOS と同一 Bundle ID（同一 App Store 商品ページ / ユニバーサル購入）。
+        PRODUCT_BUNDLE_IDENTIFIER: jp.hazakura.FourteenDayNote
         PRODUCT_NAME: 14日ノート
         GENERATE_INFOPLIST_FILE: true
         INFOPLIST_KEY_CFBundleDisplayName: 14日ノート
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.lifestyle
         INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026"
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: false
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_STYLE: Automatic
         CURRENT_PROJECT_VERSION: 1
         MARKETING_VERSION: 0.1.0
         COMBINE_HIDPI_IMAGES: true
         # DEVELOPMENT_TEAM は推測で書かない。Xcode の Signing & Capabilities で選択する。
+        # PDF をユーザー指定の任意パスへ直接保存する場合のみ user-selected.read-write を追加する。
+        # 現状は一時ディレクトリ + 印刷/プレビュー導線のため Sandbox のみ。
 
 schemes:
   FourteenDayNote:

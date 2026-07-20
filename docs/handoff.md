@@ -2,48 +2,54 @@
 
 ## Current State
 
-- Slice 1のオフライン閲覧基盤、Slice 2の探索性、Slice 3の備蓄機能は完了。
-- 4状況 / 5件の未監修フィクスチャは変更していない。カテゴリ・行動時期フィルタまで実装・検証済み。
+- フルMVP機能は完了。Slice 1〜3に加え、Slice 4（緊急カード・保護・削除）、公式リンク集、PDF・印刷まで実装済み。
+- 同梱記事は4状況 / 5件の `draft` のまま（拡充・監修は未着手）。
+- 内部TestFlight向けのアイコン、Privacy Manifest、手動スモーク、引き渡し文書を追加済み。
+- Apple 側の Team 選択、iOS Platform 導入、Archive Validate / Upload は未実施。
 
 ## Recent Changes
 
-- manifestに既存の`category`と`periods`を使い、カテゴリ・行動時期フィルタを追加した。
-- 全文検索・お気に入り・状況選択の候補へフィルタを重ね、選択記事が外れた場合も安全に同期する。
-- ツールバーメニュー、現在の条件表示、該当なし状態、ワンタップ解除を追加した。
-- 実在するメタデータからフィルタ候補を導出し、未知のカテゴリはraw値を表示して将来拡張を妨げない。
+- `docs/EMERGENCY_CARD_THREAT_MODEL.md` で最小データと保護方針を確定したうえで個人情報を実装した。
+- 緊急カードを備蓄と分離した SwiftData ストアへ保存。任意の端末認証、非アクティブ秘匿、全削除を実装。
+- 公式リンク集を同梱 JSON で管理し、「その他」タブから独立導線にした。
+- PDF は項目選択と個人情報の明示同意後のみ生成。一時ファイル後片付けをテストした。
+- `content-lint --distribution` で App Store 提出時の approved 以外混入を拒否する。
+- App Icon と PrivacyInfo.xcprivacy（UserDefaults CA92.1）を追加。
 
 ## Decisions
 
 - アプリ内文字サイズは端末設定を上書きする値ではなく、読みやすさの下限として扱う。
-- オフライン本文の閲覧はアプリ内で完結させ、外部通信は情報源の明示的なリンク操作に限る。
+- オフライン本文の閲覧はアプリ内で完結させ、外部通信は情報源・公式リンクの明示的な操作に限る。
 - 未監修フィクスチャを実際の緊急時手順に見える文面へ広げない。
-- フルMVP機能を先に完成させ、TestFlight準備、記事拡充・監修の順で進める。
-- お気に入りは個人情報を含むデータモデルへ混ぜず、記事IDだけを保存する。
-- 未監修の推奨量を表示しないため、備蓄の1人1日量に初期値を置かず、利用者入力から計算する。
-- SwiftDataはV1スキーマと移行プランを最初から持たせ、正しさが必要な変更では`save()`を明示する。
-- 備蓄データは将来の緊急カードに含まれる個人情報とは別モデル・別機能境界に保つ。
-- 買い物リストは別の保存状態を持たず、備蓄計算結果から不足品目を導出して在庫との不整合を避ける。
-- 探索フィルタのために記事本文やmanifestを増やさず、既存の機械可読メタデータを再利用する。
+- 緊急カードの採用項目は連絡先・集合/避難・アレルギー・常用薬・注意メモ・任意表示名のみ。
+- アプリ内ロックは既定オフ。端末ロックを主防御とし、可用性を優先する。
+- 緊急カードの iCloud 同期は採用しない。
+- PDF の既定選択に個人情報を含めない。ファイル名に個人情報を入れない。
+- `DEVELOPMENT_TEAM` は `project.yml` に書かず、Xcode で本人が選ぶ。
 
 ## Tests
 
-- `swift test --disable-sandbox`: 43 tests / 7 suites 成功。
-- `FourteenDayNoteMac` の未署名Debug build: 成功。
+- `swift test --disable-sandbox`: 60 tests / 11 suites 成功。
+- `FourteenDayNoteMac` の未署名 Debug build: 成功。
+- `content-lint --distribution`: draft 混在で exit 2（期待どおり）。
 
 ## Risks / Unknowns
 
-- iOS Platformがローカルにないため、iOSビルド・シミュレータ・VoiceOver実機確認は未実施。
-- SwiftDataの保存・再取得はインメモリコンテナで検証済みだが、実アプリを再起動する永続ストアの操作確認は未実施。
-- ガイド・備蓄・買い物画面はmacOSで実コンパイル済みだが、UI自動テストと日付変更をまたぐ長時間確認は未追加。
+- iOS Platform 未導入のため iOS ビルド・シミュレータ・実機未実施。
+- 実機30秒計測と VoiceOver / 最大 Dynamic Type の記録が残る。
+- 失効した Development 証明書（lero003@gmail.com）がローカル identity に残っている。有効な Keitaro Matsukura 側を使うこと。
+- Release Archive の Validate は未実行。
 
 ## Next Actions
 
-- [`FULL_MVP_COMPLETION_BRIEF.md`](./FULL_MVP_COMPLETION_BRIEF.md) を次エージェントの実行仕様とする。
-- Slice 4の実装前に緊急カードの脅威モデルを確定し、個人情報、公式リンク集、PDF・印刷、品質ゲート、内部TestFlight準備の順で完遂する。
-- 記事本文の拡充・監修は今回に混ぜず、TestFlight準備後の独立フェーズへ残す。
+1. Xcode Components で iOS Platform を入れ、Simulator build と `docs/MANUAL_SMOKE_CHECKLIST.md` を実施する。
+2. `docs/TESTFLIGHT_HANDOFF.md` に従い Team / Archive / Validate / 内部TestFlight Upload を本人が行う。
+3. 記事拡充・監修フェーズへ進み、一般公開前に `content-lint --distribution` を通す。
 
 ## Avoid
 
 - 監修前の記事を正式な防災・医療・食品衛生情報として扱わない。
 - 端末のアクセシビリティ文字サイズをアプリ設定で縮小しない。
-- 備蓄データと、将来の緊急カードに含まれる個人情報を同じ保存境界へ入れない。
+- 備蓄データと緊急カードの個人情報を同じ保存境界へ混ぜない。
+- 個人情報をログ・エラー文・PDFファイル名へ出さない。
+- Team ID やフィードバックメールを推測で固定しない。

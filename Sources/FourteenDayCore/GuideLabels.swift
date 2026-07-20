@@ -23,8 +23,8 @@ public extension GuideArticle.ReviewStatus {
     var displayName: String {
         switch self {
         case .draft: "制作確認用"
-        case .reviewed: "校正済み"
-        case .approved: "監修済み"
+        case .reviewed: "内容確認中"
+        case .approved: "正式版"
         }
     }
 

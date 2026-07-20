@@ -522,7 +522,7 @@ struct ArticleBrowserView: View {
             .accessibilityValue(model.showsFavoritesOnly ? "選択中" : "未選択")
 
             Button {
-                model.isReadabilityPresented = true
+                model.presentedSheet = .readability
             } label: {
                 Label("読みやすさ", systemImage: "textformat.size")
             }
@@ -530,7 +530,7 @@ struct ArticleBrowserView: View {
             .accessibilityHint("文字を大きくしたり、行間を広げたりできます")
 
             Button {
-                model.isAboutPresented = true
+                model.presentedSheet = .about
             } label: {
                 Label("このアプリについて", systemImage: "info.circle")
             }
@@ -670,9 +670,7 @@ private struct ArticleRow: View {
                 ForEach(article.periodLabels, id: \.self) { label in
                     PeriodChip(label: label)
                 }
-                if article.isDraftFixture {
-                    DraftStatusLabel(status: article.reviewStatus)
-                }
+                ReviewStatusLabel(status: article.reviewStatus)
                 if isFavorite {
                     FavoriteStatusLabel()
                 }

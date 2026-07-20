@@ -7,6 +7,7 @@ import SwiftUI
 @Observable
 final class ReadabilitySettings {
     enum TextSize: String, CaseIterable, Identifiable, Sendable {
+        case small
         case standard
         case comfortable
         case large
@@ -16,6 +17,7 @@ final class ReadabilitySettings {
 
         var title: String {
             switch self {
+            case .small: "小さめ"
             case .standard: "標準"
             case .comfortable: "やや大きい"
             case .large: "大きい"
@@ -25,6 +27,7 @@ final class ReadabilitySettings {
 
         var subtitle: String {
             switch self {
+            case .small: "少しコンパクト"
             case .standard: "一般的なサイズ"
             case .comfortable: "少し余裕のある表示"
             case .large: "読みやすさ優先"
@@ -35,6 +38,7 @@ final class ReadabilitySettings {
         /// システム Dynamic Type を基準に、アプリ内で一段ずつ押し上げる。
         var dynamicTypeSize: DynamicTypeSize {
             switch self {
+            case .small: .medium
             case .standard: .large
             case .comfortable: .xLarge
             case .large: .xxLarge
@@ -44,15 +48,17 @@ final class ReadabilitySettings {
 
         var lineSpacing: CGFloat {
             switch self {
-            case .standard: 4
-            case .comfortable: 6
-            case .large: 8
-            case .extraLarge: 10
+            case .small: 6
+            case .standard: 7
+            case .comfortable: 8
+            case .large: 10
+            case .extraLarge: 12
             }
         }
 
         var contentMaxWidth: CGFloat {
             switch self {
+            case .small: 740
             case .standard: 720
             case .comfortable: 700
             case .large: 680
@@ -96,8 +102,7 @@ final class ReadabilitySettings {
                   let stored = TextSize(rawValue: raw) {
             self.textSize = stored
         } else {
-            // 初期値は「やや大きい」。高齢利用者でも初回から読みやすい側へ。
-            self.textSize = .comfortable
+            self.textSize = .standard
         }
 
         self.prefersBoldBody = prefersBoldBody
@@ -108,9 +113,12 @@ final class ReadabilitySettings {
             ?? true
     }
 
-    /// アプリ内設定は下限として扱い、端末側のより大きな文字設定を縮小しない。
+    /// 通常範囲ではアプリ内の選択を使い、端末側が大きな文字なら縮小しない。
     func resolvedDynamicTypeSize(system: DynamicTypeSize) -> DynamicTypeSize {
-        max(system, textSize.dynamicTypeSize)
+        if system > .large {
+            return max(system, textSize.dynamicTypeSize)
+        }
+        return textSize.dynamicTypeSize
     }
 
     var resolvedLineSpacing: CGFloat {
@@ -123,19 +131,5 @@ final class ReadabilitySettings {
 
     var sectionSpacing: CGFloat {
         prefersGenerousSpacing ? 24 : 18
-    }
-
-    func increaseTextSize() {
-        guard let index = TextSize.allCases.firstIndex(of: textSize),
-              index + 1 < TextSize.allCases.count
-        else { return }
-        textSize = TextSize.allCases[index + 1]
-    }
-
-    func decreaseTextSize() {
-        guard let index = TextSize.allCases.firstIndex(of: textSize),
-              index > 0
-        else { return }
-        textSize = TextSize.allCases[index - 1]
     }
 }

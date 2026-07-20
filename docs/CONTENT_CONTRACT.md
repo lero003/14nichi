@@ -17,7 +17,7 @@ Sources/FourteenDayCore/Resources/Content/
     └── preparedness-*.md / food-*.md / hygiene-*.md
 ```
 
-`manifest.json` の situations / articles が索引の正です。ファイル名は `emergency/` 配下の相対パスとして manifest の `path` と一致させてください。現状の同梱記事は **draft の拡充草案** であり、App Store 製品コンテンツとしては `approved` 化と監修が別フェーズです。
+`manifest.json` の situations / articles が索引の正です。ファイル名は `emergency/` 配下の相対パスとして manifest の `path` と一致させてください。現状の同梱30記事は、公的一次情報との照合と編集確認を通過した **approved の製品コンテンツ** です。
 
 検証コマンド:
 
@@ -28,7 +28,7 @@ swift run content-lint Sources/FourteenDayCore/Resources/Content
 
 `manifest.json` がアプリの機械可読な索引です。Markdownのfront matterは編集者向けの写しとして残せますが、初期ローダーはmanifestを正とします。二重管理を解消する生成・検証ツールは次のスライスで追加します。
 
-現在のローダーは、manifestとfront matterの `id` / `review_status` が一致しない記事を拒否します。また、重複ID、存在しない状況ID、不正な相対パス、監修情報が不足した `approved` 記事、不備のある出典も拒否します。
+現在のローダーは、manifestとfront matterの `id` / `review_status` が一致しない記事を拒否します。また、重複ID、存在しない状況ID、不正な相対パス、確認情報が不足した `approved` 記事、不備のある出典も拒否します。
 
 ## 必須メタデータ
 
@@ -51,7 +51,7 @@ front matterには少なくとも次を置きます。
 ```yaml
 ---
 id: earthquake-first-actions
-review_status: draft
+review_status: approved
 ---
 ```
 
@@ -142,7 +142,19 @@ review_status: draft
 - `linkOnly` / `paraphrase` では `excerpt` を置かない
 - `shortQuote` では `excerpt` 必須、かつ 120 文字以内
 
-`approved` 記事は、上記に加えて監修日・確認者・1件以上の出典が必須です。
+`approved` 記事は、上記に加えて最終確認日・確認主体・1件以上の出典が必須です。
+
+## `approved` の意味と限界
+
+`approved` は、この製品の編集レビューで、公的一次情報との照合、出典メタデータ、表現、安全上の注意事項を確認した状態です。医師、防災士、行政機関などの専門資格者が個別に監修したことや、すべての地域・建物・体調・災害局面で正しいことを意味しません。
+
+すべての製品記事には、次の趣旨を本文と画面の双方で常時表示します。
+
+- 一般的な目安であり、状況や情報更新によって不正確または古くなる可能性がある。
+- 命に関わる場合は119・110を優先する。
+- 自治体、気象庁、消防、警察、医療機関、インフラ事業者と現場の指示を優先する。
+
+制度改定、出典URLの変更、重大な災害後の公的案内更新、安全上の指摘があった場合は、対象記事を再確認します。確認が完了しない記事は `reviewed` または `draft` へ戻し、配布ゲートから外します。
 
 ## 公開条件
 
@@ -156,5 +168,6 @@ review_status: draft
 6. 「緊急通報・自治体等の指示を優先する条件」が必要な記事に明示されている。
 7. オフライン表示、文字拡大、VoiceOverで内容を確認している。
 8. 長い原文転載や権利不明の素材を含まない。
+9. 不正確または古くなる可能性と、最新の公式情報を優先する注意事項が常時表示される。
 
-`draft` と `reviewed` は開発・校正用であり、App Store向けビルドへ含めない方針です。製品ビルドでの強制検証は、コンテンツ制作フローを固めた後に追加します。
+`draft` と `reviewed` は開発・校正用であり、App Store向けビルドへ含めません。製品ビルドは `swift run content-lint --distribution` で全記事が `approved` であることを強制検証します。

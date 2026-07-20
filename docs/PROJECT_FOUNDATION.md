@@ -4,17 +4,17 @@
 
 ## 現在地
 
-フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）まで完了しています。同梱コンテンツは `draft` のまま**情報量を拡充した草案**です（状況・記事・備蓄チェック・公式リンク）。監修と `approved` 化は別フェーズです。内部TestFlightはコードと文書の準備まで完了し、Appleアカウント側の署名・Archive・Uploadは利用者操作が残っています。
+フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）と、同梱コンテンツの公的一次情報照合・編集確認・`approved` 化まで完了しています。`approved` は専門資格者による個別監修や正確性保証を意味せず、全記事で不正確または古くなる可能性と公式情報優先を明示します。内部TestFlightはコードと文書の準備まで完了し、Appleアカウント側の署名・Archive・Uploadは利用者操作が残っています。
 
 ### いま動くもの
 
-- 13状況 / 30記事の同梱草案（すべて `draft`。監修前のため製品コンテンツ扱いしない）
+- 13状況 / 30記事の製品コンテンツ（すべて `approved`。公的一次情報照合・編集確認済み）
 - manifest と front matter の検証付きローダー
 - 優先度・期間ラベル付きの SwiftUI ブラウザ（iPhone / iPad / Mac）
 - アプリ状態モデル（読み込み / 選択 / About / 読みやすさ）
-- 読みやすさ設定（文字サイズ4段階・太字・余白、端末内保存。端末側のより大きな文字設定を維持）
+- 読みやすさ設定（初期値は標準、文字サイズ5段階・広めの行間・太字・余白、端末内保存。端末側のより大きな文字設定を維持）
 - モーション（選択・詳細切替の spring、Reduce Motion 対応）
-- VoiceOverで移動できるMarkdown見出し、オフライン対応表示、About、未監修バナー
+- VoiceOverで移動できるMarkdown見出し、オフライン対応表示、About、安全情報の注意事項
 - 情報源ブロック（権利注記・確認日・オンラインで開く公式リンク）
 - AccentColor、App Icon、Privacy Manifest、Mac 既定ウィンドウサイズ、再試行可能な読み込みエラー
 - `content-lint` によるコンテンツ検証と `--distribution` 配布ゲート
@@ -36,12 +36,13 @@
 ### 2026-07-20 の検証状況
 
 - `swift test --disable-sandbox`: 65 tests / 12 suites 成功
-- `swift run --disable-sandbox content-lint`: OK（13 situations / 30 articles, all draft）
-- `swift run --disable-sandbox content-lint --distribution`: 期待どおり失敗（draft混在）
+- `swift run --disable-sandbox content-lint`: OK（13 situations / 30 articles, all approved）
+- `swift run --disable-sandbox content-lint --distribution`: OK
 - `xcodegen generate`: 成功
-- `FourteenDayNoteMac` Release build（unsigned, App Sandbox）: 成功
+- `FourteenDayNoteMac` Debug build（unsigned）: 成功
 - `FourteenDayNote` iPhone 17 / iPad (A16) Simulator Debug・generic iOS Simulator Release: 成功
 - Simulator 起動スモーク（`simctl launch`）: 成功
+- About / 読みやすさは単一の sheet 状態で排他的に表示（コンパクト幅での右上 i クラッシュを修正）
 - Release app bundle: 共有 Bundle ID、`0.1.0 (2)`、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
 - 実機30秒計測 / VoiceOver実機 / Archive Validate: 未実施（手順は `docs/MANUAL_SMOKE_CHECKLIST.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md`）
 
@@ -53,7 +54,7 @@
 - Markdownをコンテンツ原本とし、検索・表示用メタデータは `manifest.json` へ置く。
 - 個人情報は `docs/EMERGENCY_CARD_THREAT_MODEL.md` の最小項目のみ。備蓄・お気に入りと保存境界を分離する。
 - 災害・医療・食品衛生の文面は、アプリコードと別のレビュー対象にする。
-- フルMVP機能完成後に内部TestFlight準備、その後に記事拡充・監修の順で進める。
+- `approved` は編集レビューの配布状態とし、専門資格監修や状況ごとの正確性保証と混同しない。
 
 ## MVPの切り分け
 
@@ -62,7 +63,7 @@
 - 同梱manifestの検証と読み込み
 - Markdown本文の読み込み
 - 状況別一覧（優先度・期間で記事を並べ替え）
-- 記事詳細（未監修バナー、要約、本文、情報源ブロック）
+- 記事詳細（確認状態、安全情報の注意事項、要約、本文、情報源ブロック）
 - 情報源メタデータ（publisher / accessedAt / usage / rightsNote / 短文引用上限）
 - iPhone / iPad / Mac共通UI
 - `content-lint` による開発者向け検証
@@ -77,7 +78,7 @@
 - 全文検索（実装済み）
 - カテゴリ・行動時期フィルタ（実装済み）
 - お気に入り（実装済み。記事IDのみ端末内保存）
-- 初期コンテンツの拡充・監修フロー（TestFlight後の独立フェーズ）
+- 初期コンテンツの拡充・公的一次情報照合・編集確認（完了）
 
 ### Slice 3: 備蓄（完了）
 
@@ -133,7 +134,7 @@ OfficialLinks JSON
 
 | リスク | 最初の対策 |
 |---|---|
-| 誤った安全情報 | `draft` を既定にし、出典・確認日・確認者が揃うまで公開対象外。`content-lint --distribution` |
+| 誤った安全情報 | 直接出典・確認日・確認主体を記録し、限界を常時表示。更新時は再確認し、未完了なら `draft` / `reviewed` に戻す。`content-lint --distribution` |
 | 著作権・転載リスク | 転載より `linkOnly` / `paraphrase`。`shortQuote` は120文字上限と権利注記必須 |
 | 緊急時に読みにくい | 行動を先頭に置き、標準テキストスタイルとVoiceOverで確認 |
 | manifestとMarkdownのずれ | ローダー検証とテストを追加し、content-lint |
@@ -151,5 +152,4 @@ OfficialLinks JSON
 
 1. Xcode で Team を選択し、実機ビルドと `docs/MANUAL_SMOKE_CHECKLIST.md` を記録する。
 2. `docs/TESTFLIGHT_HANDOFF.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md` に従い Archive → Validate → 内部TestFlight Upload。
-3. 拡充した draft 記事の内容レビュー・出典再確認・`approved` 化（独立フェーズ）。
-4. App Store 一般公開条件の充足（全製品記事の監修、プライバシーポリシーURL、実機a11y）。
+3. App Store 一般公開条件の充足（プライバシーポリシーURL、実機a11y、商品ページ素材）。

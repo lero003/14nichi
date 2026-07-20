@@ -42,7 +42,7 @@ public struct ContentRepository: Sendable {
             case .frontMatterReviewStatusMismatch(let articleID, let documentStatus):
                 "review_status が一致しません: \(articleID), front matter=\(documentStatus ?? "nil")"
             case .incompleteApprovedReview(let id):
-                "approved 記事に監修情報または出典が不足しています: \(id)"
+                "approved 記事に確認情報または出典が不足しています: \(id)"
             case .invalidSource(let articleID, let sourceID, let reason):
                 "記事 \(articleID) の出典 \(sourceID): \(reason)"
             case .duplicateSourceID(let articleID, let sourceID):

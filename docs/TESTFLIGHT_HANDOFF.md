@@ -101,22 +101,22 @@ xcodebuild -project FourteenDayNote.xcodeproj -scheme FourteenDayNote \
 
 | 項目 | 提案（未確定） |
 |---|---|
-| ベータAppの説明 | 災害時のオフライン行動確認用MVP。記事は未監修の制作フィクスチャ。個人情報は端末内のみ。 |
+| ベータAppの説明 | 災害時のオフライン行動確認用MVP。記事は公的一次情報との照合・編集確認済みですが、状況により不正確または古くなる可能性があります。個人情報は端末内のみ。 |
 | テスト内容 | `docs/MANUAL_SMOKE_CHECKLIST.md` の A〜F |
 | フィードバックメール | **ユーザーが指定**（推測しない） |
 | 内部テスター | App Store Connect の Internal Testing グループへ本人が追加 |
 
-## 5. コンテンツ監修状態
+## 5. コンテンツ確認状態
 
-- 同梱 30 記事はすべて `draft`。
-- 内部TestFlightでは未監修バナーを維持したまま配布してよい（フィクスチャと明示）。
-- App Store 一般公開前は:
+- 同梱30記事はすべて `approved`。公的一次情報との照合と編集確認を2026-07-20に実施。
+- 専門資格者による個別監修や正確性保証ではない。全記事に情報が不正確または古くなる可能性と、最新の公式情報・現場の指示を優先する注意事項を表示する。
+- App Store 一般公開候補では:
 
 ```sh
 swift run --disable-sandbox content-lint --distribution
 ```
 
-が成功するまで製品コンテンツにしない。
+が成功することを必須とする。
 
 ## 6. エージェントが完了したこと / していないこと
 
@@ -133,7 +133,7 @@ swift run --disable-sandbox content-lint --distribution
 - 実機ビルド・30秒計測・VoiceOver 等の実機記録
 - App Store Connect アプリ作成
 - Release Archive の Validate / Upload
-- 内部テスター設定、一般公開用ページ・スクショ・記事監修
+- 内部テスター設定、一般公開用ページ・スクショ、実機でのコンテンツ表示確認
 
 ## 7. 推奨コマンド（ローカル）
 

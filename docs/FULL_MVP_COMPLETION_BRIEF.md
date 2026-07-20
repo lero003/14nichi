@@ -1,5 +1,7 @@
 # Full MVP Completion Brief
 
+> 履歴注記（2026-07-20）: この文書はフルMVP着手時の実行仕様です。記載されている `draft` フィクスチャの状態は、その後の30記事への拡充、公的一次情報照合、編集確認、`approved` 化によって解消しました。現在状態は `PROJECT_FOUNDATION.md` と `CONTENT_REVIEW_RECORD.md` を正とします。
+
 この文書は、次の開発エージェントへそのまま渡す実行依頼です。企画原本は `14日note.md`、現在の正本は `AGENTS.md`、`docs/PROJECT_FOUNDATION.md`、`docs/CONTENT_CONTRACT.md` です。原本にある機能を無条件に増やさず、現在のMVP境界を優先してください。
 
 ## ミッション

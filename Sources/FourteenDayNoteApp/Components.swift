@@ -60,13 +60,13 @@ struct PeriodChip: View {
     }
 }
 
-struct DraftStatusLabel: View {
+struct ReviewStatusLabel: View {
     let status: GuideArticle.ReviewStatus
 
     var body: some View {
-        Label(status.displayName, systemImage: "hammer.fill")
+        Label(status.displayName, systemImage: status == .approved ? "checkmark.seal.fill" : "hammer.fill")
             .font(.caption.weight(.semibold))
-            .foregroundStyle(AppTheme.ochre)
+            .foregroundStyle(status == .approved ? AppTheme.deepTeal : AppTheme.ochre)
     }
 }
 

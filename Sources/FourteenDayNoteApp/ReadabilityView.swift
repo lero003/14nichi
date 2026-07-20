@@ -38,7 +38,7 @@ struct ReadabilityView: View {
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("緊急時でも読みやすいように、初期値はやや大きめです。設定はこの端末に保存されます。")
+            Text("初期値は標準です。小さめから大きな文字まで選べ、設定はこの端末に保存されます。")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -98,26 +98,6 @@ struct ReadabilityView: View {
                 }
             }
 
-            HStack(spacing: 12) {
-                Button {
-                    settings.decreaseTextSize()
-                } label: {
-                    Label("小さく", systemImage: "textformat.size.smaller")
-                        .frame(maxWidth: .infinity, minHeight: 48)
-                }
-                .buttonStyle(.bordered)
-                .disabled(settings.textSize == ReadabilitySettings.TextSize.allCases.first)
-
-                Button {
-                    settings.increaseTextSize()
-                } label: {
-                    Label("大きく", systemImage: "textformat.size.larger")
-                        .frame(maxWidth: .infinity, minHeight: 48)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(settings.textSize == ReadabilitySettings.TextSize.allCases.last)
-            }
-            .labelStyle(.titleAndIcon)
         }
     }
 

@@ -108,9 +108,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-bousai-portal",
@@ -160,9 +160,9 @@
         "day3"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-bousai-portal",
@@ -210,9 +210,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "meti-enecho",
@@ -243,6 +243,16 @@
           "usage": "paraphrase",
           "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
           "excerpt": null
+        },
+        {
+          "id": "fdma-fire-appliance-safety",
+          "title": "火気器具等の取扱いについて",
+          "publisher": "総務省消防庁 消防大学校 消防研究センター",
+          "url": "https://nrifd.fdma.go.jp/news/caution/heat_generator/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "燃焼器具使用時の換気と一酸化炭素中毒防止の要点を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -262,9 +272,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "soumu-portal",
@@ -304,9 +314,9 @@
         "day3"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "maff-foodstock",
@@ -327,6 +337,26 @@
           "usage": "paraphrase",
           "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
           "excerpt": null
+        },
+        {
+          "id": "mhlw-disaster-food-safety",
+          "title": "災害時の食中毒予防のために",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000212536_00004.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "災害時の食品保管、手洗い、加熱と早めの喫食に関する要点を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "mhlw-histamine-food-safety",
+          "title": "ヒスタミンによる食中毒について",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000130677.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "加熱だけでは防げない食中毒があるため、傷んだ食品を加熱で安全と断定しない根拠として参照。",
+          "excerpt": null
         }
       ]
     },
@@ -344,9 +374,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "mhlw-water",
@@ -397,9 +427,9 @@
         "day3"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "tokyo-toilet",
@@ -450,9 +480,9 @@
         "day7"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "mhlw-water",
@@ -491,9 +521,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "soumu-portal",
@@ -544,9 +574,9 @@
         "day7"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-check",
@@ -594,9 +624,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "jma-portal",
@@ -637,6 +667,16 @@
           "usage": "linkOnly",
           "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
           "excerpt": null
+        },
+        {
+          "id": "cao-evacuation-2026",
+          "title": "避難情報に関するガイドライン（令和8年3月改定）",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "警戒レベル3・4・5の意味と、警戒レベル4までの避難判断を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -656,9 +696,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "jma-portal",
@@ -689,6 +729,16 @@
           "usage": "linkOnly",
           "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
           "excerpt": null
+        },
+        {
+          "id": "cao-evacuation-2026",
+          "title": "避難情報に関するガイドライン（令和8年3月改定）",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "警戒レベル3・4・5の意味と、警戒レベル4までの避難判断を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -708,9 +758,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-heatstroke",
@@ -741,6 +791,16 @@
           "usage": "linkOnly",
           "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
           "excerpt": null
+        },
+        {
+          "id": "mhlw-heat-first-aid",
+          "title": "熱中症が疑われる人を見かけたら",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/seisakunitsuite/bunya/kenkou_iryou/kenkou/nettyuu/nettyuu_taisaku/happen.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "涼しい場所への移動、冷却、水分補給と救急要請判断を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -760,9 +820,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "fdma-portal",
@@ -793,6 +853,26 @@
           "usage": "paraphrase",
           "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
           "excerpt": null
+        },
+        {
+          "id": "fdma-fire-appliance-safety",
+          "title": "火気器具等の取扱いについて",
+          "publisher": "総務省消防庁 消防大学校 消防研究センター",
+          "url": "https://nrifd.fdma.go.jp/news/caution/heat_generator/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "燃焼器具使用時の換気と一酸化炭素中毒防止の要点を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "mhlw-shelter-hypothermia",
+          "title": "避難所生活を過ごされる方々の健康管理に関するガイドライン",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/content/10900000/000807262.pdf",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "低体温症の兆候と避難生活での予防に関する要点を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -811,9 +891,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "fdma-portal",
@@ -844,6 +924,16 @@
           "usage": "linkOnly",
           "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
           "excerpt": null
+        },
+        {
+          "id": "meti-gas-smell",
+          "title": "ガス臭いと感じた時には",
+          "publisher": "経済産業省",
+          "url": "https://www.meti.go.jp/policy/safety_security/industrial_safety/sangyo/citygas/anzen_torikumi/file_jisyuhoan/business/study/fireaccident/gas_smell.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "火気・電気スイッチを避け、窓を開け、栓を閉めて事業者へ連絡する要点を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -864,9 +954,9 @@
         "day7"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "gov-prep",
@@ -916,9 +1006,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "kantei-sonae",
@@ -970,9 +1060,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-bousai-portal",
@@ -1003,6 +1093,16 @@
           "usage": "linkOnly",
           "rightsNote": "浸水・土砂などのハザードマップ確認用リンク。",
           "excerpt": null
+        },
+        {
+          "id": "cao-evacuation-2026",
+          "title": "避難情報に関するガイドライン（令和8年3月改定）",
+          "publisher": "内閣府",
+          "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "警戒レベル3・4・5の意味と、警戒レベル4までの避難判断を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -1023,9 +1123,9 @@
         "day3"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-bousai-portal",
@@ -1073,9 +1173,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "fdma-first-aid-web-course",
@@ -1096,6 +1196,16 @@
           "usage": "linkOnly",
           "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
           "excerpt": null
+        },
+        {
+          "id": "fdma-7119",
+          "title": "救急安心センター事業（#7119）ってナニ？",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/mission/enrichment/appropriate/appropriate007.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "緊急性に迷う場合の救急相談窓口について、利用地域の確認を含めて自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -1113,9 +1223,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "jrc-portal",
@@ -1135,6 +1245,16 @@
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
           "rightsNote": "消防・救急・防火に関する公的情報への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "jrc-direct-pressure",
+          "title": "多量の出血",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/activity/study/safety/bleed/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "直接圧迫止血と止血帯に関する基礎的な注意を自前で要約。",
           "excerpt": null
         }
       ]
@@ -1157,9 +1277,9 @@
         "day7"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "kantei-sonae",
@@ -1190,6 +1310,16 @@
           "usage": "linkOnly",
           "rightsNote": "公式ポータルへの参照。本文は転載せず自前の要約で書く。",
           "excerpt": null
+        },
+        {
+          "id": "mhlw-disaster-medicine",
+          "title": "薬局・薬剤師の災害対応",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iyakuhin/saigai.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "災害時の薬局・薬剤師による支援情報への参照。服薬変更を自己判断しない案内の根拠として利用。",
+          "excerpt": null
         }
       ]
     },
@@ -1208,9 +1338,9 @@
         "day14"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "gov-prep",
@@ -1269,9 +1399,9 @@
         "day14"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-check",
@@ -1311,9 +1441,9 @@
         "day14"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "gsi-hazard",
@@ -1375,9 +1505,9 @@
         "day7"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "maff-foodstock",
@@ -1397,6 +1527,16 @@
           "accessedAt": "2026-07-20",
           "usage": "paraphrase",
           "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "mhlw-disaster-food-safety",
+          "title": "災害時の食中毒予防のために",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000212536_00004.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "災害時の食品保管、手洗い、加熱と早めの喫食に関する要点を自前で要約。",
           "excerpt": null
         }
       ]
@@ -1418,9 +1558,9 @@
         "day14"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "gov-prep",
@@ -1469,9 +1609,9 @@
         "immediate"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "jma-tsunami-guidance",
@@ -1521,9 +1661,9 @@
         "day1"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "fdma-portal",
@@ -1554,6 +1694,16 @@
           "usage": "linkOnly",
           "rightsNote": "電力・エネルギーに関する公的情報への参照。",
           "excerpt": null
+        },
+        {
+          "id": "fdma-fire-appliance-safety",
+          "title": "火気器具等の取扱いについて",
+          "publisher": "総務省消防庁 消防大学校 消防研究センター",
+          "url": "https://nrifd.fdma.go.jp/news/caution/heat_generator/index.html",
+          "accessedAt": "2026-07-20",
+          "usage": "paraphrase",
+          "rightsNote": "燃焼器具使用時の換気と一酸化炭素中毒防止の要点を自前で要約。",
+          "excerpt": null
         }
       ]
     },
@@ -1573,9 +1723,9 @@
         "day14"
       ],
       "region": "jp",
-      "reviewStatus": "draft",
-      "reviewedAt": null,
-      "reviewedBy": null,
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-07-20",
+      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "gov-prep",

@@ -4,7 +4,7 @@ import Testing
 
 @Suite("Bundled content")
 struct ContentRepositoryTests {
-    @Test("manifest and Markdown fixture load together")
+    @Test("manifest and approved Markdown content load together")
     func loadsBundledArticle() throws {
         let catalog = try ContentRepository().loadBundledCatalog()
 
@@ -12,7 +12,10 @@ struct ContentRepositoryTests {
         #expect(catalog.situations.map(\.id).contains("blackout"))
         #expect(catalog.situations.count >= 10)
         #expect(catalog.articles.count >= 25)
-        #expect(catalog.articles.allSatisfy { $0.reviewStatus == .draft })
+        #expect(catalog.articles.allSatisfy { $0.reviewStatus == .approved })
+        #expect(catalog.articles.allSatisfy { $0.reviewedAt == "2026-07-20" })
+        #expect(catalog.articles.allSatisfy { $0.reviewedBy?.isEmpty == false })
+        #expect(catalog.articles.allSatisfy { !$0.sources.isEmpty })
         #expect(catalog.articles(for: "blackout").map(\.id).contains("blackout-first-actions"))
         #expect(catalog.articles(for: "blackout").map(\.id).contains("blackout-phone-battery"))
 

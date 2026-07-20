@@ -46,22 +46,24 @@ struct RootView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .showAbout)) { _ in
-            model.isAboutPresented = true
+            model.presentedSheet = .about
         }
         .onReceive(NotificationCenter.default.publisher(for: .showReadability)) { _ in
-            model.isReadabilityPresented = true
+            model.presentedSheet = .readability
         }
-        .sheet(isPresented: $model.isAboutPresented) {
-            AboutView()
+        .sheet(item: $model.presentedSheet) { sheet in
+            switch sheet {
+            case .about:
+                AboutView()
 #if os(macOS)
-                .frame(minWidth: 440, minHeight: 520)
+                    .frame(minWidth: 440, minHeight: 520)
 #endif
-        }
-        .sheet(isPresented: $model.isReadabilityPresented) {
-            ReadabilityView(settings: model.readability)
+            case .readability:
+                ReadabilityView(settings: model.readability)
 #if os(macOS)
-                .frame(minWidth: 460, minHeight: 560)
+                    .frame(minWidth: 460, minHeight: 560)
 #endif
+            }
         }
     }
 

@@ -5,6 +5,13 @@ import Observation
 @MainActor
 @Observable
 final class AppModel {
+    enum PresentedSheet: String, Identifiable {
+        case about
+        case readability
+
+        var id: String { rawValue }
+    }
+
     enum LoadState: Equatable {
         case loading
         case ready(ContentCatalog)
@@ -46,8 +53,7 @@ final class AppModel {
         didSet { syncDisplayedArticleSelection() }
     }
     private(set) var favoriteArticleIDs: Set<GuideArticle.ID>
-    var isAboutPresented = false
-    var isReadabilityPresented = false
+    var presentedSheet: PresentedSheet?
 
     let readability: ReadabilitySettings
     private let repository: ContentRepository

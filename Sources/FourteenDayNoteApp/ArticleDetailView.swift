@@ -13,9 +13,7 @@ struct ArticleDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: readability.sectionSpacing) {
                 header
-                if article.isDraftFixture {
-                    draftBanner
-                }
+                safetyNotice
                 summaryBlock
                 bodyBlock
                 sourcesBlock
@@ -50,9 +48,7 @@ struct ArticleDetailView: View {
                 ForEach(article.periodLabels, id: \.self) { label in
                     PeriodChip(label: label)
                 }
-                if article.isDraftFixture {
-                    DraftStatusLabel(status: article.reviewStatus)
-                }
+                ReviewStatusLabel(status: article.reviewStatus)
             }
 
             Text(article.title)
@@ -72,12 +68,14 @@ struct ArticleDetailView: View {
         }
     }
 
-    private var draftBanner: some View {
+    private var safetyNotice: some View {
         Label {
             VStack(alignment: .leading, spacing: 6) {
-                Text("未監修の制作確認用コンテンツ")
+                Text(article.isDraftFixture ? "制作確認用コンテンツ" : "安全情報の注意事項")
                     .font(.headline)
-                Text("緊急時の案内として使用しないでください。正式な行動手順は監修完了後に公開します。")
+                Text(article.isDraftFixture
+                     ? "緊急時の案内として使用しないでください。自治体・消防・警察・気象庁などの発表を優先してください。"
+                     : "公的一次情報と照合した一般的な目安です。地域、建物、体調、災害の進行や情報更新によって適切な行動は変わり、不正確または古くなる可能性があります。119・110、自治体、消防、警察、気象庁、医療機関、インフラ事業者と現場の指示を優先してください。")
                     .font(.body)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -85,19 +83,21 @@ struct ArticleDetailView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .imageScale(.large)
         }
-        .foregroundStyle(.orange)
+        .foregroundStyle(article.isDraftFixture ? .orange : AppTheme.deepTeal)
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .fill(Color.orange.opacity(0.12))
+                .fill((article.isDraftFixture ? Color.orange : AppTheme.deepTeal).opacity(0.10))
         )
         .overlay(
             RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .strokeBorder(Color.orange.opacity(0.25), lineWidth: 1)
+                .strokeBorder((article.isDraftFixture ? Color.orange : AppTheme.deepTeal).opacity(0.24), lineWidth: 1)
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("注意。未監修の制作確認用コンテンツです。緊急時の案内として使用しないでください。")
+        .accessibilityLabel(article.isDraftFixture
+                            ? "注意。制作確認用コンテンツです。緊急時の案内として使用しないでください。"
+                            : "安全情報の注意事項。一般的な目安であり、不正確または古くなる可能性があります。最新の公式情報と現場の指示を優先してください。")
     }
 
     private var summaryBlock: some View {

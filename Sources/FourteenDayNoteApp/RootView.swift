@@ -34,6 +34,8 @@ struct RootView: View {
                 .transition(.opacity)
             }
         }
+        .tint(AppTheme.accent)
+        .background(AppTheme.canvas.ignoresSafeArea())
         // loadState 全体（巨大な catalog 本文）を animation value にすると比較コストが大きい
         .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: loadPhase)
         .environment(model.readability)

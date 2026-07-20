@@ -6,6 +6,7 @@
 - 緊急カードの非アクティブ時秘匿・復帰時再ロックと、PDF個人情報プレビューの認証境界を脅威モデルどおりに修正済み。
 - 備蓄・買い物は入力中心から、人数・期間の選択、一般目安の確認、不足品目の選択、購入済みチェックだけの導線へ変更済み。
 - iOS Simulator（iPhone 17 / iPad A16）ビルドと起動スモーク成功。
+- アプリアイコンと画面内UIは、深い青緑・生成り・黄土・コーラルの共通デザインへ統一済み。
 - 同梱13状況・30記事はすべて `draft`。一般公開は監修後。
 - Team 選択、実機、Archive Validate / Upload は本人操作。
 
@@ -22,6 +23,8 @@
 - SwiftDataをV2へ更新し、旧V1の不足・準備済み状態を新しい不足選択・購入済み状態へ一度だけ変換する。
 - 状況・記事を13状況・30記事へ拡充し、検索・絞り込み・ナビゲーションを更新。津波の即時避難と119/AED/胸骨圧迫の記述は該当する気象庁・消防庁一次情報へ合わせた。
 - 数量根拠のある水・食料・携帯トイレと、数量を家庭で決める生活用品チェックリストを分離した。
+- App Store配布で検出されたApp Iconのアルファを除去。家・ノート・14日チェックを統合した新デザインへ全11サイズを差し替え、再提出候補を `0.1.0 (2)` に更新した。
+- アイコン由来の配色トークンとブランドマークを共通化。ガイド先頭へ役割と収録件数が分かるヘッダーを追加し、状況・記事・備蓄・買い物・緊急カードの表現を統一した。大きな文字ではマークと指標が収まるよう自動調整する。
 
 ## Decisions
 
@@ -37,8 +40,10 @@
 - `FourteenDayNote` generic iOS Simulator Release unsigned build: 成功（新しい備蓄・買い物画面とSwiftData V2を含む）。
 - `swift run --disable-sandbox content-lint`: 成功（13状況・30記事は意図どおり `draft`）。
 - Mac Release unsigned: 成功（修正後に再検証）。
-- iOS / Mac Release app bundleで共有 Bundle ID、`0.1.0 (1)`、暗号化フラグ、Privacy Manifest同梱を確認。
+- iOS / Mac Release app bundleで共有 Bundle ID、`0.1.0 (2)`、暗号化フラグ、Privacy Manifest同梱を確認。
+- AppIcon source 11枚: 指定ピクセル寸法、RGB PNG、`hasAlpha: no` を確認。iOS / Mac Asset Catalogを含むRelease unsigned build成功。
 - iPhone 17 / iOS 26.5 Simulator Debug unsigned + `simctl launch`: 成功（修正後に再検証）。過去の Release / iPad も成功済み。
+- UI刷新後の `FourteenDayNote` iOS Simulator Release unsigned / `FourteenDayNoteMac` macOS Release unsigned: 成功。iPhone 17でガイド先頭・カード階層・タブ配色をスクリーンショット目視確認。
 
 ## Risks / Unknowns
 

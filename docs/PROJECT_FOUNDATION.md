@@ -42,7 +42,7 @@
 - `FourteenDayNoteMac` Release build（unsigned, App Sandbox）: 成功
 - `FourteenDayNote` iPhone 17 / iPad (A16) Simulator Debug・generic iOS Simulator Release: 成功
 - Simulator 起動スモーク（`simctl launch`）: 成功
-- Release app bundle: 共有 Bundle ID、`0.1.0 (1)`、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
+- Release app bundle: 共有 Bundle ID、`0.1.0 (2)`、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
 - 実機30秒計測 / VoiceOver実機 / Archive Validate: 未実施（手順は `docs/MANUAL_SMOKE_CHECKLIST.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md`）
 
 ## プロダクト判断

@@ -15,7 +15,7 @@
 | Bundle ID（iOS / Mac 共通） | `jp.hazakura.FourteenDayNote` |
 | 商品構成 | **同一 App Store レコード・ユニバーサル購入**（`.mac` は廃止） |
 | バージョン | `0.1.0` |
-| ビルド | `1` |
+| ビルド | `2` |
 | カテゴリ（Info） | `public.app-category.lifestyle` |
 | 対応 | iPhone / iPad（iOS 18+）、Mac（macOS 15+） |
 | Face ID 利用目的 | 緊急カード表示時の本人確認（iOS Info） |

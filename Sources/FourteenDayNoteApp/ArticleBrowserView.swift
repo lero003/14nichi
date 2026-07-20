@@ -65,7 +65,7 @@ struct ArticleBrowserView: View {
     private var compactBrowser: some View {
         NavigationStack(path: $compactPath) {
             situationRootList
-                .navigationTitle("いま何が起きていますか？")
+                .navigationTitle("防災ガイド")
                 .navigationDestination(for: GuideCompactRoute.self) { route in
                     switch route {
                     case .situation(let situationID):
@@ -85,6 +85,16 @@ struct ArticleBrowserView: View {
                 articleSection(title: model.articleListTitle)
             } else {
                 Section {
+                    GuideHeroCard(
+                        situationCount: model.catalog?.situations.count ?? 0,
+                        articleCount: model.catalog?.articles.count ?? 0
+                    )
+                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                Section {
                     ForEach(Array((model.catalog?.situations ?? []).enumerated()), id: \.element.id) { index, situation in
                         Button {
                             openSituation(situation.id)
@@ -97,6 +107,8 @@ struct ArticleBrowserView: View {
                         }
                         .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                         .opacity(appeared || reduceMotion ? 1 : 0)
                         .offset(y: appeared || reduceMotion ? 0 : 8)
                         .animation(
@@ -121,6 +133,8 @@ struct ArticleBrowserView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.canvas)
 #if os(iOS)
         .listStyle(.insetGrouped)
 #else
@@ -165,6 +179,8 @@ struct ArticleBrowserView: View {
                 }
                 .buttonStyle(.plain)
                 .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
         } header: {
             VStack(alignment: .leading, spacing: 3) {
@@ -286,6 +302,17 @@ struct ArticleBrowserView: View {
     private var splitSituationColumn: some View {
         List(selection: situationSelection) {
             Section {
+                GuideHeroCard(
+                    situationCount: model.catalog?.situations.count ?? 0,
+                    articleCount: model.catalog?.articles.count ?? 0,
+                    showsMark: false
+                )
+                .listRowInsets(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+            }
+
+            Section {
                 ForEach(model.catalog?.situations ?? [], id: \.id) { situation in
                     SituationRow(
                         situation: situation,
@@ -295,6 +322,8 @@ struct ArticleBrowserView: View {
                     )
                     .tag(Optional(situation.id))
                     .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 }
             } header: {
                 Text("状況を選ぶ")
@@ -311,6 +340,8 @@ struct ArticleBrowserView: View {
             }
         }
         .listStyle(.sidebar)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.canvas)
         .navigationTitle("いま何が起きていますか？")
 #if os(macOS)
         .navigationSplitViewColumnWidth(min: 240, ideal: 290, max: 360)
@@ -329,6 +360,8 @@ struct ArticleBrowserView: View {
                         )
                         .tag(Optional(article.id))
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
                 } header: {
                     VStack(alignment: .leading, spacing: 3) {
@@ -349,6 +382,8 @@ struct ArticleBrowserView: View {
             }
         }
         .listStyle(.sidebar)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.canvas)
         .navigationTitle(model.articleListTitle)
         .searchable(text: $model.searchQuery, prompt: "記事を検索")
         .overlay { articleEmptyOverlay }
@@ -551,6 +586,7 @@ private struct SituationRow: View {
     let articleCount: Int
     var generousSpacing: Bool
     var isSelected: Bool = false
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
@@ -570,16 +606,38 @@ private struct SituationRow: View {
             }
             Spacer(minLength: 0)
             if isSelected {
-                Image(systemName: "checkmark")
-                    .foregroundStyle(.tint)
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(AppTheme.coral)
+                    .accessibilityHidden(true)
+            } else {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.tertiary)
                     .accessibilityHidden(true)
             }
         }
-        .padding(.vertical, generousSpacing ? 8 : 4)
+        .padding(generousSpacing ? 16 : 14)
+        .background(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .fill(isSelected ? AppTheme.accent.opacity(0.12) : cardFill)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .strokeBorder(
+                    isSelected ? AppTheme.accent.opacity(0.45) : AppTheme.surfaceStroke,
+                    lineWidth: isSelected ? 1.5 : 1
+                )
+        }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityValue(articleCount == 0 ? "記事なし" : "記事 \(articleCount)件")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    private var cardFill: Color {
+        colorScheme == .dark
+            ? Color.white.opacity(0.055)
+            : AppTheme.ivory.opacity(0.58)
     }
 }
 
@@ -587,6 +645,7 @@ private struct ArticleRow: View {
     let article: GuideArticle
     let isFavorite: Bool
     var generousSpacing: Bool
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: generousSpacing ? 10 : 8) {
@@ -619,7 +678,15 @@ private struct ArticleRow: View {
                 }
             }
         }
-        .padding(.vertical, generousSpacing ? 8 : 4)
+        .padding(generousSpacing ? 16 : 14)
+        .background(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .fill(cardFill)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .strokeBorder(AppTheme.surfaceStroke, lineWidth: 1)
+        }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
@@ -629,6 +696,12 @@ private struct ArticleRow: View {
             .font(.headline)
             .foregroundStyle(.primary)
             .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var cardFill: Color {
+        colorScheme == .dark
+            ? Color.white.opacity(0.055)
+            : AppTheme.ivory.opacity(0.58)
     }
 }
 

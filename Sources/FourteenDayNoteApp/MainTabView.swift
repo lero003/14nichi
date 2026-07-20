@@ -28,6 +28,7 @@ struct MainTabView: View {
                 MoreView(emergencyContainer: emergencyContainer)
             }
         }
+        .tint(AppTheme.accent)
     }
 
     @ViewBuilder

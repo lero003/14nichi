@@ -24,6 +24,7 @@ let package = Package(
             name: "FourteenDayCore",
             resources: [
                 .copy("Resources/Content"),
+                .copy("Resources/OfficialLinks"),
             ]
         ),
         .executableTarget(

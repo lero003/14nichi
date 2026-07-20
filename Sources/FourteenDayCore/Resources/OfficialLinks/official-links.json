@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "requiresOnlineNotice": "これらのリンクを開くにはオンライン接続が必要です。アプリ内のガイド本文はオフラインで読めます。",
+  "categories": [
+    {
+      "id": "disaster",
+      "title": "防災・避難",
+      "links": [
+        {
+          "id": "cao-bousai",
+          "title": "内閣府 防災情報のページ",
+          "url": "https://www.bousai.go.jp/",
+          "purpose": "国の防災施策・啓発情報を確認する"
+        },
+        {
+          "id": "kokuminhogo",
+          "title": "国民保護ポータルサイト",
+          "url": "https://www.kokuminhogo.go.jp/",
+          "purpose": "国民保護に関する公的な案内を確認する"
+        },
+        {
+          "id": "hazard-map",
+          "title": "ハザードマップポータルサイト",
+          "url": "https://disaportal.gsi.go.jp/",
+          "purpose": "浸水・土砂などのハザードマップを確認する"
+        }
+      ]
+    },
+    {
+      "id": "weather",
+      "title": "気象・地震",
+      "links": [
+        {
+          "id": "jma",
+          "title": "気象庁",
+          "url": "https://www.jma.go.jp/",
+          "purpose": "気象警報・地震・津波などの公式発表を確認する"
+        }
+      ]
+    },
+    {
+      "id": "stockpile",
+      "title": "食料・備蓄",
+      "links": [
+        {
+          "id": "maff-foodstock",
+          "title": "農林水産省 災害時に備えた食品ストックガイド",
+          "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
+          "purpose": "家庭での食品備蓄の公的な考え方を確認する"
+        }
+      ]
+    },
+    {
+      "id": "emergency-care",
+      "title": "救急・応急手当",
+      "links": [
+        {
+          "id": "fdma",
+          "title": "消防庁",
+          "url": "https://www.fdma.go.jp/",
+          "purpose": "消防・救急に関する公的情報を確認する"
+        },
+        {
+          "id": "jrc",
+          "title": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/",
+          "purpose": "応急手当や災害救護に関する案内を確認する"
+        }
+      ]
+    }
+  ]
+}

@@ -27,18 +27,29 @@ final class AppModel {
     private(set) var loadState: LoadState = .loading
     var selectedSituationID: GuideSituation.ID?
     var selectedArticleID: GuideArticle.ID?
+    var searchQuery = "" {
+        didSet { syncDisplayedArticleSelection() }
+    }
+    var showsFavoritesOnly = false {
+        didSet { syncDisplayedArticleSelection() }
+    }
+    private(set) var favoriteArticleIDs: Set<GuideArticle.ID>
     var isAboutPresented = false
     var isReadabilityPresented = false
 
     let readability: ReadabilitySettings
     private let repository: ContentRepository
+    private let favoriteStore: FavoriteArticleStore
 
     init(
         repository: ContentRepository = ContentRepository(),
-        readability: ReadabilitySettings = ReadabilitySettings()
+        readability: ReadabilitySettings = ReadabilitySettings(),
+        favoriteStore: FavoriteArticleStore = FavoriteArticleStore()
     ) {
         self.repository = repository
         self.readability = readability
+        self.favoriteStore = favoriteStore
+        favoriteArticleIDs = favoriteStore.load()
     }
 
     var catalog: ContentCatalog? {
@@ -53,13 +64,41 @@ final class AppModel {
         return catalog.articles(for: selectedSituationID)
     }
 
+    var hasSearchQuery: Bool {
+        !searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var displayedArticles: [GuideArticle] {
+        guard let catalog else { return [] }
+
+        let articles: [GuideArticle]
+        if !hasSearchQuery {
+            articles = showsFavoritesOnly ? catalog.articles : visibleArticles
+        } else {
+            articles = catalog.searchArticles(matching: searchQuery)
+        }
+
+        guard showsFavoritesOnly else { return articles }
+        return articles.filter { favoriteArticleIDs.contains($0.id) }
+    }
+
+    var articleListTitle: String {
+        if showsFavoritesOnly {
+            return hasSearchQuery ? "お気に入りの検索結果" : "お気に入り"
+        }
+        if hasSearchQuery {
+            return "検索結果"
+        }
+        return selectedSituation?.title ?? "記事"
+    }
+
     var selectedSituation: GuideSituation? {
         catalog?.situation(id: selectedSituationID)
     }
 
     var selectedArticle: GuideArticle? {
         guard let selectedArticleID else { return nil }
-        return visibleArticles.first { $0.id == selectedArticleID }
+        return displayedArticles.first { $0.id == selectedArticleID }
     }
 
     func load() {
@@ -69,30 +108,64 @@ final class AppModel {
             if selectedSituationID == nil {
                 selectedSituationID = catalog.situations.first?.id
             }
-            syncArticleSelection(for: selectedSituationID)
+            reconcileFavorites(with: catalog)
+            syncDisplayedArticleSelection()
         } catch {
             loadState = .failed(error.localizedDescription)
         }
     }
 
     func selectSituation(_ id: GuideSituation.ID?) {
+        searchQuery = ""
+        showsFavoritesOnly = false
         selectedSituationID = id
-        syncArticleSelection(for: id)
+        syncDisplayedArticleSelection()
     }
 
     func selectArticle(_ id: GuideArticle.ID?) {
-        selectedArticleID = id
-    }
-
-    private func syncArticleSelection(for situationID: GuideSituation.ID?) {
-        guard let catalog else {
+        guard let id else {
             selectedArticleID = nil
             return
         }
-        let articles = catalog.articles(for: situationID)
-        if let selectedArticleID, articles.contains(where: { $0.id == selectedArticleID }) {
+        guard displayedArticles.contains(where: { $0.id == id }) else { return }
+        selectedArticleID = id
+    }
+
+    func isFavorite(_ articleID: GuideArticle.ID) -> Bool {
+        favoriteArticleIDs.contains(articleID)
+    }
+
+    func toggleFavorite(_ articleID: GuideArticle.ID) {
+        if favoriteArticleIDs.contains(articleID) {
+            favoriteArticleIDs.remove(articleID)
+        } else {
+            favoriteArticleIDs.insert(articleID)
+        }
+        favoriteStore.save(favoriteArticleIDs)
+        syncDisplayedArticleSelection()
+    }
+
+    func toggleFavoritesFilter() {
+        showsFavoritesOnly.toggle()
+    }
+
+    private func syncDisplayedArticleSelection() {
+        guard catalog != nil else {
+            selectedArticleID = nil
             return
         }
-        selectedArticleID = articles.first?.id
+        if let selectedArticleID,
+           displayedArticles.contains(where: { $0.id == selectedArticleID }) {
+            return
+        }
+        selectedArticleID = displayedArticles.first?.id
+    }
+
+    private func reconcileFavorites(with catalog: ContentCatalog) {
+        let validIDs = Set(catalog.articles.map(\.id))
+        let reconciled = favoriteArticleIDs.intersection(validIDs)
+        guard reconciled != favoriteArticleIDs else { return }
+        favoriteArticleIDs = reconciled
+        favoriteStore.save(reconciled)
     }
 }

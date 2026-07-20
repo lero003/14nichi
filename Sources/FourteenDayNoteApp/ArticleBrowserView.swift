@@ -18,6 +18,7 @@ struct ArticleBrowserView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .toolbar { browserToolbar }
+        .sensoryFeedback(.selection, trigger: model.favoriteArticleIDs)
         .onAppear {
             guard !appeared else { return }
             appeared = true
@@ -67,40 +68,47 @@ struct ArticleBrowserView: View {
 
     private var articleColumn: some View {
         List(selection: articleSelection) {
-            if let situation = model.selectedSituation {
+            if model.catalog != nil {
                 Section {
-                    ForEach(model.visibleArticles) { article in
+                    ForEach(model.displayedArticles) { article in
                         ArticleRow(
                             article: article,
+                            isFavorite: model.isFavorite(article.id),
                             generousSpacing: readability.prefersGenerousSpacing
                         )
                         .tag(article.id)
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                     }
                 } header: {
-                    Text(situation.title)
+                    Text(model.articleListTitle)
                         .font(.subheadline.weight(.semibold))
                 } footer: {
-                    if model.visibleArticles.isEmpty {
-                        Text("この状況の記事はまだありません。")
-                            .font(.callout)
-                    } else {
-                        Text("優先度の高い順に並んでいます。")
+                    if !model.displayedArticles.isEmpty {
+                        Text("記事 \(model.displayedArticles.count)件")
                             .font(.callout)
                     }
                 }
             }
         }
         .listStyle(.sidebar)
-        .navigationTitle(model.selectedSituation?.title ?? "記事")
+        .navigationTitle(model.articleListTitle)
+        .searchable(text: $model.searchQuery, prompt: "記事を検索")
         .overlay {
-            if model.selectedSituationID == nil {
+            if model.hasSearchQuery, model.displayedArticles.isEmpty {
+                ContentUnavailableView.search(text: model.searchQuery)
+            } else if model.showsFavoritesOnly, model.displayedArticles.isEmpty {
+                emptyState(
+                    title: "お気に入りはまだありません",
+                    systemImage: "heart",
+                    description: "記事を開いて「お気に入りに追加」を選ぶと、ここからすぐ確認できます。"
+                )
+            } else if model.selectedSituationID == nil {
                 emptyState(
                     title: "状況を選んでください",
                     systemImage: "checklist",
                     description: "左側からいまの状況を選ぶと、関連記事が表示されます。"
                 )
-            } else if model.visibleArticles.isEmpty {
+            } else if model.displayedArticles.isEmpty {
                 emptyState(
                     title: "記事がありません",
                     systemImage: "doc",
@@ -109,6 +117,7 @@ struct ArticleBrowserView: View {
             }
         }
         .animation(AppTheme.spring(reduceMotion: reduceMotion), value: model.selectedSituationID)
+        .animation(AppTheme.gentle(reduceMotion: reduceMotion), value: model.showsFavoritesOnly)
 #if os(macOS)
         .navigationSplitViewColumnWidth(min: 270, ideal: 340, max: 420)
 #endif
@@ -117,7 +126,11 @@ struct ArticleBrowserView: View {
     @ViewBuilder
     private var detailColumn: some View {
         if let article = model.selectedArticle {
-            ArticleDetailView(article: article)
+            ArticleDetailView(
+                article: article,
+                isFavorite: model.isFavorite(article.id),
+                onToggleFavorite: { model.toggleFavorite(article.id) }
+            )
                 .id(article.id)
                 .transition(
                     reduceMotion
@@ -148,6 +161,23 @@ struct ArticleBrowserView: View {
     @ToolbarContentBuilder
     private var browserToolbar: some ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
+            Button {
+                withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                    model.toggleFavoritesFilter()
+                }
+            } label: {
+                Label(
+                    model.showsFavoritesOnly ? "すべての記事を表示" : "お気に入りだけ表示",
+                    systemImage: model.showsFavoritesOnly ? "heart.fill" : "heart"
+                )
+            }
+            .help(
+                model.showsFavoritesOnly
+                    ? "状況別の記事一覧へ戻る"
+                    : "お気に入り \(model.favoriteArticleIDs.count)件を表示"
+            )
+            .accessibilityValue(model.showsFavoritesOnly ? "選択中" : "未選択")
+
             Button {
                 model.isReadabilityPresented = true
             } label: {
@@ -219,6 +249,7 @@ private struct SituationRow: View {
 
 private struct ArticleRow: View {
     let article: GuideArticle
+    let isFavorite: Bool
     var generousSpacing: Bool
 
     var body: some View {
@@ -246,6 +277,9 @@ private struct ArticleRow: View {
                 }
                 if article.isDraftFixture {
                     DraftStatusLabel(status: article.reviewStatus)
+                }
+                if isFavorite {
+                    FavoriteStatusLabel()
                 }
             }
         }

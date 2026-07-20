@@ -65,6 +65,14 @@ struct DraftStatusLabel: View {
     }
 }
 
+struct FavoriteStatusLabel: View {
+    var body: some View {
+        Label("お気に入り", systemImage: "heart.fill")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.tint)
+    }
+}
+
 struct LoadingSplashView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulse = false

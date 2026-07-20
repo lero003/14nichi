@@ -3,6 +3,8 @@ import SwiftUI
 
 struct ArticleDetailView: View {
     let article: GuideArticle
+    let isFavorite: Bool
+    let onToggleFavorite: () -> Void
     @Environment(ReadabilitySettings.self) private var readability
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var revealed = false
@@ -57,6 +59,16 @@ struct ArticleDetailView: View {
                 .font(.largeTitle.weight(.bold))
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
+
+            Button(action: onToggleFavorite) {
+                Label(
+                    isFavorite ? "お気に入りから外す" : "お気に入りに追加",
+                    systemImage: isFavorite ? "heart.fill" : "heart"
+                )
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .accessibilityHint("この記事のお気に入り状態を端末内に保存します")
         }
     }
 
@@ -258,7 +270,9 @@ private struct FlowMeta<Content: View>: View {
                 - 安全を確認する
                 - 照明を確保する
                 """
-            )
+            ),
+            isFavorite: false,
+            onToggleFavorite: {}
         )
     }
     .environment(ReadabilitySettings())

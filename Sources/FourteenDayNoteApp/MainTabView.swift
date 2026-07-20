@@ -2,7 +2,6 @@ import SwiftUI
 
 struct MainTabView: View {
     @Bindable var appModel: AppModel
-    @State private var stockpileModel = StockpileViewModel()
     @State private var selection: AppSection = .guide
 
     var body: some View {
@@ -12,7 +11,7 @@ struct MainTabView: View {
             }
 
             Tab("備蓄", systemImage: "shippingbox", value: .stockpile) {
-                StockpileView(model: stockpileModel)
+                StockpileView()
             }
         }
     }

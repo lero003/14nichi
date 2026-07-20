@@ -13,7 +13,7 @@ struct RootView: View {
                 LoadingSplashView()
                     .transition(.opacity)
             case .ready:
-                ArticleBrowserView(model: model)
+                MainTabView(appModel: model)
                     .transition(.opacity.combined(with: .scale(scale: 0.985)))
             case .failed(let message):
                 ContentUnavailableView {

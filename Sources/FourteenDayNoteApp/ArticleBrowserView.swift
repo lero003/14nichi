@@ -534,7 +534,7 @@ struct ArticleBrowserView: View {
             } label: {
                 Label("このアプリについて", systemImage: "info.circle")
             }
-            .help("アプリの目的と安全上の注意")
+            .help("アプリの説明と製品ページ")
         }
     }
 

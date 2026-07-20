@@ -14,7 +14,7 @@
 - アプリ状態モデル（読み込み / 選択 / About / 読みやすさ）
 - 読みやすさ設定（初期値は標準、文字サイズ5段階・広めの行間・太字・余白、端末内保存。端末側のより大きな文字設定を維持）
 - モーション（選択・詳細切替の spring、Reduce Motion 対応）
-- VoiceOverで移動できるMarkdown見出し、オフライン対応表示、About、安全情報の注意事項
+- VoiceOverで移動できるMarkdown見出し、オフライン対応表示、About（製品ページリンク付き）、記事の短い注意＋詳細限界説明
 - 情報源ブロック（権利注記・確認日・オンラインで開く公式リンク）
 - AccentColor、App Icon、Privacy Manifest、Mac 既定ウィンドウサイズ、再試行可能な読み込みエラー
 - `content-lint` によるコンテンツ検証と `--distribution` 配布ゲート
@@ -63,7 +63,7 @@
 - 同梱manifestの検証と読み込み
 - Markdown本文の読み込み
 - 状況別一覧（優先度・期間で記事を並べ替え）
-- 記事詳細（確認状態、安全情報の注意事項、要約、本文、情報源ブロック）
+- 記事詳細（確認状態、上部の短い注意、要約、本文、詳細な限界説明、情報源ブロック）
 - 情報源メタデータ（publisher / accessedAt / usage / rightsNote / 短文引用上限）
 - iPhone / iPad / Mac共通UI
 - `content-lint` による開発者向け検証

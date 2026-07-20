@@ -13,9 +13,10 @@ struct ArticleDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: readability.sectionSpacing) {
                 header
-                safetyNotice
+                compactSafetyBanner
                 summaryBlock
                 bodyBlock
+                detailedSafetyFooter
                 sourcesBlock
             }
             .padding(AppTheme.contentGutter)
@@ -68,36 +69,54 @@ struct ArticleDetailView: View {
         }
     }
 
-    private var safetyNotice: some View {
+    /// ファーストビュー用の短い注意。詳細は `detailedSafetyFooter` へ回す。
+    private var compactSafetyBanner: some View {
         Label {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(article.isDraftFixture ? "制作確認用コンテンツ" : "安全情報の注意事項")
-                    .font(.headline)
-                Text(article.isDraftFixture
-                     ? "緊急時の案内として使用しないでください。自治体・消防・警察・気象庁などの発表を優先してください。"
-                     : "公的一次情報と照合した一般的な目安です。地域、建物、体調、災害の進行や情報更新によって適切な行動は変わり、不正確または古くなる可能性があります。119・110、自治体、消防、警察、気象庁、医療機関、インフラ事業者と現場の指示を優先してください。")
-                    .font(.body)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            Text(article.isDraftFixture
+                 ? "制作確認用です。緊急時の案内に使わないでください。"
+                 : "一般的な目安です。最新の公式情報と現場の指示を優先してください。")
+                .font(.footnote)
+                .fixedSize(horizontal: false, vertical: true)
         } icon: {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .imageScale(.large)
+            Image(systemName: article.isDraftFixture ? "exclamationmark.triangle.fill" : "info.circle.fill")
+                .imageScale(.small)
         }
-        .foregroundStyle(article.isDraftFixture ? .orange : AppTheme.deepTeal)
-        .padding(16)
+        .foregroundStyle(article.isDraftFixture ? .orange : .secondary)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .fill((article.isDraftFixture ? Color.orange : AppTheme.deepTeal).opacity(0.10))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .strokeBorder((article.isDraftFixture ? Color.orange : AppTheme.deepTeal).opacity(0.24), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill((article.isDraftFixture ? Color.orange : Color.secondary).opacity(0.08))
         )
         .accessibilityElement(children: .combine)
         .accessibilityLabel(article.isDraftFixture
                             ? "注意。制作確認用コンテンツです。緊急時の案内として使用しないでください。"
-                            : "安全情報の注意事項。一般的な目安であり、不正確または古くなる可能性があります。最新の公式情報と現場の指示を優先してください。")
+                            : "注意。一般的な目安です。最新の公式情報と現場の指示を優先してください。詳細は記事末尾にあります。")
+    }
+
+    /// 記事末尾の詳細な限界・優先順位の説明。本文のあと・情報源の前に置く。
+    private var detailedSafetyFooter: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(article.isDraftFixture ? "制作確認用コンテンツ" : "この記事の使い方と限界")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .accessibilityAddTraits(.isHeader)
+
+            Text(article.isDraftFixture
+                 ? "緊急時の案内として使用しないでください。自治体・消防・警察・気象庁などの発表を優先してください。"
+                 : "公的一次情報と照合した一般的な目安です。地域、建物、体調、災害の進行や情報更新によって適切な行動は変わり、不正確または古くなる可能性があります。119・110、自治体、消防、警察、気象庁、医療機関、インフラ事業者と現場の指示を、この記事より優先してください。専門資格者による個別の診断や現場判断の代わりではありません。")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
+                .fill(Color.secondary.opacity(0.06))
+        )
+        .accessibilityElement(children: .combine)
     }
 
     private var summaryBlock: some View {

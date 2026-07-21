@@ -29,6 +29,7 @@
 - 文字サイズを5段階・標準初期値へ整理し、行間を広げた。About/読みやすさを単一sheetにしてiPhone Airの情報ボタン経由クラッシュを防ぎ、「14日ノートとは」を追加した。
 - About に製品ページ（https://hazakura.dev/14nichi-note/）・サポート・プライバシーへのオンラインリンクを追加した。
 - 記事詳細の注意事項を、上部の短いバナー＋本文後の詳細説明に再配置。Markdown本文の重複注意と「公式情報・出典」定型節を削除し、各記事の行動手順を拡充した。
+- TestFlight（0.1.0/5）で i ボタン押下時に About sheet が `ReadabilitySettings` の Environment 欠落で SIGTRAP クラッシュする不具合を修正。sheet コンテンツへ `.environment(model.readability)` を明示注入。
 
 ## Decisions
 

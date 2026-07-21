@@ -51,19 +51,24 @@ struct RootView: View {
         .onReceive(NotificationCenter.default.publisher(for: .showReadability)) { _ in
             model.presentedSheet = .readability
         }
+        // sheet は親の custom environment が伝わらないことがある。
+        // About は引数で渡し、他画面用に sheet 全体へも再注入する。
         .sheet(item: $model.presentedSheet) { sheet in
-            switch sheet {
-            case .about:
-                AboutView()
+            Group {
+                switch sheet {
+                case .about:
+                    AboutView(readability: model.readability)
 #if os(macOS)
-                    .frame(minWidth: 440, minHeight: 520)
+                        .frame(minWidth: 440, minHeight: 520)
 #endif
-            case .readability:
-                ReadabilityView(settings: model.readability)
+                case .readability:
+                    ReadabilityView(settings: model.readability)
 #if os(macOS)
-                    .frame(minWidth: 460, minHeight: 560)
+                        .frame(minWidth: 460, minHeight: 560)
 #endif
+                }
             }
+            .environment(model.readability)
         }
     }
 

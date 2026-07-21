@@ -2,7 +2,8 @@ import SwiftUI
 
 struct AboutView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(ReadabilitySettings.self) private var readability
+    /// sheet 経由だと `@Environment(ReadabilitySettings.self)` が欠落してクラッシュすることがあるため、明示注入する。
+    var readability: ReadabilitySettings
 
     private static let productURL = URL(string: "https://hazakura.dev/14nichi-note/")!
     private static let supportURL = URL(string: "https://hazakura.dev/14nichi-note/support/")!
@@ -146,6 +147,5 @@ struct AboutView: View {
 }
 
 #Preview {
-    AboutView()
-        .environment(ReadabilitySettings())
+    AboutView(readability: ReadabilitySettings())
 }

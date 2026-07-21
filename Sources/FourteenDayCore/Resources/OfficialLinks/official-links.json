@@ -20,9 +20,9 @@
         },
         {
           "id": "kantei-sonae",
-          "title": "首相官邸 災害が起きる前にできること",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "purpose": "備蓄・非常持ち出しの公的な考え方を確認する"
+          "title": "首相官邸 防災の手引き",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "purpose": "事前防災・避難・災害別の公的情報を確認する"
         },
         {
           "id": "gov-prep",
@@ -33,7 +33,7 @@
         {
           "id": "kokuminhogo",
           "title": "国民保護ポータルサイト",
-          "url": "https://www.kokuminhogo.go.jp/",
+          "url": "https://www.kokuminhogo.go.jp/index.html",
           "purpose": "国民保護に関する公的な案内を確認する"
         },
         {
@@ -91,10 +91,10 @@
           "purpose": "水道・水質に関する公的情報を確認する"
         },
         {
-          "id": "tokyo-toilet",
-          "title": "東京都 災害時のトイレ備え",
-          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
-          "purpose": "携帯トイレの必要性など公的な啓発資料を確認する"
+          "id": "cao-toilet-stockpile",
+          "title": "内閣府 トイレ備蓄忘れていませんか？",
+          "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html",
+          "purpose": "携帯トイレの必要性と1人1日5回の備蓄目安を確認する"
         }
       ]
     },

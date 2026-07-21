@@ -2,6 +2,10 @@
 
 ## Current State
 
+- 2026-07-22の判断で、初回App Store申請は **iPhone / iPadのみ**。Macターゲットは残すが、今回の申請・Archive・商品ページには含めない。
+- 既存TestFlight `0.1.0 (5)` より新しい初回公開候補として、iOSの版番号を `1.0.0 (6)` に更新。Macターゲットの版番号は将来候補のまま変更していない。
+- iPhone 6.9インチ5枚、iPad 13インチ4枚の申請用JPEGと、日本語メタデータ・審査メモ・Web本文案を `docs/app-store-assets/` に用意済み。
+
 - フルMVP機能完了。提出前のリポジトリ修正（Bundle ID 統一、Face ID 文、Mac Sandbox、暗号化 Infop、Privacy Manifest 同梱修正）まで完了。
 - 緊急カードの非アクティブ時秘匿・復帰時再ロックと、PDF個人情報プレビューの認証境界を脅威モデルどおりに修正済み。
 - 備蓄・買い物は入力中心から、人数・期間の選択、一般目安の確認、不足品目の選択、購入済みチェックだけの導線へ変更済み。
@@ -12,7 +16,7 @@
 
 ## Recent Changes
 
-- iOS/Mac の Bundle ID を `jp.hazakura.FourteenDayNote` に統一（同一商品ページ方針）。
+- iOS/Mac の Bundle ID を `jp.hazakura.FourteenDayNote` に統一した履歴あり。2026-07-22に初回申請からMacを外したため、同一商品ページ方針は現在不採用。
 - `NSFaceIDUsageDescription` と `ITSAppUsesNonExemptEncryption=false` を追加。
 - Mac に App Sandbox entitlements を追加（user-selected file 権限は未付与）。
 - PrivacyInfo が XcodeGen で除外されていた問題を修正し Resources に含めた。
@@ -30,23 +34,24 @@
 - About に製品ページ（https://hazakura.dev/14nichi-note/）・サポート・プライバシーへのオンラインリンクを追加した。
 - 記事詳細の注意事項を、上部の短いバナー＋本文後の詳細説明に再配置。Markdown本文の重複注意と「公式情報・出典」定型節を削除し、各記事の行動手順を拡充した。
 - TestFlight（0.1.0/5）で i ボタン押下時に About sheet が `ReadabilitySettings` の Environment 欠落で SIGTRAP クラッシュする不具合を修正。sheet コンテンツへ `.environment(model.readability)` を明示注入。
+- 審査前の全体再監査で、緊急カード記事を脅威モデルの採用項目へ一致させ、ガス臭・断水時の飲用と手指衛生を一次情報に沿って修正。PDF生成失敗時と前回異常終了時の一時ファイル削除も追加した。
 
 ## Decisions
 
-- 同一「14日ノート」として iOS+Mac ユニバーサル購入を採用。`.mac` サフィックスは使わない。
+- 初回App Store申請はiPhone / iPadのみ。Mac版の商品構成は将来の再レビューまで決めない。
 - Team ID は `project.yml` に書かない。
 - 一般公開候補は `content-lint --distribution` 必須。`approved` は編集確認状態であり専門資格監修とは表現しない。
-- サポート/プライバシー URL は推測で固定しない。
+- Aboutに設定済みの製品・サポート・プライバシーURLは、提出直前に本人が公開アクセスと問い合わせ先を確認する。
 - 食品は合計食数までとし、缶詰・乾パン等の個数配分は公的一律根拠がないため自動計算しない。
 
 ## Tests
 
-- `swift test --disable-sandbox`: 65 tests / 12 suites 成功（V1永続ストアからV2への実移行テストを含む）。
-- `FourteenDayNote` generic iOS Simulator Release unsigned build: 成功（新しい備蓄・買い物画面とSwiftData V2を含む）。
+- `swift test --disable-sandbox`: 66 tests / 12 suites 成功（V1永続ストアからV2への実移行と、残存PDF一時ディレクトリ削除のテストを含む）。
+- `FourteenDayNote` generic iOS Simulator Release unsigned build: `1.0.0 (6)` で成功。
 - `swift run --disable-sandbox content-lint`: 成功（13状況・30記事はすべて `approved`）。
 - `swift run --disable-sandbox content-lint --distribution`: 成功。
-- Mac Release unsigned: 成功（修正後に再検証）。
-- iOS / Mac Release app bundleで共有 Bundle ID、`0.1.0 (2)`、暗号化フラグ、Privacy Manifest同梱を確認。
+- 生成したiOS app bundleで Bundle ID `jp.hazakura.FourteenDayNote`、`1.0.0 (6)`、Face ID文、暗号化フラグfalse、Privacy Manifest同梱を確認。
+- Mac Releaseは過去に成功しているが、今回の申請対象外のため最終調整後は再検証していない。
 - AppIcon source 11枚: 指定ピクセル寸法、RGB PNG、`hasAlpha: no` を確認。iOS / Mac Asset Catalogを含むRelease unsigned build成功。
 - iPhone 17 / iOS 26.5 Simulator Debug unsigned + `simctl launch`: 成功（修正後に再検証）。過去の Release / iPad も成功済み。
 - UI刷新後の `FourteenDayNote` iOS Simulator Release unsigned / `FourteenDayNoteMac` macOS Release unsigned: 成功。iPhone 17でガイド先頭・カード階層・タブ配色をスクリーンショット目視確認。
@@ -57,15 +62,15 @@
 - 実機・Archive 署名は Team 未設定のため未実施。
 - App Switcher の完全秘匿、復帰時再認証、共有/キャンセル後の一時PDF削除は実機手動スモークが必要。
 - 失効 Development 証明書（lero003）が identity に残存。使わない。
-- 一般公開用の公開 Web ページ・スクショが未着手。
+- 製品・サポート・プライバシーの公開Web URLは2026-07-22にHTTP 200を確認済み。問い合わせ先と本文の最終目視、および用意済みスクリーンショット・文章のConnect入力が残る。
 - V1からV2への実データ移行と新しい備蓄→買い物導線は、既存データがある実機での手動スモークが必要。
 - 専門資格者による個別監修と実機での全記事表示確認は未実施。編集確認済みという境界を維持する。
 
 ## Next Actions
 
-1. Xcode で両ターゲットに Team を設定。
+1. XcodeでiOSターゲット `FourteenDayNote` にTeamを設定。
 2. 実機スモーク（30秒、備蓄の人数・期間変更、不足選択、買い物の購入済みチェック、旧データ移行を含む）を記録。
-3. Connect で iOS+macOS の1アプリを作成し、Archive → Validate → Upload。
+3. ConnectでiOSアプリを作成し、iOSだけをArchive → Validate → Upload。
 4. 実機で注意事項・情報源・文字サイズ・行間を確認する。
 
 ## Avoid

@@ -273,6 +273,8 @@ public enum ExportFileName {
 
 /// 一時PDFの寿命管理。値やパスに個人情報を埋め込まない。
 public struct TemporaryExportFile: Sendable {
+    public static let baseDirectoryName = "FourteenDayNoteExports"
+
     public let url: URL
     private let cleanupDirectory: URL?
 
@@ -285,14 +287,40 @@ public struct TemporaryExportFile: Sendable {
         in directory: URL? = nil,
         fileManager: FileManager = .default
     ) throws -> TemporaryExportFile {
-        let base = directory ?? fileManager.temporaryDirectory
-            .appendingPathComponent("FourteenDayNoteExports", isDirectory: true)
+        let base = directory ?? defaultBaseDirectory(fileManager: fileManager)
         try fileManager.createDirectory(at: base, withIntermediateDirectories: true)
         // 共有時の表示名は固定し、衝突回避用UUIDは専用ディレクトリ側だけに置く。
         let exportDirectory = base.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try fileManager.createDirectory(at: exportDirectory, withIntermediateDirectories: true)
         let url = exportDirectory.appendingPathComponent(ExportFileName.pdf, isDirectory: false)
         return TemporaryExportFile(url: url, cleanupDirectory: exportDirectory)
+    }
+
+    public static func defaultBaseDirectory(fileManager: FileManager = .default) -> URL {
+        fileManager.temporaryDirectory
+            .appendingPathComponent(baseDirectoryName, isDirectory: true)
+    }
+
+    /// 前回の異常終了などで共有後の削除まで進めなかった一時PDFをまとめて削除する。
+    /// 対象はアプリ専用の一時ディレクトリに限定する。
+    @discardableResult
+    public static func removeAllTemporaryExports(
+        fileManager: FileManager = .default
+    ) throws -> Bool {
+        try removeAllTemporaryExports(
+            in: defaultBaseDirectory(fileManager: fileManager),
+            fileManager: fileManager
+        )
+    }
+
+    @discardableResult
+    static func removeAllTemporaryExports(
+        in baseDirectory: URL,
+        fileManager: FileManager = .default
+    ) throws -> Bool {
+        guard fileManager.fileExists(atPath: baseDirectory.path) else { return false }
+        try fileManager.removeItem(at: baseDirectory)
+        return true
     }
 
     @discardableResult

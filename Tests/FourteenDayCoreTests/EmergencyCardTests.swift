@@ -307,6 +307,26 @@ struct ExportDocumentTests {
         #expect(try file.removeIfExists() == false)
     }
 
+    @Test("stale export directories are removed as one app-owned base")
+    func removesAllStaleTemporaryExports() throws {
+        let testRoot = FileManager.default.temporaryDirectory
+            .appendingPathComponent("StalePDFExportTests-\(UUID().uuidString)", isDirectory: true)
+        let base = testRoot.appendingPathComponent(TemporaryExportFile.baseDirectoryName, isDirectory: true)
+        try FileManager.default.createDirectory(at: testRoot, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: testRoot) }
+
+        let first = try TemporaryExportFile.makePDFURL(in: base)
+        let second = try TemporaryExportFile.makePDFURL(in: base)
+        try Data("first".utf8).write(to: first.url)
+        try Data("second".utf8).write(to: second.url)
+
+        #expect(FileManager.default.fileExists(atPath: first.url.path))
+        #expect(FileManager.default.fileExists(atPath: second.url.path))
+        #expect(try TemporaryExportFile.removeAllTemporaryExports(in: base))
+        #expect(FileManager.default.fileExists(atPath: base.path) == false)
+        #expect(try TemporaryExportFile.removeAllTemporaryExports(in: base) == false)
+    }
+
     @Test("export file name constant has no personal placeholders")
     func exportFileName() {
         #expect(ExportFileName.pdf == "14nichi-export.pdf")

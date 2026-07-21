@@ -1,8 +1,8 @@
 # 14日ノート
 
-災害、停電、断水、通信障害などで日常生活が一時的に機能しなくなったとき、個人や家庭が次の行動をオフラインで確認するためのiPhone・iPad・Macアプリです。
+災害、停電、断水、通信障害などで日常生活が一時的に機能しなくなったとき、個人や家庭が次の行動をオフラインで確認するためのiPhone・iPadアプリです。
 
-フルMVPの機能実装と、内部TestFlight前のリポジトリ側提出準備まで完了しています（オフライン閲覧、探索、備蓄、緊急カード、公式リンク集、PDF・印刷、共有 Bundle ID、Mac Sandbox、Face ID 利用目的）。企画の原本は [`14日note.md`](./14日note.md)、実装範囲は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md) を参照してください。AIエージェントは [`AGENTS.md`](./AGENTS.md) を確認し、提出手順は [`docs/RELEASE_SUBMISSION_CHECKLIST.md`](./docs/RELEASE_SUBMISSION_CHECKLIST.md) を正本にしてください。
+フルMVPの機能実装と、iPhone / iPadの内部TestFlight前のリポジトリ側提出準備まで完了しています（オフライン閲覧、探索、備蓄、緊急カード、公式リンク集、PDF・印刷、Face ID利用目的）。初回App Store申請にMac版は含めません。企画の原本は [`14日note.md`](./14日note.md)、実装範囲は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md) を参照してください。AIエージェントは [`AGENTS.md`](./AGENTS.md) を確認し、提出手順は [`docs/RELEASE_SUBMISSION_CHECKLIST.md`](./docs/RELEASE_SUBMISSION_CHECKLIST.md) を正本にしてください。申請画像と日本語文案は [`docs/app-store-assets/`](./docs/app-store-assets/) にあります。
 
 ## 現在の実装スライス
 
@@ -14,7 +14,7 @@
 - Swift 6.2 以降
 - XcodeGen 2.x
 - iOS / iPadOS 18.0 以降
-- macOS 15.0 以降
+- macOS 15.0 以降（将来候補のMacターゲットをビルドする場合）
 
 外部パッケージへの依存はありません。
 
@@ -36,7 +36,7 @@ open FourteenDayNote.xcodeproj
 swift run content-lint --distribution
 ```
 
-生成した `FourteenDayNote.xcodeproj` はローカル生成物としてGit管理しません。Xcodeでは `FourteenDayNote`（iPhone / iPad）または `FourteenDayNoteMac` を選択します。Signing の Team は Xcode で選択し、`project.yml` に Team ID を推測で書かないでください。
+生成した `FourteenDayNote.xcodeproj` はローカル生成物としてGit管理しません。初回申請ではXcodeの `FourteenDayNote`（iPhone / iPad）を選択します。`FourteenDayNoteMac` は将来候補として残しますが、今回のArchive・Upload対象ではありません。SigningのTeamはXcodeで選択し、`project.yml` にTeam IDを推測で書かないでください。
 
 ## 安全上の境界
 

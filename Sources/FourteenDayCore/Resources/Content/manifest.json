@@ -375,7 +375,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -389,6 +389,16 @@
           "excerpt": null
         },
         {
+          "id": "mhlw-water-intake-restriction",
+          "title": "水質異常時における摂取制限を伴う給水継続の考え方について",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/web/t_doc?dataId=00tc3885&dataType=1&pageNo=1",
+          "accessedAt": "2026-07-22",
+          "usage": "paraphrase",
+          "rightsNote": "水質異常時は水道事業者が飲用を避ける旨と解除を周知する考え方を、自前の表現で要約。",
+          "excerpt": null
+        },
+        {
           "id": "gov-prep",
           "title": "防災特集 ACTION01 災害に事前に備える",
           "publisher": "政府広報オンライン",
@@ -399,13 +409,13 @@
           "excerpt": null
         },
         {
-          "id": "tokyo-toilet",
-          "title": "災害時、トイレには駆け込めないかも！災害に備えて",
-          "publisher": "東京都総務局総合防災部",
-          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
-          "accessedAt": "2026-07-20",
+          "id": "cao-toilet-stockpile",
+          "title": "トイレ備蓄忘れていませんか？",
+          "publisher": "内閣府（記事: 経済産業省）",
+          "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html",
+          "accessedAt": "2026-07-22",
           "usage": "paraphrase",
-          "rightsNote": "携帯トイレの必要性と一般的な回数想定を自前で要約。",
+          "rightsNote": "携帯トイレの必要性と、1人1日5回・週35回という一般的な備蓄目安を自前で要約。",
           "excerpt": null
         }
       ]
@@ -428,17 +438,17 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
-          "id": "tokyo-toilet",
-          "title": "災害時、トイレには駆け込めないかも！災害に備えて",
-          "publisher": "東京都総務局総合防災部",
-          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
-          "accessedAt": "2026-07-20",
+          "id": "cao-toilet-stockpile",
+          "title": "トイレ備蓄忘れていませんか？",
+          "publisher": "内閣府（記事: 経済産業省）",
+          "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html",
+          "accessedAt": "2026-07-22",
           "usage": "paraphrase",
-          "rightsNote": "携帯トイレの必要性と一般的な回数想定を自前で要約。",
+          "rightsNote": "携帯トイレの必要性と、1人1日5回・週35回という一般的な備蓄目安を自前で要約。",
           "excerpt": null
         },
         {
@@ -453,12 +463,22 @@
         },
         {
           "id": "kantei-sonae",
-          "title": "災害が起きる前にできること",
+          "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "accessedAt": "2026-07-20",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "accessedAt": "2026-07-22",
+          "usage": "linkOnly",
+          "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
+          "excerpt": null
+        },
+        {
+          "id": "mhlw-disaster-handwashing",
+          "title": "避難所等のトイレの消毒方法、手洗いなどについて",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/bunya/kenkou/hoken-sidou/disaster_1.html",
+          "accessedAt": "2026-07-22",
           "usage": "paraphrase",
-          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "rightsNote": "断水・避難時の手洗いと速乾性アルコール手指消毒薬の使い分けを自前の表現で要約。",
           "excerpt": null
         }
       ]
@@ -575,7 +595,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -600,12 +620,12 @@
         },
         {
           "id": "kantei-sonae",
-          "title": "災害が起きる前にできること",
+          "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "accessedAt": "2026-07-20",
-          "usage": "paraphrase",
-          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "accessedAt": "2026-07-22",
+          "usage": "linkOnly",
+          "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
         }
       ]
@@ -892,7 +912,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -930,7 +950,7 @@
           "title": "ガス臭いと感じた時には",
           "publisher": "経済産業省",
           "url": "https://www.meti.go.jp/policy/safety_security/industrial_safety/sangyo/citygas/anzen_torikumi/file_jisyuhoan/business/study/fireaccident/gas_smell.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-07-22",
           "usage": "paraphrase",
           "rightsNote": "火気・電気スイッチを避け、窓を開け、栓を閉めて事業者へ連絡する要点を自前で要約。",
           "excerpt": null
@@ -955,7 +975,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -1007,17 +1027,17 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "kantei-sonae",
-          "title": "災害が起きる前にできること",
+          "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "accessedAt": "2026-07-20",
-          "usage": "paraphrase",
-          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "accessedAt": "2026-07-22",
+          "usage": "linkOnly",
+          "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
         },
         {
@@ -1278,17 +1298,17 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "kantei-sonae",
-          "title": "災害が起きる前にできること",
+          "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "accessedAt": "2026-07-20",
-          "usage": "paraphrase",
-          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "accessedAt": "2026-07-22",
+          "usage": "linkOnly",
+          "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
         },
         {
@@ -1339,7 +1359,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -1374,12 +1394,12 @@
         },
         {
           "id": "kantei-sonae",
-          "title": "災害が起きる前にできること",
+          "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "accessedAt": "2026-07-20",
-          "usage": "paraphrase",
-          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "accessedAt": "2026-07-22",
+          "usage": "linkOnly",
+          "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
         }
       ]
@@ -1400,7 +1420,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -1415,12 +1435,12 @@
         },
         {
           "id": "kantei-sonae",
-          "title": "災害が起きる前にできること",
+          "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "accessedAt": "2026-07-20",
-          "usage": "paraphrase",
-          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "accessedAt": "2026-07-22",
+          "usage": "linkOnly",
+          "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
         }
       ]
@@ -1442,7 +1462,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -1479,8 +1499,8 @@
           "id": "kokuminhogo",
           "title": "国民保護ポータルサイト",
           "publisher": "内閣官房",
-          "url": "https://www.kokuminhogo.go.jp/",
-          "accessedAt": "2026-07-20",
+          "url": "https://www.kokuminhogo.go.jp/index.html",
+          "accessedAt": "2026-07-22",
           "usage": "linkOnly",
           "rightsNote": "国民保護に関する公的案内への参照。",
           "excerpt": null
@@ -1559,7 +1579,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-07-22",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -1574,22 +1594,22 @@
         },
         {
           "id": "kantei-sonae",
-          "title": "災害が起きる前にできること",
+          "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
-          "url": "https://www.kantei.go.jp/jp/headline/bousai/sonae.html",
-          "accessedAt": "2026-07-20",
-          "usage": "paraphrase",
-          "rightsNote": "非常持ち出し・備蓄の例示を自前の言葉で案内。",
+          "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
+          "accessedAt": "2026-07-22",
+          "usage": "linkOnly",
+          "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
         },
         {
-          "id": "tokyo-toilet",
-          "title": "災害時、トイレには駆け込めないかも！災害に備えて",
-          "publisher": "東京都総務局総合防災部",
-          "url": "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf",
-          "accessedAt": "2026-07-20",
+          "id": "cao-toilet-stockpile",
+          "title": "トイレ備蓄忘れていませんか？",
+          "publisher": "内閣府（記事: 経済産業省）",
+          "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html",
+          "accessedAt": "2026-07-22",
           "usage": "paraphrase",
-          "rightsNote": "携帯トイレの必要性と一般的な回数想定を自前で要約。",
+          "rightsNote": "携帯トイレの必要性と、1人1日5回・週35回という一般的な備蓄目安を自前で要約。",
           "excerpt": null
         }
       ]

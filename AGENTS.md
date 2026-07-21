@@ -11,7 +11,7 @@
 
 ## Current lane
 
-フルMVP機能と提出前リポジトリ修正（共有 Bundle ID、Face ID 文、Mac Sandbox、暗号化 Infop）は完了しています。iOS Simulator ビルドも成功しています。次は本人による Team 選択・実機スモーク・Archive / Validate / Upload です。手順の正本は `docs/RELEASE_SUBMISSION_CHECKLIST.md`。関連: `docs/MANUAL_SMOKE_CHECKLIST.md`、`docs/TESTFLIGHT_HANDOFF.md`。
+フルMVP機能とiOS提出前リポジトリ修正（Face ID 文、暗号化 Infop、Privacy Manifest）は完了しています。初回App Store申請は **iPhone / iPadのみ**、現在のiOS公開候補は `1.0.0 (6)`。Macターゲットは将来候補として残しますが、今回の申請・商品ページ・Archive対象には含めません。iOS Simulatorビルドと申請用スクリーンショット作成も完了しています。次は本人によるTeam選択・実機スモーク・Archive / Validate / Uploadです。手順の正本は `docs/RELEASE_SUBMISSION_CHECKLIST.md`。関連: `docs/MANUAL_SMOKE_CHECKLIST.md`、`docs/TESTFLIGHT_HANDOFF.md`、`docs/app-store-assets/`。
 
 ## Safety boundary
 
@@ -32,7 +32,7 @@
 3. `swift test --disable-sandbox` を実行する。
 4. コンテンツを触った場合は `swift run content-lint` も実行する。
 5. `project.yml` を変えた場合は `xcodegen generate` を実行する。
-6. 選択したschemeを明示してXcode buildを確認する（現状は `FourteenDayNoteMac` が安定。iOSは Platform 導入後）。
+6. 選択したschemeを明示してXcode buildを確認する（初回申請対象は `FourteenDayNote` のiPhone / iPad）。
 7. 実装境界や次の優先順位が変わった場合だけ `docs/PROJECT_FOUNDATION.md` を更新する。
 
 `FourteenDayNote.xcodeproj` は生成物です。直接編集せず、`project.yml` を変更してください。`DEVELOPMENT_TEAM` を推測で `project.yml` に書かないでください。

@@ -1,10 +1,10 @@
 # Project Foundation
 
-最終更新: 2026-07-20
+最終更新: 2026-07-22
 
 ## 現在地
 
-フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）と、同梱コンテンツの公的一次情報照合・編集確認・`approved` 化まで完了しています。`approved` は専門資格者による個別監修や正確性保証を意味せず、全記事で不正確または古くなる可能性と公式情報優先を明示します。内部TestFlightはコードと文書の準備まで完了し、Appleアカウント側の署名・Archive・Uploadは利用者操作が残っています。
+フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）と、同梱コンテンツの公的一次情報照合・編集確認・`approved` 化まで完了しています。`approved` は専門資格者による個別監修や正確性保証を意味せず、全記事で不正確または古くなる可能性と公式情報優先を明示します。初回App Store申請は **iPhone / iPadのみ**。申請用画像と日本語メタデータ案は `docs/app-store-assets/` に用意済みです。内部TestFlightはコードと文書の準備まで完了し、Appleアカウント側の署名・実機確認・Archive・Uploadは利用者操作が残っています。
 
 ### いま動くもの
 
@@ -33,23 +33,22 @@
 - PDF・印刷（項目選択、個人情報の明示同意、一時ファイル後片付け）
 - Git 管理（`main`、XcodeGen 生成物は ignore）
 
-### 2026-07-20 の検証状況
+### 2026-07-22 の検証状況
 
-- `swift test --disable-sandbox`: 65 tests / 12 suites 成功
+- `swift test --disable-sandbox`: 66 tests / 12 suites 成功
 - `swift run --disable-sandbox content-lint`: OK（13 situations / 30 articles, all approved）
 - `swift run --disable-sandbox content-lint --distribution`: OK
 - `xcodegen generate`: 成功
-- `FourteenDayNoteMac` Debug build（unsigned）: 成功
-- `FourteenDayNote` iPhone 17 / iPad (A16) Simulator Debug・generic iOS Simulator Release: 成功
-- Simulator 起動スモーク（`simctl launch`）: 成功
+- `FourteenDayNote` generic iOS Simulator Release（unsigned、`1.0.0 (6)`）: 成功
+- 生成appで Bundle ID、版番号、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
+- iPhone 17 / iPad (A16) Simulator Debug・起動スモークは2026-07-20に成功（最終調整後の実機スモークは未実施）
 - About / 読みやすさは単一の sheet 状態で排他的に表示（コンパクト幅での右上 i クラッシュを修正）
-- Release app bundle: 共有 Bundle ID、`0.1.0 (2)`、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
 - 実機30秒計測 / VoiceOver実機 / Archive Validate: 未実施（手順は `docs/MANUAL_SMOKE_CHECKLIST.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md`）
 
 ## プロダクト判断
 
 - 初期対象地域は日本。
-- iPhone / iPad / MacをSwiftUIで提供する。
+- 初回App Store版はiPhone / iPadをSwiftUIで提供する。Macターゲットは将来候補としてリポジトリに残すが、初回申請には含めない。
 - 基本機能はログイン、広告、常時通信なしで利用できる。
 - Markdownをコンテンツ原本とし、検索・表示用メタデータは `manifest.json` へ置く。
 - 個人情報は `docs/EMERGENCY_CARD_THREAT_MODEL.md` の最小項目のみ。備蓄・お気に入りと保存境界を分離する。
@@ -141,10 +140,10 @@ OfficialLinks JSON
 | 個人情報漏えい | 最小データ、分離ストア、出力同意、ログ非記録、脅威モデル |
 | 機能過多 | 30秒到達のガイド導線を維持し、拡張はスライス単位 |
 
-## 提出前のリポジトリ方針（2026-07-20 確定）
+## 提出前のリポジトリ方針（2026-07-22 更新）
 
-- iOS / Mac は **同一 Bundle ID** `jp.hazakura.FourteenDayNote`（同一商品・ユニバーサル購入）。
-- Mac App Sandbox 必須。PDF のユーザー任意パス直接保存は未実装のため file 権限は付けない。
+- 初回申請はiOS / iPadOSのみ。App Store ConnectへmacOSプラットフォームを追加しない。
+- Macターゲットと既存のSandbox設定は将来候補として残すが、今回のArchive・Validate・Upload・商品ページ素材の対象外。
 - Face ID 利用目的文と非免除暗号なしフラグを Infop に設定。
 - 提出手順の正本: [`RELEASE_SUBMISSION_CHECKLIST.md`](./RELEASE_SUBMISSION_CHECKLIST.md)
 
@@ -152,4 +151,4 @@ OfficialLinks JSON
 
 1. Xcode で Team を選択し、実機ビルドと `docs/MANUAL_SMOKE_CHECKLIST.md` を記録する。
 2. `docs/TESTFLIGHT_HANDOFF.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md` に従い Archive → Validate → 内部TestFlight Upload。
-3. App Store 一般公開条件の充足（プライバシーポリシーURL、実機a11y、商品ページ素材）。
+3. `docs/app-store-assets/` の文案をConnectへ入力し、公開URL・実機a11y・審査連絡先を本人が最終確認する。

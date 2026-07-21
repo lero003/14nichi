@@ -13,7 +13,8 @@ struct ContentRepositoryTests {
         #expect(catalog.situations.count >= 10)
         #expect(catalog.articles.count >= 25)
         #expect(catalog.articles.allSatisfy { $0.reviewStatus == .approved })
-        #expect(catalog.articles.allSatisfy { $0.reviewedAt == "2026-07-20" })
+        // 記事ごとの再確認日を許容しつつ、approvedに必要な記録が欠けていないことを確認する。
+        #expect(catalog.articles.allSatisfy { $0.reviewedAt?.isEmpty == false })
         #expect(catalog.articles.allSatisfy { $0.reviewedBy?.isEmpty == false })
         #expect(catalog.articles.allSatisfy { !$0.sources.isEmpty })
         #expect(catalog.articles(for: "blackout").map(\.id).contains("blackout-first-actions"))

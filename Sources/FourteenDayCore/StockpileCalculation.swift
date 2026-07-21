@@ -92,8 +92,8 @@ public struct StockpileRecommendation: Equatable, Identifiable, Sendable {
 public enum StockpileRecommendations {
     private static let caoCheckURL = URL(string: "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html")!
     private static let govPrepURL = URL(string: "https://www.gov-online.go.jp/tokusyu/bousai/preparation.html")!
-    private static let kanteiSonaeURL = URL(string: "https://www.kantei.go.jp/jp/headline/bousai/sonae.html")!
-    private static let tokyoToiletURL = URL(string: "https://www.bousai.metro.tokyo.lg.jp/_res/projects/default_project/_page_/001/030/489/toire.pdf")!
+    private static let kanteiSonaeURL = URL(string: "https://www.kantei.go.jp/jp/headline/bousai/index.html")!
+    private static let toiletStockpileURL = URL(string: "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html")!
     private static let maffFoodURL = URL(string: "https://www.maff.go.jp/j/zyukyu/foodstock/")!
 
     private static let caoCheck = StockpileGuidanceSource(
@@ -113,19 +113,19 @@ public enum StockpileRecommendations {
     )
 
     private static let kanteiSonae = StockpileGuidanceSource(
-        title: "災害が起きる前にできること",
+        title: "防災の手引き～いのちとくらしをまもるために～",
         publisher: "首相官邸",
         url: kanteiSonaeURL,
-        accessedAt: "2026-07-20",
-        rightsNote: "非常持ち出し・生活用品の例示を自前の表現で示す。家庭差があるため数量は自動計算しない。"
+        accessedAt: "2026-07-22",
+        rightsNote: "事前防災・避難・災害別情報をまとめた現行の首相官邸公式手引きを参照する。"
     )
 
-    private static let tokyoToilet = StockpileGuidanceSource(
-        title: "災害時、トイレには駆け込めないかも！災害に備えて",
-        publisher: "東京都総務局総合防災部",
-        url: tokyoToiletURL,
-        accessedAt: "2026-07-20",
-        rightsNote: "1人1日平均5回という公的な想定だけを自前の表現で表示する。"
+    private static let toiletStockpile = StockpileGuidanceSource(
+        title: "トイレ備蓄忘れていませんか？",
+        publisher: "内閣府（記事: 経済産業省）",
+        url: toiletStockpileURL,
+        accessedAt: "2026-07-22",
+        rightsNote: "1人1日平均5回、1週間35回分という公的な目安を自前の表現で表示する。"
     )
 
     private static let maffFood = StockpileGuidanceSource(
@@ -166,7 +166,7 @@ public enum StockpileRecommendations {
             dailyAmountPerPerson: 5,
             example: "便器に取り付ける凝固剤・袋のセットなど",
             group: "数量の目安",
-            source: tokyoToilet
+            source: toiletStockpile
         ),
 
         // MARK: 水・衛生

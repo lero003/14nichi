@@ -138,6 +138,7 @@ struct ExportView: View {
                 refreshPreview()
             }
             .task {
+                cleanupStaleExports()
                 loadSources()
                 refreshPreview()
             }
@@ -181,26 +182,40 @@ struct ExportView: View {
     private func loadSources() {
         if let emergencyContainer {
             let context = ModelContext(emergencyContainer)
-            if let card = try? EmergencyCardStore.loadOrCreateCard(in: context) {
+            do {
+                let card = try EmergencyCardStore.loadOrCreateCard(in: context)
                 emergencyCard = card.snapshot
+            } catch {
+                emergencyCard = EmergencyCardSnapshot()
+                clearPersonalSelection()
+                statusMessage = "緊急カードを読み込めないため、個人情報の出力をオフにしました。"
             }
         } else {
             emergencyCard = EmergencyCardSnapshot()
             // 個人情報トグルが残っていても出力できないよう落とす
-            selection.includeDisplayName = false
-            selection.includeContacts = false
-            selection.includeMeetingPlace = false
-            selection.includeEvacuationPlace = false
-            selection.includeAllergies = false
-            selection.includeMedications = false
-            selection.includeNotes = false
-            acknowledgedPersonalData = false
+            clearPersonalSelection()
         }
         if primaryPlan == nil {
-            _ = try? StockpileStore.loadOrCreatePlan(in: stockpileContext)
+            do {
+                _ = try StockpileStore.loadOrCreatePlan(in: stockpileContext)
+            } catch {
+                statusMessage = statusMessage
+                    ?? "備蓄データを読み込めませんでした。備蓄画面で保存状態を確認してください。"
+            }
         }
         protection = EmergencyCardProtectionStore().load()
         emergencyContentUnlocked = protection.requiresAuthenticationToReveal == false
+    }
+
+    private func clearPersonalSelection() {
+        selection.includeDisplayName = false
+        selection.includeContacts = false
+        selection.includeMeetingPlace = false
+        selection.includeEvacuationPlace = false
+        selection.includeAllergies = false
+        selection.includeMedications = false
+        selection.includeNotes = false
+        acknowledgedPersonalData = false
     }
 
     private func makeDocument() -> ExportDocument {
@@ -323,15 +338,41 @@ struct ExportView: View {
 
         let document = makeDocument()
         let service = PDFExportService()
+        var temporaryFile: TemporaryExportFile?
         do {
             let file = try TemporaryExportFile.makePDFURL()
+            temporaryFile = file
             try service.writePDF(document: document, to: file)
             onSuccess(file)
-        } catch PDFExportError.emptySelection {
-            statusMessage = "出力する項目を選択してください。"
         } catch {
-            statusMessage = "PDFを生成できませんでした。選択内容を見直してもう一度お試しください。"
+            let cleanupFailed: Bool
+            if let temporaryFile {
+                do {
+                    _ = try temporaryFile.removeIfExists()
+                    cleanupFailed = false
+                } catch {
+                    cleanupFailed = true
+                }
+            } else {
+                cleanupFailed = false
+            }
+
+            if let exportError = error as? PDFExportError, exportError == .emptySelection {
+                statusMessage = "出力する項目を選択してください。"
+            } else if cleanupFailed {
+                statusMessage = "PDFを生成できず、一時ファイルも削除できませんでした。アプリを再起動してからもう一度お試しください。"
+            } else {
+                statusMessage = "PDFを生成できませんでした。選択内容を見直してもう一度お試しください。"
+            }
             // エラー文に個人情報を載せない
+        }
+    }
+
+    private func cleanupStaleExports() {
+        do {
+            _ = try TemporaryExportFile.removeAllTemporaryExports()
+        } catch {
+            statusMessage = "前回のPDF一時ファイルを削除できませんでした。空き容量を確認してアプリを再起動してください。"
         }
     }
 

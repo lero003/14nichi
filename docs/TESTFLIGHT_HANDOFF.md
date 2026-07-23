@@ -1,11 +1,9 @@
 # 内部 TestFlight 引き渡しメモ
 
-最終更新: 2026-07-22
-状態: **提出前のリポジトリ修正は完了。Team 選択・Archive・Validate・Upload は本人操作。**
+最終更新: 2026-07-24
+状態: **履歴**。初回 iOS 公開（`1.0.0` / ビルド `6`）は完了。再提出の手順正本は [`RELEASE_SUBMISSION_CHECKLIST.md`](./RELEASE_SUBMISSION_CHECKLIST.md)。
 
-詳細手順の正本: [`RELEASE_SUBMISSION_CHECKLIST.md`](./RELEASE_SUBMISSION_CHECKLIST.md)
-
-「コード完了」「Validate可能」「Upload済み」「App Store公開可能」を混同しないこと。
+「コード完了」「Validate可能」「Upload済み」「App Store公開中」を混同しないこと。
 
 ## 1. アプリ識別情報（リポジトリ上の事実）
 

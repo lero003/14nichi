@@ -11,7 +11,9 @@
 
 ## Current lane
 
-フルMVP機能とiOS提出前リポジトリ修正（Face ID 文、暗号化 Infop、Privacy Manifest）は完了しています。初回App Store申請は **iPhone / iPadのみ**、現在のiOS公開候補は `1.0.0 (6)`。Macターゲットは将来候補として残しますが、今回の申請・商品ページ・Archive対象には含めません。iOS Simulatorビルドと申請用スクリーンショット作成も完了しています。次は本人によるTeam選択・実機スモーク・Archive / Validate / Uploadです。手順の正本は `docs/RELEASE_SUBMISSION_CHECKLIST.md`。関連: `docs/MANUAL_SMOKE_CHECKLIST.md`、`docs/TESTFLIGHT_HANDOFF.md`、`docs/app-store-assets/`。
+**iOS App Store 初回公開済み**（`1.0.0` / ビルド `6`、iPhone / iPad、2026-07-24 審査通過）。Macターゲットは将来候補としてリポジトリに残しますが、現行の公開商品には含めません。
+
+いまの優先は **公開後の保守** です。内容更新・不具合修正・次ビルド準備を、1つの検証可能な変更へ絞って進めてください。次の App Store 提出ではビルド番号を上げ、`docs/RELEASE_SUBMISSION_CHECKLIST.md` を運用手順の正本にします。現状の要約は `docs/PROJECT_FOUNDATION.md` と `docs/handoff.md`、変更履歴は `CHANGELOG.md`。
 
 ## Safety boundary
 

@@ -1,13 +1,15 @@
 import SwiftUI
 
+enum AppExternalLinks {
+    static let product = URL(string: "https://hazakura.dev/14nichi-note/")!
+    static let support = URL(string: "https://hazakura.dev/14nichi-note/support/")!
+    static let privacyPolicy = URL(string: "https://hazakura.dev/14nichi-note/privacy/")!
+}
+
 struct AboutView: View {
     @Environment(\.dismiss) private var dismiss
     /// sheet 経由だと `@Environment(ReadabilitySettings.self)` が欠落してクラッシュすることがあるため、明示注入する。
     var readability: ReadabilitySettings
-
-    private static let productURL = URL(string: "https://hazakura.dev/14nichi-note/")!
-    private static let supportURL = URL(string: "https://hazakura.dev/14nichi-note/support/")!
-    private static let privacyURL = URL(string: "https://hazakura.dev/14nichi-note/privacy/")!
 
     var body: some View {
         NavigationStack {
@@ -92,19 +94,19 @@ struct AboutView: View {
                 linkRow(
                     title: "製品ページを開く",
                     subtitle: "hazakura.dev/14nichi-note",
-                    url: Self.productURL
+                    url: AppExternalLinks.product
                 )
                 Divider()
                 linkRow(
                     title: "サポート",
                     subtitle: "お問い合わせ・ヘルプ",
-                    url: Self.supportURL
+                    url: AppExternalLinks.support
                 )
                 Divider()
                 linkRow(
                     title: "プライバシーポリシー",
                     subtitle: "個人情報の取り扱い",
-                    url: Self.privacyURL
+                    url: AppExternalLinks.privacyPolicy
                 )
             }
         }

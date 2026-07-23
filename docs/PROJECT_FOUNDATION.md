@@ -1,10 +1,10 @@
 # Project Foundation
 
-最終更新: 2026-07-22
+最終更新: 2026-07-24
 
 ## 現在地
 
-フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）と、同梱コンテンツの公的一次情報照合・編集確認・`approved` 化まで完了しています。`approved` は専門資格者による個別監修や正確性保証を意味せず、全記事で不正確または古くなる可能性と公式情報優先を明示します。初回App Store申請は **iPhone / iPadのみ**。申請用画像と日本語メタデータ案は `docs/app-store-assets/` に用意済みです。内部TestFlightはコードと文書の準備まで完了し、Appleアカウント側の署名・実機確認・Archive・Uploadは利用者操作が残っています。
+**iOS App Store 初回公開済み**（マーケティング `1.0.0` / ビルド `6`、iPhone / iPad、2026-07-24 審査通過。タグ `v1.0.0`）。フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）と、同梱コンテンツの公的一次情報照合・編集確認・`approved` 化まで完了しています。`approved` は専門資格者による個別監修や正確性保証を意味せず、全記事で不正確または古くなる可能性と公式情報優先を明示します。Macターゲットは将来候補としてリポジトリに残しますが、現行の公開商品・商品ページには含めません。
 
 ### いま動くもの
 
@@ -33,17 +33,14 @@
 - PDF・印刷（項目選択、個人情報の明示同意、一時ファイル後片付け）
 - Git 管理（`main`、XcodeGen 生成物は ignore）
 
-### 2026-07-22 の検証状況
+### 検証・公開状況
 
-- `swift test --disable-sandbox`: 66 tests / 12 suites 成功
-- `swift run --disable-sandbox content-lint`: OK（13 situations / 30 articles, all approved）
-- `swift run --disable-sandbox content-lint --distribution`: OK
-- `xcodegen generate`: 成功
+- `swift test --disable-sandbox`: 66 tests / 12 suites 成功（リポジトリ最終候補時点）
+- `swift run --disable-sandbox content-lint` / `--distribution`: OK（13 situations / 30 articles, all approved）
 - `FourteenDayNote` generic iOS Simulator Release（unsigned、`1.0.0 (6)`）: 成功
 - 生成appで Bundle ID、版番号、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
-- iPhone 17 / iPad (A16) Simulator Debug・起動スモークは2026-07-20に成功（最終調整後の実機スモークは未実施）
-- About / 読みやすさは単一の sheet 状態で排他的に表示（コンパクト幅での右上 i クラッシュを修正）
-- 実機30秒計測 / VoiceOver実機 / Archive Validate: 未実施（手順は `docs/MANUAL_SMOKE_CHECKLIST.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md`）
+- About / 読みやすさは単一の sheet 状態で排他的に表示
+- **App Store 審査通過・初回公開**（2026-07-24、`1.0.0 (6)`）
 
 ## プロダクト判断
 
@@ -140,15 +137,17 @@ OfficialLinks JSON
 | 個人情報漏えい | 最小データ、分離ストア、出力同意、ログ非記録、脅威モデル |
 | 機能過多 | 30秒到達のガイド導線を維持し、拡張はスライス単位 |
 
-## 提出前のリポジトリ方針（2026-07-22 更新）
+## 公開後のリポジトリ方針（2026-07-24 更新）
 
-- 初回申請はiOS / iPadOSのみ。App Store ConnectへmacOSプラットフォームを追加しない。
-- Macターゲットと既存のSandbox設定は将来候補として残すが、今回のArchive・Validate・Upload・商品ページ素材の対象外。
-- Face ID 利用目的文と非免除暗号なしフラグを Infop に設定。
-- 提出手順の正本: [`RELEASE_SUBMISSION_CHECKLIST.md`](./RELEASE_SUBMISSION_CHECKLIST.md)
+- 公開中の初回商品は iOS / iPadOS のみ。macOS を同じ商品ページへ追加する判断は、Mac配布を実際に進めるときに再レビューする。
+- Macターゲットと既存のSandbox設定は将来候補として残す。
+- Face ID 利用目的文と非免除暗号なしフラグは Infop に設定済み。
+- 次の提出手順の正本: [`RELEASE_SUBMISSION_CHECKLIST.md`](./RELEASE_SUBMISSION_CHECKLIST.md)
+- 変更履歴: [`../CHANGELOG.md`](../CHANGELOG.md)
 
 ## 次の着手候補
 
-1. Xcode で Team を選択し、実機ビルドと `docs/MANUAL_SMOKE_CHECKLIST.md` を記録する。
-2. `docs/TESTFLIGHT_HANDOFF.md` / `docs/RELEASE_SUBMISSION_CHECKLIST.md` に従い Archive → Validate → 内部TestFlight Upload。
-3. `docs/app-store-assets/` の文案をConnectへ入力し、公開URL・実機a11y・審査連絡先を本人が最終確認する。
+1. 公開後フィードバックと実機での不具合を、ホットフィックスか通常保守かに分けて対応する。
+2. 記事・出典の鮮度確認と、必要な場合のみの内容更新（`content-lint --distribution` を維持）。
+3. 次ビルドでは `CURRENT_PROJECT_VERSION` を上げ、再提出は `docs/RELEASE_SUBMISSION_CHECKLIST.md` に従う。
+4. Mac版は、必要性が明確になるまで商品構成を決めない。

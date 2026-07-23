@@ -2,20 +2,17 @@
 
 ## Current State
 
-- 2026-07-22の判断で、初回App Store申請は **iPhone / iPadのみ**。Macターゲットは残すが、今回の申請・Archive・商品ページには含めない。
-- 既存TestFlight `0.1.0 (5)` より新しい初回公開候補として、iOSの版番号を `1.0.0 (6)` に更新。Macターゲットの版番号は将来候補のまま変更していない。
-- iPhone 6.9インチ5枚、iPad 13インチ4枚の申請用JPEGと、日本語メタデータ・審査メモ・Web本文案を `docs/app-store-assets/` に用意済み。
-
-- フルMVP機能完了。提出前のリポジトリ修正（Bundle ID 統一、Face ID 文、Mac Sandbox、暗号化 Infop、Privacy Manifest 同梱修正）まで完了。
-- 緊急カードの非アクティブ時秘匿・復帰時再ロックと、PDF個人情報プレビューの認証境界を脅威モデルどおりに修正済み。
-- 備蓄・買い物は入力中心から、人数・期間の選択、一般目安の確認、不足品目の選択、購入済みチェックだけの導線へ変更済み。
-- iOS Simulator（iPhone 17 / iPad A16）ビルドと起動スモーク成功。
-- アプリアイコンと画面内UIは、深い青緑・生成り・黄土・コーラルの共通デザインへ統一済み。
+- **2026-07-24: iOS App Store 審査通過・初回公開**（`1.0.0` / ビルド `6`、iPhone / iPad）。Git タグ `v1.0.0`。
+- 公開範囲は **iPhone / iPadのみ**。Macターゲットはリポジトリに残すが、現行商品ページ・公開対象には含めない。
+- フルMVP機能完了（オフラインガイド、探索、備蓄、緊急カード、公式リンク、PDF・印刷、Face ID 利用目的、暗号化 Infop、Privacy Manifest）。
 - 同梱13状況・30記事はすべて `approved`。公的一次情報照合・編集確認済みで、専門資格監修や正確性保証ではない旨を常時表示。
-- Team 選択、実機、Archive Validate / Upload は本人操作。
+- サポート / プライバシーは About と「その他」タブから開ける。本番URLは `https://hazakura.dev/14nichi-note/` 系。
+- 申請用スクショと日本語メタデータは `docs/app-store-assets/`。変更履歴は `CHANGELOG.md`。
 
 ## Recent Changes
 
+- 2026-07-24: App Store 審査通過をドキュメントに反映し、`CHANGELOG.md` とタグ `v1.0.0` を追加。
+- 「その他」タブからサポート・プライバシーへ直接リンクできるようにし、URL定数を共通化した。
 - iOS/Mac の Bundle ID を `jp.hazakura.FourteenDayNote` に統一した履歴あり。2026-07-22に初回申請からMacを外したため、同一商品ページ方針は現在不採用。
 - `NSFaceIDUsageDescription` と `ITSAppUsesNonExemptEncryption=false` を追加。
 - Mac に App Sandbox entitlements を追加（user-selected file 権限は未付与）。
@@ -59,22 +56,22 @@
 
 ## Risks / Unknowns
 
-- 実機・Archive 署名は Team 未設定のため未実施。
-- App Switcher の完全秘匿、復帰時再認証、共有/キャンセル後の一時PDF削除は実機手動スモークが必要。
-- 失効 Development 証明書（lero003）が identity に残存。使わない。
-- 製品・サポート・プライバシーの公開Web URLは2026-07-22にHTTP 200を確認済み。問い合わせ先と本文の最終目視、および用意済みスクリーンショット・文章のConnect入力が残る。
-- V1からV2への実データ移行と新しい備蓄→買い物導線は、既存データがある実機での手動スモークが必要。
-- 専門資格者による個別監修と実機での全記事表示確認は未実施。編集確認済みという境界を維持する。
+- 公開後フィードバックとコンテンツ鮮度の継続監視が必要。
+- 失効 Development 証明書（lero003）が identity に残存する環境では使わない。
+- 専門資格者による個別監修は未実施。編集確認済みという境界を維持する。
+- Mac版の商品構成・Bundle ID・保存領域は、配布を実際に進めるときに再レビューする。
 
 ## Next Actions
 
-1. XcodeでiOSターゲット `FourteenDayNote` にTeamを設定。
-2. 実機スモーク（30秒、備蓄の人数・期間変更、不足選択、買い物の購入済みチェック、旧データ移行を含む）を記録。
-3. ConnectでiOSアプリを作成し、iOSだけをArchive → Validate → Upload。
-4. 実機で注意事項・情報源・文字サイズ・行間を確認する。
+1. 公開後の不具合・要望をホットフィックスと通常保守に分ける。
+2. 記事・出典の定期的な再確認。更新時は `content-lint --distribution` を通す。
+3. 次提出ではビルド番号を上げ、`docs/RELEASE_SUBMISSION_CHECKLIST.md` に従う。
+4. Mac版は必要性が明確になるまで着手しない。
 
 ## Avoid
 
-- Bundle ID を初回 Upload 後に変える想定をしない。
+- 公開済み Bundle ID を安易に変えない。
 - `approved` を専門資格監修済み、またはあらゆる状況で正確と表現しない。
+- 公開済みタグ `v1.0.0` を動かさない。修正は新コミットと必要なら次バージョンで行う。
 - Upload や Team 固定をエージェントが独断しない。
+- ネットワーク、アカウント、解析、広告SDKを黙って追加しない。

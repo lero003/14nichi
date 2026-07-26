@@ -39,4 +39,40 @@ struct GuideMarkdownTests {
     func handlesEmptyDocument() {
         #expect(GuideMarkdownParser.parse("\n\n").isEmpty)
     }
+
+    @Test("a duplicate leading article title is omitted only for display")
+    func omitsDuplicateLeadingTitle() {
+        let markdown = """
+        # 地震：最初の数分ですること
+
+        本文です。
+        """
+
+        #expect(
+            GuideMarkdownParser.displayBlocks(
+                markdown,
+                omittingLeadingTitle: "地震：最初の数分ですること"
+            ) == [.paragraph("本文です。")]
+        )
+        #expect(GuideMarkdownParser.parse(markdown).first == .heading(
+            level: 1,
+            text: "地震：最初の数分ですること"
+        ))
+    }
+
+    @Test("a different or non-leading H1 remains visible")
+    func preservesMeaningfulHeadings() {
+        #expect(
+            GuideMarkdownParser.displayBlocks(
+                "# 別の見出し\n\n本文",
+                omittingLeadingTitle: "記事タイトル"
+            ).first == .heading(level: 1, text: "別の見出し")
+        )
+        #expect(
+            GuideMarkdownParser.displayBlocks(
+                "導入\n\n# 記事タイトル",
+                omittingLeadingTitle: "記事タイトル"
+            ).last == .heading(level: 1, text: "記事タイトル")
+        )
+    }
 }

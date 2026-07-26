@@ -4,7 +4,9 @@ import SwiftUI
 struct ArticleDetailView: View {
     let article: GuideArticle
     let isFavorite: Bool
+    let relatedArticles: [GuideArticle]
     let onToggleFavorite: () -> Void
+    let onOpenRelated: (GuideArticle) -> Void
     @Environment(ReadabilitySettings.self) private var readability
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var revealed = false
@@ -18,6 +20,7 @@ struct ArticleDetailView: View {
                 bodyBlock
                 detailedSafetyFooter
                 sourcesBlock
+                relatedArticlesBlock
             }
             .padding(AppTheme.contentGutter)
             .frame(maxWidth: readability.textSize.contentMaxWidth, alignment: .leading)
@@ -29,6 +32,16 @@ struct ArticleDetailView: View {
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
 #endif
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button(
+                    isFavorite ? "お気に入りから外す" : "お気に入りに追加",
+                    systemImage: isFavorite ? "heart.fill" : "heart",
+                    action: onToggleFavorite
+                )
+                .accessibilityHint("この記事のお気に入り状態を端末内に保存します")
+            }
+        }
         .onAppear {
             withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
                 revealed = true
@@ -57,15 +70,6 @@ struct ArticleDetailView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
 
-            Button(action: onToggleFavorite) {
-                Label(
-                    isFavorite ? "お気に入りから外す" : "お気に入りに追加",
-                    systemImage: isFavorite ? "heart.fill" : "heart"
-                )
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .accessibilityHint("この記事のお気に入り状態を端末内に保存します")
         }
     }
 
@@ -130,9 +134,55 @@ struct ArticleDetailView: View {
     private var bodyBlock: some View {
         ArticleMarkdownView(
             markdown: article.bodyMarkdown,
+            articleTitle: article.title,
             prefersBoldBody: readability.prefersBoldBody,
             lineSpacing: readability.resolvedLineSpacing
         )
+    }
+
+    @ViewBuilder
+    private var relatedArticlesBlock: some View {
+        if relatedArticles.isEmpty == false {
+            SurfaceCard(padding: 18) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("次に確認する")
+                        .font(.title3.weight(.semibold))
+                        .accessibilityAddTraits(.isHeader)
+                    Text("同じ状況に関係する確認済みの記事です。")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+
+                    ForEach(relatedArticles) { related in
+                        Button {
+                            onOpenRelated(related)
+                        } label: {
+                            HStack(alignment: .center, spacing: 12) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(related.title)
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+                                    Text(related.summary)
+                                        .font(.callout)
+                                        .foregroundStyle(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                Spacer(minLength: 8)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.tertiary)
+                                    .accessibilityHidden(true)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+
+                        if related.id != relatedArticles.last?.id {
+                            Divider()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private var sourcesBlock: some View {
@@ -291,7 +341,9 @@ private struct FlowMeta<Content: View>: View {
                 """
             ),
             isFavorite: false,
-            onToggleFavorite: {}
+            relatedArticles: [],
+            onToggleFavorite: {},
+            onOpenRelated: { _ in }
         )
     }
     .environment(ReadabilitySettings())

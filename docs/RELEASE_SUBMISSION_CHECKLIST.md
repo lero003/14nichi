@@ -1,6 +1,6 @@
 # 提出・公開チェックリスト（内部用）
 
-最終更新: 2026-07-24
+最終更新: 2026-07-26
 状態: **初回 iOS 公開済み**（`1.0.0` / ビルド `6`、2026-07-24 審査通過）。本書は再提出・次ビルドの運用手順として使う。
 公開範囲: **リポジトリ内の開発ドキュメント**。サポートURLやプライバシー本文の本番公開ページではない。機密（証明書パスワード、Apple ID、税務情報）は書かない。
 
@@ -26,10 +26,12 @@
 | 済 | Face ID 利用目的文 | **追加済み** `NSFaceIDUsageDescription` |
 | 済 | 記事 `approved` 化 | **完了**（30記事、公的一次情報照合・編集確認） |
 | 済 | 製品 / プライバシー / サポート公開ページ | 本番URL運用中。変更時はアプリ内リンクとConnectを同時更新 |
-| 済 | スクリーンショット・説明文 | `docs/app-store-assets/`（初回提出で使用） |
-| 次提出時 | ビルド番号 | `CURRENT_PROJECT_VERSION` を上げる（次は `7` 以降） |
+| 一部済 | v1.1スクリーンショット・説明文 | 主要5画像と文面は更新済み。緊急カード、PDF、買い物リストは最終Release候補で再撮影 |
+| 現在候補 | ビルド番号 | `CURRENT_PROJECT_VERSION = 7`。Connectに7が存在するか、再Uploadする場合は次の未使用番号へ上げる |
+| 提出前候補 | v1.1 | `main` は `1.1.0 (7)`。ホーム・備え統合・記事UXを実装、実機と人間テストは未完了 |
 
-現行の版番号: マーケティング `1.0.0` / ビルド `6`
+公開中: マーケティング `1.0.0` / ビルド `6`
+リポジトリ候補: マーケティング `1.1.0` / ビルド `7`
 署名スタイル: Automatic。`DEVELOPMENT_TEAM` は `project.yml` に書かない。
 
 ---
@@ -188,7 +190,7 @@ Team ID を `project.yml` に推測で固定しない。
 5. Distribute → App Store Connect → Upload
 
 Validate 成功 ≠ Upload 成功。再 Upload 時は **Build 番号を増やす**（`CURRENT_PROJECT_VERSION`）。
-既存の内部 TestFlight `0.1.0 (5)` より新しい提出物として、今回の一般公開候補は `1.0.0 (6)`。同じバージョンを再 Upload する場合も Build 番号をさらに増やす。
+公開済み `1.0.0 (6)` より新しい提出候補は `1.1.0 (7)`。同じマーケティングバージョンを再 Upload する場合も Build 番号をさらに増やす。
 
 ---
 
@@ -258,7 +260,7 @@ Privacy Manifest 同梱済み（トラッキングなし、UserDefaults CA92.1 �
 | 1 | Bundle ID 統一 | **済** |
 | 2 | Face ID 文 | **済** |
 | 3 | Mac版を初回申請から除外 | **済** |
-| 4 | `xcodegen generate` + 自動テスト/配布lint/iOS Releaseビルド | **済**（`1.0.0 (6)`） |
+| 4 | `xcodegen generate` + 自動テスト/配布lint/iOS Releaseビルド | **済**（初回公開時 `1.0.0 (6)`） |
 | 5 | Xcode で Team 選択 | **済**（本人） |
 | 6 | iPhone 実機ビルド | **済**（本人） |
 | 7 | 手動スモーク | **済**（本人） |
@@ -273,7 +275,7 @@ Privacy Manifest 同梱済み（トラッキングなし、UserDefaults CA92.1 �
 ### 次ビルドでの最短手順
 
 1. 変更を1スライスに絞り、`swift test --disable-sandbox` と必要なら `content-lint --distribution` を通す
-2. `project.yml` の `CURRENT_PROJECT_VERSION` を上げる（必要なら `MARKETING_VERSION` も）
+2. Connect上の既存ビルドを確認し、現在候補 `1.1.0 (7)` が未使用なら維持、使用済みなら `CURRENT_PROJECT_VERSION` を次の未使用番号へ上げる
 3. 実機スモーク → Archive → Validate → Upload → 審査提出
 
 ---

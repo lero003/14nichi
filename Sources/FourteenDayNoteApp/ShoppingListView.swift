@@ -5,27 +5,33 @@ import SwiftUI
 struct ShoppingListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ReadabilitySettings.self) private var readability
+    @Environment(\.dismiss) private var dismiss
     @Query private var plans: [StockpileSchema.Plan]
     @State private var persistenceError: String?
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if let plan = primaryPlan {
-                    content(for: plan)
-                } else if let persistenceError {
-                    ContentUnavailableView {
-                        Label("買い物リストを読み込めません", systemImage: "exclamationmark.triangle")
-                    } description: {
-                        Text(persistenceError)
-                    } actions: {
-                        Button("もう一度試す", action: loadPlan)
-                    }
-                } else {
-                    ProgressView("買い物リストを準備中…")
+        Group {
+            if let plan = primaryPlan {
+                content(for: plan)
+            } else if let persistenceError {
+                ContentUnavailableView {
+                    Label("買い物リストを読み込めません", systemImage: "exclamationmark.triangle")
+                } description: {
+                    Text(persistenceError)
+                } actions: {
+                    Button("もう一度試す", action: loadPlan)
+                }
+            } else {
+                ProgressView("買い物リストを準備中…")
+            }
+        }
+        .navigationTitle("買い物リスト")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("不足品を見直す", systemImage: "shippingbox") {
+                    dismiss()
                 }
             }
-            .navigationTitle("買い物リスト")
         }
         .task { loadPlan() }
     }
@@ -46,11 +52,15 @@ struct ShoppingListView: View {
                 description: Text("備蓄タブで必要量を確認し、家に足りない品目だけをチェックしてください。")
             )
         } else if rows.isEmpty {
-            ContentUnavailableView(
-                "買い物は完了です",
-                systemImage: "checkmark.circle",
-                description: Text("チェックした品目はすべて購入済みです。")
-            )
+            ContentUnavailableView {
+                Label("選択した不足品の購入が完了", systemImage: "checkmark.circle")
+            } description: {
+                Text("備蓄全体の安全や充足を保証する表示ではありません。必要に応じて不足品を見直してください。")
+            } actions: {
+                Button("不足品を見直す") {
+                    dismiss()
+                }
+            }
         } else {
             shoppingList(rows: rows, plan: plan)
         }
@@ -189,7 +199,9 @@ private struct ShoppingItemCard: View {
 }
 
 #Preview {
-    ShoppingListView()
-        .environment(ReadabilitySettings())
-        .modelContainer(for: StockpileSchema.models, inMemory: true)
+    NavigationStack {
+        ShoppingListView()
+    }
+    .environment(ReadabilitySettings())
+    .modelContainer(for: StockpileSchema.models, inMemory: true)
 }

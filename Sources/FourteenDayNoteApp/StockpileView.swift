@@ -3,30 +3,30 @@ import SwiftData
 import SwiftUI
 
 struct StockpileView: View {
+    @Bindable var router: AppRouter
+    @Bindable var checklist: PreparednessChecklistModel
     @Environment(\.modelContext) private var modelContext
     @Environment(ReadabilitySettings.self) private var readability
     @Query private var plans: [StockpileSchema.Plan]
     @State private var persistenceError: String?
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if let plan = primaryPlan {
-                    content(plan: plan)
-                } else if let persistenceError {
-                    ContentUnavailableView {
-                        Label("備蓄データを読み込めません", systemImage: "exclamationmark.triangle")
-                    } description: {
-                        Text(persistenceError)
-                    } actions: {
-                        Button("もう一度試す", action: loadPlan)
-                    }
-                } else {
-                    ProgressView("備蓄データを準備中…")
+        Group {
+            if let plan = primaryPlan {
+                content(plan: plan)
+            } else if let persistenceError {
+                ContentUnavailableView {
+                    Label("備蓄データを読み込めません", systemImage: "exclamationmark.triangle")
+                } description: {
+                    Text(persistenceError)
+                } actions: {
+                    Button("もう一度試す", action: loadPlan)
                 }
+            } else {
+                ProgressView("備蓄データを準備中…")
             }
-            .navigationTitle("備蓄の目安")
         }
+        .navigationTitle("備え")
         .task { loadPlan() }
     }
 
@@ -37,16 +37,28 @@ struct StockpileView: View {
     private func content(plan: StockpileSchema.Plan) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: readability.sectionSpacing) {
+                PreparednessOverview(plan: plan) {
+                    router.navigate(to: .shopping)
+                }
                 introduction
-                HouseholdSelection(plan: plan, save: saveChanges)
-                SelectionSummary(plan: plan)
+                HouseholdSelection(
+                    plan: plan,
+                    save: saveChanges,
+                    confirm: checklist.markHouseholdReviewed
+                )
+                SelectionSummary(
+                    plan: plan,
+                    isReviewed: checklist.state.stockpileReviewedAt != nil,
+                    confirm: checklist.markStockpileReviewed,
+                    openShopping: { router.navigate(to: .shopping) }
+                )
 
                 VStack(alignment: .leading, spacing: 12) {
                     Text("備蓄チェック")
                         .font(.title2.weight(.bold))
                         .accessibilityAddTraits(.isHeader)
 
-                    Text("家に足りないものだけチェックしてください。チェックした品目が買い物タブに表示されます。")
+                    Text("家に足りないものだけチェックしてください。チェックした品目が買い物リストに表示されます。")
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -64,7 +76,8 @@ struct StockpileView: View {
                                     recommendation: recommendation,
                                     household: plan.household,
                                     targetDays: plan.targetDays,
-                                    save: saveChanges
+                                    save: saveChanges,
+                                    openShopping: { router.navigate(to: .shopping) }
                                 )
                             }
                         }
@@ -126,7 +139,15 @@ struct StockpileView: View {
 
     private func loadPlan() {
         do {
-            try StockpileStore.loadOrCreatePlan(in: modelContext)
+            let plan = try StockpileStore.loadOrCreatePlan(in: modelContext)
+#if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("--ui-testing-shortage=drinking-water"),
+               let item = plan.items.first(where: { $0.stableID == "drinking-water" }) {
+                item.isShortage = true
+                item.isPurchased = false
+                try StockpileStore.save(modelContext)
+            }
+#endif
             persistenceError = nil
         } catch {
             persistenceError = "端末内への保存を開始できませんでした。\(error.localizedDescription)"
@@ -143,9 +164,63 @@ struct StockpileView: View {
     }
 }
 
+private struct PreparednessOverview: View {
+    let plan: StockpileSchema.Plan
+    let openShopping: () -> Void
+
+    private var shortageCount: Int { plan.items.count(where: \.isShortage) }
+    private var pendingCount: Int { plan.items.count { $0.isShortage && !$0.isPurchased } }
+
+    var body: some View {
+        SurfaceCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Label("わが家の備え", systemImage: "house.and.flag")
+                    .font(.title2.bold())
+                    .accessibilityAddTraits(.isHeader)
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) { metrics }
+                    VStack(alignment: .leading, spacing: 8) { metrics }
+                }
+
+                if shortageCount > 0 {
+                    Button(action: openShopping) {
+                        Label(
+                            pendingCount == 0
+                                ? "選択した不足品の購入を確認"
+                                : "買い物リストを見る（残り\(pendingCount)品目）",
+                            systemImage: pendingCount == 0 ? "checkmark.circle" : "cart.fill"
+                        )
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var metrics: some View {
+        metric("\(plan.household.totalPeople)人", systemImage: "person.2")
+        metric(plan.targetDays.displayName, systemImage: "calendar")
+        metric("不足\(shortageCount)件", systemImage: "shippingbox")
+        metric("未購入\(pendingCount)件", systemImage: "cart")
+    }
+
+    private func metric(_ text: String, systemImage: String) -> some View {
+        Label(text, systemImage: systemImage)
+            .font(.callout.weight(.semibold))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(AppTheme.accent.opacity(0.08), in: Capsule())
+    }
+}
+
 private struct HouseholdSelection: View {
     @Bindable var plan: StockpileSchema.Plan
     let save: () -> Void
+    let confirm: () -> Void
 
     var body: some View {
         SurfaceCard {
@@ -168,6 +243,11 @@ private struct HouseholdSelection: View {
                     .font(.callout.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .accessibilityLabel("\(plan.household.totalPeople)人、\(plan.targetDays.displayName)で計算")
+
+                Button("この人数と期間で確認", systemImage: "checkmark.circle") {
+                    confirm()
+                }
+                .buttonStyle(.bordered)
             }
         }
     }
@@ -197,26 +277,46 @@ private struct HouseholdSelection: View {
 
 private struct SelectionSummary: View {
     let plan: StockpileSchema.Plan
+    let isReviewed: Bool
+    let confirm: () -> Void
+    let openShopping: () -> Void
 
     private var shortageCount: Int { plan.items.count(where: \.isShortage) }
     private var purchasedCount: Int { plan.items.count { $0.isShortage && $0.isPurchased } }
 
     var body: some View {
         SurfaceCard {
-            Label {
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(shortageCount == 0 ? "足りないものを選んでください" : "買い物に \(shortageCount - purchasedCount)品目")
-                        .font(.headline)
-                    Text(shortageCount == 0 ? "必要量を見て、家に足りない品目だけをチェックします。" : "購入済み \(purchasedCount)品目。残りは買い物タブで確認できます。")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 12) {
+                Label {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(shortageCount == 0 ? "足りないものを選んでください" : "買い物に \(shortageCount - purchasedCount)品目")
+                            .font(.headline)
+                        Text(shortageCount == 0 ? "必要量を見て、家に足りない品目だけをチェックします。" : "購入済み \(purchasedCount)品目。残りは買い物リストで確認できます。")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemName: shortageCount == 0 ? "checklist" : "cart.fill")
+                        .foregroundStyle(.tint)
+                        .imageScale(.large)
                 }
-            } icon: {
-                Image(systemName: shortageCount == 0 ? "checklist" : "cart.fill")
-                    .foregroundStyle(.tint)
-                    .imageScale(.large)
+                .accessibilityElement(children: .combine)
+
+                HStack {
+                    Button(
+                        isReviewed ? "不足品を確認済み" : "不足品の確認を終える",
+                        systemImage: isReviewed ? "checkmark.circle.fill" : "checkmark.circle",
+                        action: confirm
+                    )
+                    .buttonStyle(.bordered)
+
+                    if shortageCount > 0 {
+                        Button("買い物リスト", systemImage: "cart", action: openShopping)
+                            .buttonStyle(.borderedProminent)
+                            .accessibilityIdentifier("preparedness.openShopping")
+                    }
+                }
             }
-            .accessibilityElement(children: .combine)
         }
     }
 }
@@ -227,6 +327,7 @@ private struct RecommendationCard: View {
     let household: HouseholdProfile
     let targetDays: StockpileTargetDays
     let save: () -> Void
+    let openShopping: () -> Void
 
     private var result: StockpileResult {
         StockpileCalculator.calculate(
@@ -268,14 +369,21 @@ private struct RecommendationCard: View {
 
                 Toggle("家に足りない", isOn: shortageBinding)
                     .font(.headline)
+                    .accessibilityIdentifier("stockpile.shortage.\(item.stableID)")
 
                 if item.isShortage {
-                    Label(
-                        item.isPurchased ? "購入済み" : "買い物リストに表示中",
-                        systemImage: item.isPurchased ? "checkmark.circle.fill" : "cart.fill"
-                    )
-                    .font(.callout.weight(.semibold))
-                    .foregroundStyle(item.isPurchased ? .green : .orange)
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label(
+                            item.isPurchased ? "購入済み" : "買い物リストに表示中",
+                            systemImage: item.isPurchased ? "checkmark.circle.fill" : "cart.fill"
+                        )
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(item.isPurchased ? .green : .orange)
+
+                        Button("買い物リストを見る", systemImage: "cart", action: openShopping)
+                            .buttonStyle(.borderedProminent)
+                            .accessibilityIdentifier("preparedness.openShopping.\(item.stableID)")
+                    }
                 }
 
                 Divider()
@@ -312,7 +420,10 @@ private struct RecommendationCard: View {
 }
 
 #Preview {
-    StockpileView()
+    StockpileView(
+        router: AppRouter(),
+        checklist: PreparednessChecklistModel()
+    )
         .environment(ReadabilitySettings())
         .modelContainer(for: StockpileSchema.models, inMemory: true)
 }

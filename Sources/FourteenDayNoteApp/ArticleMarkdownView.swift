@@ -4,11 +4,15 @@ import SwiftUI
 /// Markdownの各見出しを独立した要素として描画し、VoiceOverの見出し移動を可能にする。
 struct ArticleMarkdownView: View {
     let markdown: String
+    let articleTitle: String
     let prefersBoldBody: Bool
     let lineSpacing: CGFloat
 
     private var blocks: [GuideMarkdownBlock] {
-        GuideMarkdownParser.parse(markdown)
+        GuideMarkdownParser.displayBlocks(
+            markdown,
+            omittingLeadingTitle: articleTitle
+        )
     }
 
     var body: some View {

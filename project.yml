@@ -34,8 +34,7 @@ targets:
         product: FourteenDayCore
     settings:
       base:
-        # 初回申請対象のiOS商品で使用する確定済みBundle ID。
-        # 既存TestFlightと一致させ、Upload後に変更しない。
+        # 公開済みiOS商品で使用する確定済みBundle ID。更新申請でも変更しない。
         PRODUCT_BUNDLE_IDENTIFIER: jp.hazakura.FourteenDayNote
         PRODUCT_NAME: 14日ノート
         GENERATE_INFOPLIST_FILE: true
@@ -51,8 +50,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         SUPPORTS_MACCATALYST: false
         CODE_SIGN_STYLE: Automatic
-        CURRENT_PROJECT_VERSION: 6
-        MARKETING_VERSION: 1.0.0
+        CURRENT_PROJECT_VERSION: 7
+        MARKETING_VERSION: 1.1.0
         # DEVELOPMENT_TEAM は推測で書かない。Xcode の Signing & Capabilities で選択する。
 
   FourteenDayNoteMac:
@@ -88,6 +87,19 @@ targets:
         # PDF をユーザー指定の任意パスへ直接保存する場合のみ user-selected.read-write を追加する。
         # 現状は一時ディレクトリ + 印刷/プレビュー導線のため Sandbox のみ。
 
+  FourteenDayNoteUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: Tests/FourteenDayNoteUITests
+    dependencies:
+      - target: FourteenDayNote
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: jp.hazakura.FourteenDayNoteUITests
+        GENERATE_INFOPLIST_FILE: true
+        CODE_SIGN_STYLE: Automatic
+
 schemes:
   FourteenDayNote:
     build:
@@ -95,6 +107,10 @@ schemes:
         FourteenDayNote: all
     run:
       config: Debug
+    test:
+      config: Debug
+      targets:
+        - FourteenDayNoteUITests
     archive:
       config: Release
 

@@ -3,6 +3,7 @@ import SwiftData
 import SwiftUI
 
 struct EmergencyCardView: View {
+    @Bindable var checklist: PreparednessChecklistModel
     @Environment(\.modelContext) private var modelContext
     @Environment(ReadabilitySettings.self) private var readability
     @Environment(\.scenePhase) private var scenePhase
@@ -108,6 +109,7 @@ struct EmergencyCardView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: readability.sectionSpacing) {
                 introduction
+                preparationDecisionSection
                 protectionSection
 
                 if isEditing {
@@ -196,6 +198,33 @@ struct EmergencyCardView: View {
                     Text("この端末では生体認証/パスコードによる追加ロックを利用できません。")
                         .font(.footnote)
                         .foregroundStyle(.orange)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var preparationDecisionSection: some View {
+        if draft.isEmpty && isEditing == false {
+            SurfaceCard {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("この準備項目について")
+                        .font(.headline)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("緊急カードは任意です。使わない選択をしても、ガイドや備蓄はそのまま利用できます。")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button("今回は緊急カードを使わない") {
+                        checklist.setEmergencyCardChoice(.skipped)
+                    }
+                    .buttonStyle(.bordered)
+
+                    if checklist.state.emergencyCardChoice == .skipped {
+                        Label("今回は使わない設定です", systemImage: "checkmark.circle.fill")
+                            .font(.callout.weight(.semibold))
+                            .foregroundStyle(AppTheme.deepTeal)
+                    }
                 }
             }
         }
@@ -398,6 +427,9 @@ struct EmergencyCardView: View {
             draft = card.snapshot
             isEditing = false
             persistenceError = nil
+            checklist.setEmergencyCardChoice(
+                .afterSavingCard(hasContent: draft.hasAnyContent)
+            )
         } catch {
             persistenceError = "変更を保存できませんでした。もう一度お試しください。"
         }
@@ -417,6 +449,7 @@ struct EmergencyCardView: View {
             draft = EmergencyCardSnapshot()
             isEditing = false
             persistenceError = nil
+            checklist.setEmergencyCardChoice(.notReviewed)
         } catch {
             persistenceError = "削除できませんでした。もう一度お試しください。"
         }
@@ -449,4 +482,10 @@ struct EmergencyCardView: View {
             authMessage = "この端末では追加の認証を利用できません。設定をオフにするか、端末のパスコードを確認してください。"
         }
     }
+}
+
+#Preview {
+    EmergencyCardView(checklist: PreparednessChecklistModel())
+        .environment(ReadabilitySettings())
+        .modelContainer(for: EmergencyCardSchemaV1.models, inMemory: true)
 }

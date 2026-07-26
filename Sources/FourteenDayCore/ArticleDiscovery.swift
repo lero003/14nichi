@@ -25,6 +25,54 @@ public struct GuideArticleFilter: Equatable, Sendable {
 }
 
 public extension ContentCatalog {
+    /// ホームの緊急ショートカットから開く、確認済みの最優先記事。
+    func emergencyShortcutArticle(
+        for situationID: GuideSituation.ID
+    ) -> GuideArticle? {
+        articles(for: situationID).first { article in
+            article.reviewStatus == .approved
+                && article.priority == .critical
+                && article.periods.contains(GuidePeriod.immediate.rawValue)
+        }
+    }
+
+    /// 記事末尾に出す関連導線。同じ状況に属する記事だけを既存の編集順で返す。
+    func relatedArticles(
+        to article: GuideArticle,
+        limit: Int = 3
+    ) -> [GuideArticle] {
+        guard limit > 0 else { return [] }
+        let situationIDs = Set(article.situations)
+
+        return articles.enumerated()
+            .filter { _, candidate in
+                candidate.id != article.id
+                    && candidate.reviewStatus == .approved
+                    && candidate.situations.contains(where: situationIDs.contains)
+            }
+            .sorted {
+                let lhs = $0.element
+                let rhs = $1.element
+                if lhs.priority.sortIndex != rhs.priority.sortIndex {
+                    return lhs.priority.sortIndex < rhs.priority.sortIndex
+                }
+                let lhsPeriod = lhs.periods
+                    .compactMap(GuidePeriod.init(rawValue:))
+                    .map(\.sortIndex)
+                    .min() ?? Int.max
+                let rhsPeriod = rhs.periods
+                    .compactMap(GuidePeriod.init(rawValue:))
+                    .map(\.sortIndex)
+                    .min() ?? Int.max
+                if lhsPeriod != rhsPeriod {
+                    return lhsPeriod < rhsPeriod
+                }
+                return $0.offset < $1.offset
+            }
+            .prefix(limit)
+            .map(\.element)
+    }
+
     /// 同梱済み記事だけを対象にした、通信不要の全文検索。
     func searchArticles(matching query: String) -> [GuideArticle] {
         let tokens = Self.searchTokens(from: query)

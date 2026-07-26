@@ -3,6 +3,7 @@
 ## Current State
 
 - **2026-07-24: iOS App Store 審査通過・初回公開**（`1.0.0` / ビルド `6`、iPhone / iPad）。Git タグ `v1.0.0`。
+- `main` は **iOS `1.1.0` / ビルド `7` の提出前候補**。新ホーム、緊急ショートカット、3項目の準備チェック、備え内の買い物リスト、記事UXの簡潔化を実装済み。
 - 公開範囲は **iPhone / iPadのみ**。Macターゲットはリポジトリに残すが、現行商品ページ・公開対象には含めない。
 - フルMVP機能完了（オフラインガイド、探索、備蓄、緊急カード、公式リンク、PDF・印刷、Face ID 利用目的、暗号化 Infop、Privacy Manifest）。
 - 同梱13状況・30記事はすべて `approved`。公的一次情報照合・編集確認済みで、専門資格監修や正確性保証ではない旨を常時表示。
@@ -11,6 +12,13 @@
 
 ## Recent Changes
 
+- 2026-07-26自己レビュー: 空にした緊急カードの準備状態を未確認へ戻し、関連記事の同順位をmanifest順に固定。v1.1提出資料のビルド番号・再撮影状態も現在候補へ揃えた。
+- 2026-07-26: 初期画面をホームへ変更し、地震・停電・断水・大雨／洪水・ケガ／体調不良・避難から `approved` / `critical` / `immediate` 記事へ1タップで進めるようにした。
+- タブを「ホーム / ガイド / 備え / 緊急 / その他」へ変更し、買い物リストを備えの子画面へ統合。備えと買い物の双方向導線を追加した。
+- `AppRouter`でタブと記事・状況・備え・買い物・緊急カードのルートを型付きにした。iPhoneのNavigationStackとiPadの既存Split Viewで同じ指定を使う。
+- `PreparednessChecklistStore`を追加。保存するのは3項目の確認日時とカードの「保存した／今回は使わない」選択だけで、カード本文は読まない。
+- 記事と同じ先頭H1を表示時だけ省略し、お気に入りをツールバーへ移動。同じ状況の関連記事を最大3件表示する。
+- v1.1の計画・ロードマップ・App Store文面・手動スモーク手順を追加／更新。新ホーム、地震記事、備えの主要5画像をSimulatorから再撮影した。
 - 2026-07-24: App Store 審査通過をドキュメントに反映し、`CHANGELOG.md` とタグ `v1.0.0` を追加。
 - 「その他」タブからサポート・プライバシーへ直接リンクできるようにし、URL定数を共通化した。
 - iOS/Mac の Bundle ID を `jp.hazakura.FourteenDayNote` に統一した履歴あり。2026-07-22に初回申請からMacを外したため、同一商品ページ方針は現在不採用。
@@ -43,6 +51,12 @@
 
 ## Tests
 
+- `swift test --disable-sandbox`: **75 tests / 13 suites 成功**（2026-07-26）。
+- `swift run --disable-sandbox content-lint`: 成功（13状況・30記事、全件 `approved`）。
+- `swift run --disable-sandbox content-lint --distribution`: 成功。
+- `xcodegen generate`: 成功。
+- `FourteenDayNote` generic iOS Simulator Debug / Release unsigned build: **`1.1.0 (7)` で成功**。
+- iPhone 17 / iOS 26.5 SimulatorのXCUITest: **3件成功**（初回ホーム、地震記事直行、備え→買い物、ガイド復帰）。
 - `swift test --disable-sandbox`: 66 tests / 12 suites 成功（V1永続ストアからV2への実移行と、残存PDF一時ディレクトリ削除のテストを含む）。
 - `FourteenDayNote` generic iOS Simulator Release unsigned build: `1.0.0 (6)` で成功。
 - `swift run --disable-sandbox content-lint`: 成功（13状況・30記事はすべて `approved`）。
@@ -56,6 +70,10 @@
 
 ## Risks / Unknowns
 
+- iPhone / iPad実機での機内モード30秒、VoiceOver、最大Dynamic Type、Reduce Motion、ダークモード、App Switcher秘匿、認証、PDF共有は未確認。
+- 初見利用者5人の目的理解・10分準備フロー観察は未実施。
+- v1.1 App Store画像は主要5点のみ更新済み。緊急カード、PDF、買い物リストは最終Release候補で再撮影が必要。
+- Archive / Validate / Upload / App Store Connect入力・提出は未実施。
 - 公開後フィードバックとコンテンツ鮮度の継続監視が必要。
 - 失効 Development 証明書（lero003）が identity に残存する環境では使わない。
 - 専門資格者による個別監修は未実施。編集確認済みという境界を維持する。
@@ -63,10 +81,10 @@
 
 ## Next Actions
 
-1. 公開後の不具合・要望をホットフィックスと通常保守に分ける。
-2. 記事・出典の定期的な再確認。更新時は `content-lint --distribution` を通す。
-3. 次提出ではビルド番号を上げ、`docs/RELEASE_SUBMISSION_CHECKLIST.md` に従う。
-4. Mac版は必要性が明確になるまで着手しない。
+1. v1.1をiPhone / iPad実機で `docs/MANUAL_SMOKE_CHECKLIST.md` に沿って確認する。
+2. 初見利用者5人の観察テストを実施し、4人以上の基準を記録する。
+3. 残るApp Store画像を最終Release候補で撮影し、Connect文面を本人が最終確認する。
+4. `docs/RELEASE_SUBMISSION_CHECKLIST.md` に沿ってArchive / Validate / Upload / 提出する。Connectに後続ビルドがあればビルド番号を上げる。
 
 ## Avoid
 

@@ -3,12 +3,12 @@ import SwiftUI
 
 struct ArticleBrowserView: View {
     @Bindable var model: AppModel
+    @Bindable var router: AppRouter
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(ReadabilitySettings.self) private var readability
 
     /// コンパクト幅専用。選択の再タップ不能や詳細への引き戻しを避ける。
-    @State private var compactPath: [GuideCompactRoute] = []
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var appeared = false
 
@@ -38,14 +38,14 @@ struct ArticleBrowserView: View {
             guard usesCompactNavigation else { return }
             if isFavorites {
                 // お気に入りはルート直下の一覧として見せる
-                compactPath = []
+                router.guidePath = []
             }
         }
         .onChange(of: model.searchQuery) { _, query in
             guard usesCompactNavigation else { return }
             if !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 // 検索開始時は状況ドリルダウンを解除して結果をルートに出す
-                compactPath = []
+                router.guidePath = []
             }
         }
         .onChange(of: horizontalSizeClass) { _, _ in
@@ -54,7 +54,7 @@ struct ArticleBrowserView: View {
                 rebuildCompactPathFromModel()
             }
         }
-        .onChange(of: compactPath) { _, newPath in
+        .onChange(of: router.guidePath) { _, newPath in
             guard usesCompactNavigation else { return }
             reconcileModel(with: newPath)
         }
@@ -63,10 +63,10 @@ struct ArticleBrowserView: View {
     // MARK: - Compact (iPhone): NavigationStack
 
     private var compactBrowser: some View {
-        NavigationStack(path: $compactPath) {
+        NavigationStack(path: $router.guidePath) {
             situationRootList
                 .navigationTitle("防災ガイド")
-                .navigationDestination(for: GuideCompactRoute.self) { route in
+                .navigationDestination(for: GuideRoute.self) { route in
                     switch route {
                     case .situation(let situationID):
                         articleListScreen(situationID: situationID)
@@ -206,7 +206,9 @@ struct ArticleBrowserView: View {
             ArticleDetailView(
                 article: article,
                 isFavorite: model.isFavorite(article.id),
-                onToggleFavorite: { model.toggleFavorite(article.id) }
+                relatedArticles: model.catalog?.relatedArticles(to: article) ?? [],
+                onToggleFavorite: { model.toggleFavorite(article.id) },
+                onOpenRelated: openRelatedArticle
             )
             .onAppear {
                 model.selectArticle(articleID, requireDisplayed: false)
@@ -223,7 +225,7 @@ struct ArticleBrowserView: View {
     private func openSituation(_ id: GuideSituation.ID) {
         withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
             model.selectSituation(id)
-            compactPath = [.situation(id)]
+            router.guidePath = [.situation(id)]
         }
     }
 
@@ -234,12 +236,25 @@ struct ArticleBrowserView: View {
             model.selectArticle(id, requireDisplayed: false)
             // 検索・お気に入り中はルートから記事へ。状況経由なら situation の上に積む。
             if model.showsFavoritesOnly || model.hasSearchQuery {
-                compactPath = [.article(id)]
+                router.guidePath = [.article(id)]
             } else if let situationID = model.selectedSituationID {
-                compactPath = [.situation(situationID), .article(id)]
+                router.guidePath = [.situation(situationID), .article(id)]
             } else {
-                compactPath = [.article(id)]
+                router.guidePath = [.article(id)]
             }
+        }
+    }
+
+    private func openRelatedArticle(_ article: GuideArticle) {
+        model.selectArticle(article.id, requireDisplayed: false)
+        if usesCompactNavigation {
+            let situationID = article.situations.first ?? model.selectedSituationID
+            router.navigate(
+                to: .article(
+                    situationID: situationID,
+                    articleID: article.id
+                )
+            )
         }
     }
 
@@ -248,9 +263,9 @@ struct ArticleBrowserView: View {
         if model.showsFavoritesOnly || model.hasSearchQuery {
             if let articleID = model.selectedArticleID,
                model.catalog?.article(id: articleID) != nil {
-                compactPath = [.article(articleID)]
+                router.guidePath = [.article(articleID)]
             } else {
-                compactPath = []
+                router.guidePath = []
             }
             return
         }
@@ -258,20 +273,20 @@ struct ArticleBrowserView: View {
         if let situationID = model.selectedSituationID {
             if let articleID = model.selectedArticleID,
                model.catalog?.article(id: articleID) != nil {
-                compactPath = [.situation(situationID), .article(articleID)]
+                router.guidePath = [.situation(situationID), .article(articleID)]
             } else {
-                compactPath = [.situation(situationID)]
+                router.guidePath = [.situation(situationID)]
             }
         } else if let articleID = model.selectedArticleID,
                   model.catalog?.article(id: articleID) != nil {
-            compactPath = [.article(articleID)]
+            router.guidePath = [.article(articleID)]
         } else {
-            compactPath = []
+            router.guidePath = []
         }
     }
 
     /// path を正として model を同期（システム戻るで path だけ変わったとき用）。
-    private func reconcileModel(with path: [GuideCompactRoute]) {
+    private func reconcileModel(with path: [GuideRoute]) {
         var situationID: GuideSituation.ID?
         var articleID: GuideArticle.ID?
         for route in path {
@@ -398,7 +413,9 @@ struct ArticleBrowserView: View {
             ArticleDetailView(
                 article: article,
                 isFavorite: model.isFavorite(article.id),
-                onToggleFavorite: { model.toggleFavorite(article.id) }
+                relatedArticles: model.catalog?.relatedArticles(to: article) ?? [],
+                onToggleFavorite: { model.toggleFavorite(article.id) },
+                onOpenRelated: openRelatedArticle
             )
             .id(article.id)
         } else {
@@ -505,7 +522,7 @@ struct ArticleBrowserView: View {
                 withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
                     model.toggleFavoritesFilter()
                     if usesCompactNavigation {
-                        compactPath = []
+                        router.guidePath = []
                     }
                 }
             } label: {
@@ -573,12 +590,6 @@ struct ArticleBrowserView: View {
             set: { model.selectedPeriod = $0 }
         )
     }
-}
-
-/// iPhone のガイド階層。
-private enum GuideCompactRoute: Hashable {
-    case situation(GuideSituation.ID)
-    case article(GuideArticle.ID)
 }
 
 private struct SituationRow: View {

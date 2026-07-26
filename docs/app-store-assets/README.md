@@ -1,11 +1,11 @@
 # App Store 申請素材
 
-最終更新: 2026-07-24
-状態: **初回提出で使用済み**（iOS `1.0.0` / ビルド `6`、2026-07-24 審査通過）。次提出時は必要に応じて差し替え。
+最終更新: 2026-07-26
+状態: **v1.1差し替え準備中**。新ホーム、即応記事、備えの主要5点は `1.1.0` / ビルド `7` のDebug Simulatorで再撮影済み。緊急カード、PDF、買い物リストは最終Release候補で再撮影して全点を揃える。
 
 公開対象は **iPhone / iPad のみ**。Mac ターゲットはリポジトリに残すが、現行の App Store Connect レコードへ macOS プラットフォームは追加しない。
 
-## そのままアップロードする画像
+## v1.1で再撮影する画像
 
 Apple の現行仕様に合わせ、アルファなし JPEG を提出用とする。PNG は撮影原本であり、Connect へはアップロードしない。
 
@@ -13,20 +13,20 @@ Apple の現行仕様に合わせ、アルファなし JPEG を提出用とす�
 
 推奨順:
 
-1. `screenshots/iphone-6.9/01-guide.jpg` — 状況別オフラインガイド
-2. `screenshots/iphone-6.9/02-first-actions.jpg` — 最初の行動と安全情報の注意事項
-3. `screenshots/iphone-6.9/03-stockpile-plan.jpg` — 人数・7日/14日の備蓄計画
-4. `screenshots/iphone-6.9/04-emergency-card-privacy.jpg` — 個人情報を入れていない緊急カードと端末内保護
-5. `screenshots/iphone-6.9/05-private-pdf-export.jpg` — 個人情報が既定オフのPDF・印刷
+1. `screenshots/iphone-6.9/01-home.jpg` — 「いま困っている」と平時の準備が分かる新ホーム
+2. `screenshots/iphone-6.9/02-first-actions.jpg` — 地震から1タップで開く最初の行動
+3. `screenshots/iphone-6.9/03-stockpile-plan.jpg` — 家庭設定・不足品・買い物リストをつなぐ備え
+4. `screenshots/iphone-6.9/04-emergency-card-privacy.jpg` — **再撮影待ち**。個人情報を入れていない緊急カードと端末内保護
+5. `screenshots/iphone-6.9/05-private-pdf-export.jpg` — **再撮影待ち**。個人情報が既定オフのPDF・印刷
 
 ### iPad 13インチ（2064 × 2752）
 
 推奨順:
 
-1. `screenshots/ipad-13/01-guide-and-article.jpg` — 状況・記事一覧・本文の3カラム
-2. `screenshots/ipad-13/02-stockpile-calculator.jpg` — 3人・14日分の数量目安
-3. `screenshots/ipad-13/03-shopping-list.jpg` — 不足品目だけの買い物リスト
-4. `screenshots/ipad-13/04-emergency-card-privacy.jpg` — 個人情報を入れていない緊急カード
+1. `screenshots/ipad-13/01-home.jpg` — iPadの新ホーム
+2. `screenshots/ipad-13/02-stockpile-calculator.jpg` — 家庭設定と不足品の備え
+3. `screenshots/ipad-13/03-shopping-list.jpg` — **再撮影待ち**。不足品目だけの買い物リスト
+4. `screenshots/ipad-13/04-emergency-card-privacy.jpg` — **再撮影待ち**。個人情報を入れていない緊急カード
 
 ## 文章素材
 
@@ -37,12 +37,12 @@ Apple の現行仕様に合わせ、アルファなし JPEG を提出用とす�
 
 - iOS 26.5 Simulator
 - iPhone 17 Pro Max / iPad Pro 13-inch (M5)
-- Release Simulator build `0.1.0 (2)`
+- 主要5点はDebug Simulator build `1.1.0 (7)`。Connect投入前に全点を最終Release候補で再撮影する
 - 時刻 9:41、バッテリー100%、Wi-Fi表示
 - 緊急カードは未入力。個人情報・実在の連絡先は含まない
 - 商品機能をそのまま撮影し、説明用の合成や未実装機能の追加はしていない
 
-画像撮影後、既存TestFlightより新しい提出候補としてiOSの版番号を `1.0.0 (6)` へ更新した。版番号は画像内に表示されず、画面機能とレイアウトは同じため、このJPEGを提出用として使用する。
+既存JPEGはv1.0の履歴資料であり、v1.1へそのまま提出しない。新ホーム、5タブ構成、備え内の買い物導線を含む最終Release候補を実機相当サイズで撮影し、画像と実装が一致してからConnectへアップロードする。
 
 ## アップロード前の最終確認
 

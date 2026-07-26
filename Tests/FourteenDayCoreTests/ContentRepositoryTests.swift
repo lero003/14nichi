@@ -50,6 +50,39 @@ struct ContentRepositoryTests {
         }
     }
 
+    @Test(
+        "the six v1.1 home shortcuts resolve to approved critical immediate articles",
+        arguments: [
+            "earthquake",
+            "blackout",
+            "water-outage",
+            "flood",
+            "first-aid",
+            "evacuation",
+        ]
+    )
+    func resolvesV11HomeShortcut(_ situationID: String) throws {
+        let catalog = try ContentRepository().loadBundledCatalog()
+        let expectedArticleIDs = [
+            "earthquake": "earthquake-first-actions",
+            "blackout": "blackout-first-actions",
+            "water-outage": "water-outage-first-actions",
+            "flood": "flood-first-actions",
+            "first-aid": "first-aid-call-119",
+            "evacuation": "evacuation-go-bag",
+        ]
+        let article = try #require(
+            catalog.emergencyShortcutArticle(for: situationID),
+            "A v1.1 home shortcut must never lead to an empty screen."
+        )
+
+        #expect(article.id == expectedArticleIDs[situationID])
+        #expect(article.reviewStatus == .approved)
+        #expect(article.priority == .critical)
+        #expect(article.periods.contains(GuidePeriod.immediate.rawValue))
+        #expect(article.situations.contains(situationID))
+    }
+
     @Test("front matter is removed from displayed body")
     func removesFrontMatter() {
         let source = """

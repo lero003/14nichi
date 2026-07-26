@@ -56,6 +56,90 @@ struct ArticleDiscoveryTests {
         #expect(catalog.availablePeriods == [.immediate, .day1])
     }
 
+    @Test("emergency shortcuts require approved critical immediate content")
+    func resolvesEmergencyShortcut() {
+        let approved = article(
+            id: "approved",
+            title: "最初の行動",
+            summary: "確認済み",
+            situation: "blackout",
+            body: "本文",
+            publisher: "総務省",
+            category: "electricity",
+            priority: .critical,
+            reviewStatus: .approved,
+            periods: ["immediate"]
+        )
+        let candidates = ContentCatalog(
+            situations: catalog.situations,
+            articles: catalog.articles + [approved]
+        )
+
+        #expect(candidates.emergencyShortcutArticle(for: "blackout")?.id == "approved")
+        #expect(candidates.emergencyShortcutArticle(for: "water-outage") == nil)
+    }
+
+    @Test("related articles keep editorial priority and exclude the current article")
+    func resolvesRelatedArticles() {
+        let current = article(
+            id: "current",
+            title: "現在の記事",
+            summary: "現在",
+            situation: "blackout",
+            body: "本文",
+            publisher: "総務省",
+            category: "electricity",
+            priority: .critical,
+            reviewStatus: .approved,
+            periods: ["immediate"]
+        )
+        let next = article(
+            id: "next",
+            title: "次の記事",
+            summary: "次",
+            situation: "blackout",
+            body: "本文",
+            publisher: "総務省",
+            category: "electricity",
+            priority: .high,
+            reviewStatus: .approved,
+            periods: ["day1"]
+        )
+        let manifestFirst = article(
+            id: "manifest-first",
+            title: "末尾の題名",
+            summary: "manifest先",
+            situation: "blackout",
+            body: "本文",
+            publisher: "総務省",
+            category: "electricity",
+            priority: .normal,
+            reviewStatus: .approved,
+            periods: ["day1"]
+        )
+        let manifestSecond = article(
+            id: "manifest-second",
+            title: "先頭の題名",
+            summary: "manifest後",
+            situation: "blackout",
+            body: "本文",
+            publisher: "総務省",
+            category: "electricity",
+            priority: .normal,
+            reviewStatus: .approved,
+            periods: ["day1"]
+        )
+        let candidates = ContentCatalog(
+            situations: catalog.situations,
+            articles: [next, manifestFirst, manifestSecond, current] + catalog.articles
+        )
+
+        #expect(
+            candidates.relatedArticles(to: current).map(\.id)
+                == ["next", "manifest-first", "manifest-second"]
+        )
+    }
+
     private var catalog: ContentCatalog {
         ContentCatalog(
             situations: [
@@ -107,6 +191,8 @@ struct ArticleDiscoveryTests {
         body: String,
         publisher: String,
         category: String,
+        priority: GuideArticle.Priority = .normal,
+        reviewStatus: GuideArticle.ReviewStatus = .draft,
         periods: [String]
     ) -> GuideArticle {
         GuideArticle(
@@ -116,11 +202,11 @@ struct ArticleDiscoveryTests {
                 summary: summary,
                 path: "emergency/\(id).md",
                 category: category,
-                priority: .normal,
+                priority: priority,
                 situations: [situation],
                 periods: periods,
                 region: "jp",
-                reviewStatus: .draft,
+                reviewStatus: reviewStatus,
                 reviewedAt: nil,
                 reviewedBy: nil,
                 sources: [

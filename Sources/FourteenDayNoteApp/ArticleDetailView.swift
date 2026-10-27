@@ -14,6 +14,7 @@ struct ArticleDetailView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
     @State private var revealed = false
+    @State private var visiblePosition: String?
     @AccessibilityFocusState private var focusedHeading: String?
 
     var body: some View {
@@ -24,7 +25,8 @@ struct ArticleDetailView: View {
         let sections = GuideArticleOutline.sections(in: blocks)
 
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: readability.sectionSpacing) {
+            // 記事は短く、高さの異なる本文・出典を遅延計測するとスクロール中に補正が入る。
+            VStack(alignment: .leading, spacing: readability.sectionSpacing) {
                 header.id("article-header")
                 compactSafetyBanner.id("article-safety")
                 summaryBlock.id("article-summary")
@@ -55,8 +57,17 @@ struct ArticleDetailView: View {
             .opacity(revealed || reduceMotion ? 1 : 0)
             .offset(y: revealed || reduceMotion ? 0 : 10)
         }
-        .scrollPosition(id: $readingPosition, anchor: .center)
+        .scrollPosition(id: $visiblePosition, anchor: .center)
+        .onScrollPhaseChange { _, phase in
+            // 指・キーボード・VoiceOverによる移動が完了してから親へ保存する。
+            if phase == .idle {
+                rememberReadingPosition()
+            }
+        }
         .accessibilityIdentifier("article.readingContent")
+#if DEBUG
+        .modifier(ArticleScrollDiagnostics(readingPosition: visiblePosition))
+#endif
         .navigationTitle(contextTitle ?? article.title)
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -72,9 +83,14 @@ struct ArticleDetailView: View {
             }
         }
         .onAppear {
+            // Eagerな本文のアンカーが登録された後に、保持した位置を明示的に復元する。
+            visiblePosition = readingPosition
             withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
                 revealed = true
             }
+        }
+        .onDisappear {
+            rememberReadingPosition()
         }
         .onChange(of: article.id) { _, _ in
             revealed = false
@@ -82,6 +98,11 @@ struct ArticleDetailView: View {
                 revealed = true
             }
         }
+    }
+
+    private func rememberReadingPosition() {
+        guard let visiblePosition, readingPosition != visiblePosition else { return }
+        readingPosition = visiblePosition
     }
 
     private var header: some View {
@@ -173,8 +194,9 @@ struct ArticleDetailView: View {
                     ForEach(sections) { section in
                         Button {
                             focusedHeading = nil
+                            readingPosition = section.anchorID
                             withAnimation(AppTheme.gentle(reduceMotion: reduceMotion)) {
-                                readingPosition = section.anchorID
+                                visiblePosition = section.anchorID
                             } completion: {
                                 focusedHeading = section.anchorID
                             }

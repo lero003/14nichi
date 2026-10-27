@@ -202,6 +202,35 @@ final class FourteenDayNoteUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["地震が起きた"].exists)
     }
 
+    func testArticleScrollKeepsContentHeightStable() {
+        assertStableScroll(articleID: "earthquake-first-actions")
+    }
+
+    func testLongArticleScrollKeepsContentHeightStable() {
+        assertStableScroll(articleID: "cold-first-actions")
+    }
+
+    private func assertStableScroll(articleID: String) {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "--ui-testing-scroll-probe", "--screenshot-route=article/\(articleID)",
+        ]
+        app.launch()
+        let content = app.scrollViews["article.readingContent"]
+        XCTAssertTrue(content.waitForExistence(timeout: 5))
+        let metrics = app.staticTexts["testing.articleScrollMetrics"]
+        XCTAssertTrue(metrics.waitForExistence(timeout: 3))
+        for _ in 0..<8 { content.swipeUp() }
+        for _ in 0..<4 { content.swipeDown() }
+        let summary = metrics.label
+        print("ARTICLE_SCROLL_METRICS: \(summary)")
+        let attachment = XCTAttachment(string: summary)
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        XCTAssertFalse(summary.contains("gestures=0;"))
+        XCTAssertTrue(summary.contains("heightChanges=0;"), "スクロール中の本文高さが変化: \(summary)")
+    }
+
     private func assertHittable(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
         let visible = XCTNSPredicateExpectation(
             predicate: NSPredicate(format: "isHittable == true"), object: element

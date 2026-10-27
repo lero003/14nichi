@@ -29,11 +29,11 @@
 | 済 | 記事 `approved` 化 | **完了**（30記事、公的一次情報照合・編集確認） |
 | 済 | 製品 / プライバシー / サポート公開ページ | 本番URL運用中。変更時はアプリ内リンクとConnectを同時更新 |
 | 一部済 | v1.3スクリーンショット・説明文 | 主要5画像は旧v1.1 Debug候補。v1.3最終Release候補で全点を再撮影 |
-| 現在候補 | ビルド番号 | `CURRENT_PROJECT_VERSION = 9`。Upload前のConnect確認で既存最新1.2.0(8)・1.3登録なしだったため9を選択。現在は1.3.0(9)配信済み。再Upload時は次の未使用番号へ上げる |
-| 内部TestFlight済 | v1.3 | `main` は `1.3.0 (9)`。独立レビュー改修まで統合し、内部TestFlightへ配信済み。Archive/Validate/Upload/Apple処理完了・既存内部グループ利用可能化を確認（`TESTFLIGHT_1_3_0.md`）。App Store審査は未提出。実機と人間テストは未完了 |
+| 現在候補 | ビルド番号 | `CURRENT_PROJECT_VERSION = 10`。1.3.0(9)の実機フィードバックを修正し、未使用番号10へ更新。再Upload時は次の未使用番号へ上げる |
+| 内部TestFlight済 | v1.3 | `main` は `1.3.0 (10)`。記事スクロール修正後のArchive/Validate/Upload・Apple処理完了・既存内部グループ利用可能化を確認（`TESTFLIGHT_1_3_0_BUILD_10.md`）。先行9の配信記録も維持。App Store審査は未提出。実機と人間テストは未完了 |
 
 公開中: レコード `1.2` / 選択ビルド `1.2.0 (8)`（2026-10-27 Connect確認）。公開日は未確認
-リポジトリ候補: マーケティング `1.3.0` / ビルド `9`
+リポジトリ候補: マーケティング `1.3.0` / ビルド `10`
 署名スタイル: Automatic。`DEVELOPMENT_TEAM` は `project.yml` に書かない。
 
 ---
@@ -194,7 +194,7 @@ Team ID を `project.yml` に推測で固定しない。
 5. Distribute → App Store Connect → Upload
 
 Validate 成功 ≠ Upload 成功。再 Upload 時は **Build 番号を増やす**（`CURRENT_PROJECT_VERSION`）。
-Connect確認の公開版 `1.2` / ビルド `1.2.0 (8)` に対する次の提出候補は `1.3.0 (9)`。同じマーケティングバージョンを再 Upload する場合も Build 番号をさらに増やす。
+Connect確認の公開版 `1.2` / ビルド `1.2.0 (8)` に対する次の提出候補は `1.3.0 (10)`。同じマーケティングバージョンを再 Upload する場合も Build 番号をさらに増やす。
 
 ---
 
@@ -279,7 +279,7 @@ Privacy Manifest 同梱済み（トラッキングなし、UserDefaults CA92.1 �
 ### 次ビルドでの最短手順
 
 1. 変更を1スライスに絞り、`swift test --disable-sandbox` と必要なら `content-lint --distribution` を通す
-2. Connect上の既存ビルドを確認し、現在候補 `1.3.0 (9)` のビルド番号 `9` が未使用なら維持、使用済みなら `CURRENT_PROJECT_VERSION` を次の未使用番号へ上げる
+2. Connect上の既存ビルドを確認し、現在候補 `1.3.0 (10)` はUpload済みなので、次のUploadでは `CURRENT_PROJECT_VERSION` を次の未使用番号へ上げる
 3. 実機スモーク → Archive → Validate → Upload → 審査提出
 
 ---

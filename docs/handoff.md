@@ -4,9 +4,9 @@
 
 ## Current State
 
-- 現在の公開版: iOS/iPadOS `1.2`（ユーザーが2026-10-27に確認。ビルド番号・公開日はApp Store Connectで未確認）。
+- 現在の公開版: iOS/iPadOS `1.2`（公開レコード `1.2`、選択ビルド `1.2.0 (8)` を2026-10-27にApp Store Connectで確認。公開日は未確認）。
 - 初回公開の履歴: `1.0.0 (6)`、2026-07-24審査通過、タグ `v1.0.0`。
-- 現在: `main` の `1.3.0 (8)` 内部TestFlight配信準備中。起点 `5b97f52` からの独立レビュー改修はローカル変更。今回commit/pushは未実施。Archive/Upload、Apple処理・内部利用可能化は未確認。
+- 現在: `main` の `1.3.0 (9)` 内部TestFlight配信準備中。独立レビュー改修と前段候補 `1.3.0 (8)` は `38cef0d` でpush済み。現在のビルド9への変更はcommit前。ビルド9のArchive/Upload、Apple処理・内部利用可能化は未確認。
 - 同梱13状況・30記事は全件approved。今回全本文を読了し、本文10記事と出典を修正。出典追加/差替を含め13記事の確認日・確認者を更新。
 - 公開対象はiPhone/iPad。Macターゲットは将来候補。
 - 正本: `PROJECT_FOUNDATION.md`、`CONTENT_CONTRACT.md`、`RELEASE_SUBMISSION_CHECKLIST.md`。今回の確認範囲・出典・未取得資料は `REVIEW_RESULTS_2026-10-27.md`。
@@ -31,7 +31,7 @@
 
 ## Tests
 
-以下は独立レビュー時の `1.2.0 (7)` の記録。現在候補 `1.3.0 (8)` の配信検証は進行中。
+以下は独立レビュー時の `1.2.0 (7)` の記録。現在候補 `1.3.0 (9)` の配信検証は進行中。
 
 - `swift test --disable-sandbox`: **85 tests / 14 suites成功**。
 - `swift run content-lint` / `--distribution`: **13状況・30記事、全件approved**。
@@ -43,6 +43,9 @@
 - `git diff --check`成功。統合レビューで追加ブロッカーなし。
 - AppIntents抽出スキップ、XcodeのSDK build番号/debugger lookup診断がある。詳細はレビュー結果。
 
+- 前段候補 `1.3.0 (8)` のArchive/exportは成功したが未Upload。これはビルド9の検証証拠ではない。
+- App Store Connectの2026-10-27確認ではTestFlight最大ビルド8、1.3の登録ビルドなし。次の未使用番号として9を選択。既存内部グループは `test`（自動配信）。
+
 ## Risks / Unknowns
 
 - Duoのdevice typeはあるがiOS 27.1 runtime未導入。取得は低速のため中断。iPadの幅変更テストは実Duoの開閉/pose/非対称セーフエリアの証拠ではない。
@@ -50,7 +53,7 @@
 - 機内モード30秒、App Switcher秘匿、認証、PDF共有などの実機ゲートは未実施。
 - 政府広報旧preparation URLとMETIガス臭ページは直接取得403、厚労省低体温PDFは取得上限。旧accessedAt維持。他の取得済み一次資料と区別。
 - App Store画像は旧候補。最終Release候補の全点再撮影が必要。
-- Archive / Validate / Upload / Connect入力・提出は未実施。初見5人観察も未実施。
+- 現在のビルド9のArchive / Validate / Upload、Apple処理・内部配信、一般公開提出は未確認。初見5人観察も未実施。
 
 ## Next Actions
 

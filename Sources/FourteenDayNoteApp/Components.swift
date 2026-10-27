@@ -40,7 +40,7 @@ struct PriorityBadge: View {
 
     private var background: Color {
         switch priority {
-        case .critical: AppTheme.coral
+        case .critical: AppTheme.criticalBadgeFill
         case .high: AppTheme.ochre.opacity(0.38)
         case .normal: Color.secondary.opacity(0.14)
         }
@@ -143,7 +143,7 @@ struct GuideHeroCard: View {
                     .font(.caption.weight(.bold))
                     .textCase(.uppercase)
                     .tracking(1.1)
-                    .foregroundStyle(AppTheme.ochre)
+                    .foregroundStyle(AppTheme.ivory)
 
                 Text("いまの状況から、\n最初の行動へ。")
                     .font(.title2.weight(.bold))

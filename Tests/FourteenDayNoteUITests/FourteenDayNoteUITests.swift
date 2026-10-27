@@ -129,4 +129,92 @@ final class FourteenDayNoteUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["避難を考える"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["避難する・留まるの判断"].waitForExistence(timeout: 5))
     }
+
+    func testAdaptiveGuideKeepsArticleAndReadingPosition() throws {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "--ui-testing-adaptive-guide",
+            "--screenshot-route=article/earthquake-first-actions",
+        ]
+        app.launch()
+        try XCTSkipUnless(app.frame.width > 700, "幅の往復確認はiPad Simulatorで実行")
+
+        let jump = app.buttons["今日中にすること"]
+        XCTAssertTrue(jump.waitForExistence(timeout: 5))
+        jump.tap()
+        let heading = app.staticTexts["今日中にすること"]
+        assertHittable(heading)
+
+        let toggle = app.buttons["testing.toggleGuideWidth"]
+        toggle.tap()
+        assertHittable(heading)
+        toggle.tap()
+        assertHittable(heading)
+        XCTAssertTrue(app.navigationBars["地震が起きた"].exists)
+    }
+
+    func testAdaptiveGuideKeepsSearchAndSelectedResult() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--ui-testing-adaptive-guide", "--screenshot-route=guide"]
+        app.launch()
+        try XCTSkipUnless(app.frame.width > 700, "幅の往復確認はiPad Simulatorで実行")
+
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        search.typeText("AED")
+        let result = app.buttons["guide.article.first-aid-call-119"]
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        result.tap()
+        XCTAssertTrue(app.staticTexts["救急を呼ぶ判断の目安"].waitForExistence(timeout: 5))
+
+        let toggle = app.buttons["testing.toggleGuideWidth"]
+        toggle.tap()
+        XCTAssertEqual(app.searchFields.firstMatch.value as? String, "AED")
+        XCTAssertTrue(result.exists)
+        toggle.tap()
+        XCTAssertTrue(app.staticTexts["救急を呼ぶ判断の目安"].waitForExistence(timeout: 5))
+        let back = app.navigationBars["ケガ・体調不良"].buttons["防災ガイド"]
+        XCTAssertTrue(back.waitForExistence(timeout: 3))
+        back.tap()
+        XCTAssertTrue(app.searchFields.firstMatch.waitForExistence(timeout: 3))
+        XCTAssertEqual(app.searchFields.firstMatch.value as? String, "AED")
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+    }
+
+    func testAdaptiveGuideKeepsManualReadingPosition() throws {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "--ui-testing-adaptive-guide", "--screenshot-route=article/earthquake-first-actions",
+        ]
+        app.launch()
+        try XCTSkipUnless(app.frame.width > 700, "幅の往復確認はiPad Simulatorで実行")
+        let content = app.scrollViews["article.readingContent"]
+        XCTAssertTrue(content.waitForExistence(timeout: 5))
+        content.swipeUp()
+        content.swipeUp()
+        let title = app.staticTexts["地震：最初の数分ですること"]
+        XCTAssertFalse(title.isHittable)
+        let toggle = app.buttons["testing.toggleGuideWidth"]
+        toggle.tap()
+        toggle.tap()
+        XCTAssertFalse(title.isHittable)
+        XCTAssertTrue(app.navigationBars["地震が起きた"].exists)
+    }
+
+    private func assertHittable(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        let visible = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "isHittable == true"), object: element
+        )
+        let result = XCTWaiter.wait(for: [visible], timeout: 5)
+        if result != .completed {
+            let screenshot = XCTAttachment(screenshot: XCUIApplication().screenshot())
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+            let hierarchy = XCTAttachment(string: XCUIApplication().debugDescription)
+            hierarchy.lifetime = .keepAlways
+            add(hierarchy)
+        }
+        XCTAssertEqual(result, .completed, file: file, line: line)
+    }
 }

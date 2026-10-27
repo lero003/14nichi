@@ -2,31 +2,30 @@ import FourteenDayCore
 import SwiftUI
 
 /// Markdownの各見出しを独立した要素として描画し、VoiceOverの見出し移動を可能にする。
-/// ブロックの位置を `id` にして、記事内ジャンプのスクロール先にも使う。
-struct ArticleMarkdownView: View {
-    let blocks: [GuideMarkdownBlock]
+/// 親のスクロールレイアウトへ各ブロックを直接渡し、開閉時の位置復元にも使う。
+struct ArticleMarkdownBlockView: View {
+    let block: GuideMarkdownBlock
+    let anchorID: String
+    var headingFocus: AccessibilityFocusState<String?>.Binding
     let prefersBoldBody: Bool
     let lineSpacing: CGFloat
 
     var body: some View {
-        VStack(alignment: .leading, spacing: max(lineSpacing, 12)) {
-            ForEach(blocks.indices, id: \.self) { index in
-                blockView(blocks[index])
-                    .id(GuideArticleSection.anchorID(blockIndex: index))
-            }
-        }
+        blockContent
         .frame(maxWidth: .infinity, alignment: .leading)
         .textSelection(.enabled)
     }
 
     @ViewBuilder
-    private func blockView(_ block: GuideMarkdownBlock) -> some View {
+    private var blockContent: some View {
         switch block {
         case .heading(let level, let text):
             Text(inlineMarkdown(text))
                 .font(headingFont(level: level))
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused(headingFocus, equals: anchorID)
+                .accessibilityIdentifier(anchorID)
 
         case .paragraph(let text):
             Text(inlineMarkdown(text))

@@ -57,7 +57,7 @@ struct HomeView: View {
                 Text("14日ノート")
                     .font(.caption.weight(.bold))
                     .tracking(1.1)
-                    .foregroundStyle(AppTheme.ochre)
+                    .foregroundStyle(AppTheme.ivory)
                 Text("困った今も、\n備える今日も。")
                     .font(.title.bold())
                     .foregroundStyle(AppTheme.ivory)

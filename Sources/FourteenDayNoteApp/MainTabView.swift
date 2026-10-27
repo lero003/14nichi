@@ -127,3 +127,41 @@ struct MainTabView: View {
     }
 #endif
 }
+
+#if DEBUG
+/// iPad Simulatorで、同じブラウザの幅とサイズクラスを実行中に往復させる回帰確認用。
+/// 通常起動・Releaseでは表示しない。Duoの実際のpose・セーフエリアの代用にはしない。
+struct AdaptiveGuideTestHost: View {
+    let model: AppModel
+    @State private var router = AppRouter()
+    @State private var compact = true
+    @State private var appliedRoute = false
+
+    var body: some View {
+        ArticleBrowserView(model: model, router: router)
+            .environment(\.horizontalSizeClass, compact ? .compact : .regular)
+            .frame(maxWidth: compact ? 390 : .infinity)
+            .frame(maxWidth: .infinity)
+            .safeAreaInset(edge: .bottom) {
+                Button(compact ? "検証: 広い画面へ" : "検証: 狭い画面へ") {
+                    compact.toggle()
+                }
+                .accessibilityIdentifier("testing.toggleGuideWidth")
+                .buttonStyle(.bordered)
+                .padding(8)
+                .background(.bar)
+            }
+            .task {
+                guard !appliedRoute else { return }
+                appliedRoute = true
+                if let argument = ProcessInfo.processInfo.arguments.first(where: {
+                    $0.hasPrefix("--screenshot-route=article/")
+                }), let article = model.catalog?.article(id: String(argument.dropFirst("--screenshot-route=article/".count))) {
+                    model.selectSituation(article.situations.first)
+                    model.selectArticle(article.id, requireDisplayed: false)
+                    router.navigate(to: .article(situationID: article.situations.first, articleID: article.id))
+                }
+            }
+    }
+}
+#endif

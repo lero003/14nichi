@@ -116,6 +116,35 @@ struct ContentRepositoryTests {
         }
     }
 
+    @Test(
+        "shortcut IDs must match the stored ID exactly rather than only after trimming",
+        arguments: [" sample", "sample ", "\nsample\n", "", " "]
+    )
+    func rejectsNonmatchingShortcutID(_ shortcutArticleID: String) {
+        let situation = GuideSituation(
+            id: "blackout",
+            title: "停電",
+            summary: "summary",
+            systemImage: "bolt.slash",
+            sortOrder: 1,
+            shortcutArticleID: shortcutArticleID
+        )
+        let manifest = Manifest(
+            schemaVersion: 1,
+            situations: [situation],
+            articles: [articleMetadata()]
+        )
+
+        #expect(
+            throws: ContentRepository.RepositoryError.unknownShortcutArticle(
+                situationID: "blackout",
+                articleID: shortcutArticleID
+            )
+        ) {
+            try ContentRepository.validate(manifest: manifest)
+        }
+    }
+
     @Test("manifest rejects a shortcut that is not approved immediate content")
     func rejectsInvalidShortcutArticle() {
         let situation = GuideSituation(

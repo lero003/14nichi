@@ -11,6 +11,8 @@ struct ArticleBrowserView: View {
     /// コンパクト幅専用。選択の再タップ不能や詳細への引き戻しを避ける。
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var appeared = false
+    // 開閉でナビゲーションのViewツリーが変わっても、記事ごとの読書位置を保持する。
+    @State private var readingPositions: [GuideArticle.ID: String] = [:]
 
     /// iPhone / 狭い幅は NavigationStack。広い幅と Mac は Split。
     private var usesCompactNavigation: Bool {
@@ -48,11 +50,17 @@ struct ArticleBrowserView: View {
                 router.guidePath = []
             }
         }
-        .onChange(of: horizontalSizeClass) { _, _ in
+        .onChange(of: usesCompactNavigation) { _, _ in
             // 幅切り替え後は model を正として compact path を組み直す（取り残し・空 path での詳細残留を防ぐ）
             if usesCompactNavigation {
                 rebuildCompactPathFromModel()
             }
+        }
+        .onChange(of: model.selectedSituationID) { _, _ in
+            if !usesCompactNavigation { rebuildCompactPathFromModel() }
+        }
+        .onChange(of: model.selectedArticleID) { _, _ in
+            if !usesCompactNavigation { rebuildCompactPathFromModel() }
         }
         .onChange(of: router.guidePath) { _, newPath in
             guard usesCompactNavigation else { return }
@@ -222,9 +230,11 @@ struct ArticleBrowserView: View {
                 contextTitle: situationTitle(for: article),
                 isFavorite: model.isFavorite(article.id),
                 relatedArticles: model.catalog?.relatedArticles(to: article) ?? [],
+                readingPosition: readingPosition(for: article.id),
                 onToggleFavorite: { model.toggleFavorite(article.id) },
                 onOpenRelated: openRelatedArticle
             )
+            .id(article.id)
             .toolbar { readingToolbar }
             .onAppear {
                 model.selectArticle(articleID, requireDisplayed: false)
@@ -287,6 +297,16 @@ struct ArticleBrowserView: View {
         let titles = article.situations.compactMap { model.catalog?.situation(id: $0)?.title }
         guard let first = titles.first else { return nil }
         return titles.count > 1 ? "\(first) ほか" : first
+    }
+
+    private func readingPosition(for articleID: GuideArticle.ID) -> Binding<String?> {
+        Binding(
+            get: { readingPositions[articleID] },
+            set: { position in
+                // 破棄中のScrollViewは一時的にnilを書き込む。次のレイアウトの復元位置を消さない。
+                if let position { readingPositions[articleID] = position }
+            }
+        )
     }
 
     /// model の選択から compact 用 path を復元する（サイズクラス切り替え用）。
@@ -458,6 +478,7 @@ struct ArticleBrowserView: View {
                 contextTitle: situationTitle(for: article),
                 isFavorite: model.isFavorite(article.id),
                 relatedArticles: model.catalog?.relatedArticles(to: article) ?? [],
+                readingPosition: readingPosition(for: article.id),
                 onToggleFavorite: { model.toggleFavorite(article.id) },
                 onOpenRelated: openRelatedArticle
             )

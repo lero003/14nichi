@@ -7,12 +7,14 @@ struct ArticleDetailView: View {
     let contextTitle: String?
     let isFavorite: Bool
     let relatedArticles: [GuideArticle]
+    @Binding var readingPosition: String?
     let onToggleFavorite: () -> Void
     let onOpenRelated: (GuideArticle) -> Void
     @Environment(ReadabilitySettings.self) private var readability
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
     @State private var revealed = false
+    @AccessibilityFocusState private var focusedHeading: String?
 
     var body: some View {
         let blocks = GuideMarkdownParser.displayBlocks(
@@ -21,37 +23,52 @@ struct ArticleDetailView: View {
         )
         let sections = GuideArticleOutline.sections(in: blocks)
 
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading, spacing: readability.sectionSpacing) {
-                    header
-                    compactSafetyBanner
-                    summaryBlock
-                    sectionJumpBar(sections, proxy: proxy)
-                    bodyBlock(blocks)
-                    detailedSafetyFooter
-                    relatedArticlesBlock
-                    sourcesBlock
-                }
-                .padding(AppTheme.contentGutter)
-                .frame(maxWidth: readability.textSize.contentMaxWidth, alignment: .leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .opacity(revealed || reduceMotion ? 1 : 0)
-                .offset(y: revealed || reduceMotion ? 0 : 10)
-            }
-            .navigationTitle(contextTitle ?? article.title)
-#if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-#endif
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(
-                        isFavorite ? "お気に入りから外す" : "お気に入りに追加",
-                        systemImage: isFavorite ? "heart.fill" : "heart",
-                        action: onToggleFavorite
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: readability.sectionSpacing) {
+                header.id("article-header")
+                compactSafetyBanner.id("article-safety")
+                summaryBlock.id("article-summary")
+                sectionJumpBar(sections).id("article-outline")
+                ForEach(
+                    Array(blocks.enumerated()).map {
+                        (id: GuideArticleSection.anchorID(blockIndex: $0.offset), block: $0.element)
+                    },
+                    id: \.id
+                ) { item in
+                    ArticleMarkdownBlockView(
+                        block: item.block,
+                        anchorID: item.id,
+                        headingFocus: $focusedHeading,
+                        prefersBoldBody: readability.prefersBoldBody,
+                        lineSpacing: readability.resolvedLineSpacing
                     )
-                    .accessibilityHint("この記事のお気に入り状態を端末内に保存します")
+                    .id(item.id)
                 }
+                detailedSafetyFooter.id("article-limitations")
+                relatedArticlesBlock.id("article-related")
+                sourcesBlock.id("article-sources")
+            }
+            .scrollTargetLayout()
+            .padding(AppTheme.contentGutter)
+            .frame(maxWidth: readability.textSize.contentMaxWidth, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .opacity(revealed || reduceMotion ? 1 : 0)
+            .offset(y: revealed || reduceMotion ? 0 : 10)
+        }
+        .scrollPosition(id: $readingPosition, anchor: .center)
+        .accessibilityIdentifier("article.readingContent")
+        .navigationTitle(contextTitle ?? article.title)
+#if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+#endif
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button(
+                    isFavorite ? "お気に入りから外す" : "お気に入りに追加",
+                    systemImage: isFavorite ? "heart.fill" : "heart",
+                    action: onToggleFavorite
+                )
+                .accessibilityHint("この記事のお気に入り状態を端末内に保存します")
             }
         }
         .onAppear {
@@ -145,10 +162,7 @@ struct ArticleDetailView: View {
 
     /// 長い記事でも、必要な節へ迷わず移れるようにする。
     @ViewBuilder
-    private func sectionJumpBar(
-        _ sections: [GuideArticleSection],
-        proxy: ScrollViewProxy
-    ) -> some View {
+    private func sectionJumpBar(_ sections: [GuideArticleSection]) -> some View {
         if sections.count >= 2 {
             VStack(alignment: .leading, spacing: 8) {
                 Label("記事の構成", systemImage: "list.bullet")
@@ -158,14 +172,18 @@ struct ArticleDetailView: View {
                 WrapLayout(spacing: 8, lineSpacing: 8) {
                     ForEach(sections) { section in
                         Button {
+                            focusedHeading = nil
                             withAnimation(AppTheme.gentle(reduceMotion: reduceMotion)) {
-                                proxy.scrollTo(section.anchorID, anchor: .center)
+                                readingPosition = section.anchorID
+                            } completion: {
+                                focusedHeading = section.anchorID
                             }
                         } label: {
                             Text(section.label)
                                 .font(.subheadline.weight(.semibold))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 7)
+                                .frame(minHeight: 44)
                                 .foregroundStyle(AppTheme.accent)
                                 .background(
                                     AppTheme.accent.opacity(colorScheme == .dark ? 0.20 : 0.09),
@@ -189,14 +207,6 @@ struct ArticleDetailView: View {
                 .accessibilityElement(children: .contain)
             }
         }
-    }
-
-    private func bodyBlock(_ blocks: [GuideMarkdownBlock]) -> some View {
-        ArticleMarkdownView(
-            blocks: blocks,
-            prefersBoldBody: readability.prefersBoldBody,
-            lineSpacing: readability.resolvedLineSpacing
-        )
     }
 
     @ViewBuilder
@@ -402,6 +412,7 @@ private struct FlowMeta<Content: View>: View {
             contextTitle: "停電した",
             isFavorite: false,
             relatedArticles: [],
+            readingPosition: .constant(nil),
             onToggleFavorite: {},
             onOpenRelated: { _ in }
         )

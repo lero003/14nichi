@@ -15,8 +15,17 @@ struct RootView: View {
                 LoadingSplashView()
                     .transition(.opacity)
             case .ready:
+#if DEBUG
+                if ProcessInfo.processInfo.arguments.contains("--ui-testing-adaptive-guide") {
+                    AdaptiveGuideTestHost(model: model)
+                } else {
+                    MainTabView(appModel: model, emergencyContainer: emergencyContainer)
+                        .transition(.opacity.combined(with: .scale(scale: 0.985)))
+                }
+#else
                 MainTabView(appModel: model, emergencyContainer: emergencyContainer)
                     .transition(.opacity.combined(with: .scale(scale: 0.985)))
+#endif
             case .failed(let message):
                 ContentUnavailableView {
                     Label("記事を読み込めませんでした", systemImage: "exclamationmark.triangle")

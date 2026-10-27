@@ -128,7 +128,7 @@
           "title": "津波警報・注意報と避難のポイント",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/jishin/joho/tsunamiinfo.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "強い揺れや弱くても長い揺れを感じた場合の即時避難と、解除まで避難を続ける要点を自前の言葉で案内。",
           "excerpt": null
@@ -162,8 +162,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-08-14",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-bousai-portal",
@@ -204,6 +204,15 @@
           "usage": "paraphrase",
           "rightsNote": "火気・電気スイッチを避け、窓を開け、栓を閉めて事業者へ連絡する要点を自前で要約。",
           "excerpt": null
+        },
+        {
+          "id": "osaka-furniture-safety",
+          "title": "その他の地震対策について",
+          "publisher": "大阪府",
+          "url": "https://www.pref.osaka.lg.jp/o130040/kenshi_kikaku/kikaku_bousai/interior.html",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "安全空間の確保と家具の固定・配置の注意を参照し、自前の文章で要約。原文・図表は転載しない。"
         }
       ]
     },
@@ -222,8 +231,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "meti-enecho",
@@ -260,10 +269,19 @@
           "title": "火気器具等の取扱いについて",
           "publisher": "総務省消防庁 消防大学校 消防研究センター",
           "url": "https://nrifd.fdma.go.jp/news/caution/heat_generator/index.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "燃焼器具使用時の換気と一酸化炭素中毒防止の要点を自前で要約。",
           "excerpt": null
+        },
+        {
+          "id": "caa-blackout-product-safety",
+          "title": "停電時の発電機によるCO中毒や、復旧後の通電火災に注意！",
+          "publisher": "消費者庁",
+          "url": "https://www.caa.go.jp/policies/policy/consumer_safety/caution/caution_070/",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "発電機の屋内使用禁止と屋外設置時の注意を参照し、自前の文章で要約。原文・図表は転載しない。"
         }
       ]
     },
@@ -284,8 +302,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "soumu-portal",
@@ -306,6 +324,15 @@
           "usage": "paraphrase",
           "rightsNote": "家庭備蓄・生活インフラ代替の案内を自前で要約。",
           "excerpt": null
+        },
+        {
+          "id": "mlit-emergency-alert-cautions",
+          "title": "洪水の緊急速報メール配信対象を拡大します（受信時の注意事項）",
+          "publisher": "国土交通省",
+          "url": "https://www.mlit.go.jp/report/press/mizukokudo03_hh_001176.html",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "機内モード時には緊急速報メールを受信できない注意事項を参照し、自前の文章で要約。原文は転載しない。"
         }
       ]
     },
@@ -326,15 +353,15 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "maff-foodstock",
           "title": "農林水産省 災害時に備えた食品ストックガイド",
           "publisher": "農林水産省",
           "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
           "excerpt": null
@@ -354,7 +381,7 @@
           "title": "災害時の食中毒予防のために",
           "publisher": "厚生労働省",
           "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000212536_00004.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "災害時の食品保管、手洗い、加熱と早めの喫食に関する要点を自前で要約。",
           "excerpt": null
@@ -364,9 +391,19 @@
           "title": "ヒスタミンによる食中毒について",
           "publisher": "厚生労働省",
           "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000130677.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "加熱だけでは防げない食中毒があるため、傷んだ食品を加熱で安全と断定しない根拠として参照。",
+          "excerpt": null
+        },
+        {
+          "id": "maff-disaster-food-safety",
+          "title": "停電や断水、大雨による浸水に遭われた地域の皆様へ～食中毒に注意しましょう～",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/fs/foodpois_flooding.html",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "停電時の食品の温度管理と廃棄、再凍結の回避、断水・浸水後の飲用可確認を自前の表現で要約。原文や図表は転載しない。",
           "excerpt": null
         }
       ]
@@ -386,17 +423,17 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-08-14",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
-          "id": "mhlw-water",
-          "title": "厚生労働省 水道のページ",
-          "publisher": "厚生労働省",
-          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/suido/index.html",
-          "accessedAt": "2026-08-14",
+          "id": "env-water-supply",
+          "title": "水道対策",
+          "publisher": "環境省",
+          "url": "https://www.env.go.jp/water/water_supply/index.html",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
-          "rightsNote": "水道・水質に関する公的情報への参照。断定的な保存期間は監修前に書かない。",
+          "rightsNote": "現行の水道水質・衛生に関する公式情報への参照リンクのみ。本文は転載しない。",
           "excerpt": null
         },
         {
@@ -404,7 +441,7 @@
           "title": "水質異常時における摂取制限を伴う給水継続の考え方について",
           "publisher": "厚生労働省",
           "url": "https://www.mhlw.go.jp/web/t_doc?dataId=00tc3885&dataType=1&pageNo=1",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "水質異常時は水道事業者が飲用を避ける旨と解除を周知する考え方を、自前の表現で要約。",
           "excerpt": null
@@ -424,9 +461,19 @@
           "title": "トイレ備蓄忘れていませんか？",
           "publisher": "内閣府（記事: 経済産業省）",
           "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "携帯トイレの必要性と、1人1日5回・週35回という一般的な備蓄目安を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "maff-disaster-food-safety",
+          "title": "停電や断水、大雨による浸水に遭われた地域の皆様へ～食中毒に注意しましょう～",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/fs/foodpois_flooding.html",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "停電時の食品の温度管理と廃棄、再凍結の回避、断水・浸水後の飲用可確認を自前の表現で要約。原文や図表は転載しない。",
           "excerpt": null
         }
       ]
@@ -457,7 +504,7 @@
           "title": "トイレ備蓄忘れていませんか？",
           "publisher": "内閣府（記事: 経済産業省）",
           "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "携帯トイレの必要性と、1人1日5回・週35回という一般的な備蓄目安を自前で要約。",
           "excerpt": null
@@ -477,7 +524,7 @@
           "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
           "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
@@ -487,7 +534,7 @@
           "title": "避難所等のトイレの消毒方法、手洗いなどについて",
           "publisher": "厚生労働省",
           "url": "https://www.mhlw.go.jp/bunya/kenkou/hoken-sidou/disaster_1.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "断水・避難時の手洗いと速乾性アルコール手指消毒薬の使い分けを自前の表現で要約。",
           "excerpt": null
@@ -512,17 +559,17 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-08-14",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
-          "id": "mhlw-water",
-          "title": "厚生労働省 水道のページ",
-          "publisher": "厚生労働省",
-          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/suido/index.html",
-          "accessedAt": "2026-08-14",
+          "id": "env-water-supply",
+          "title": "水道対策",
+          "publisher": "環境省",
+          "url": "https://www.env.go.jp/water/water_supply/index.html",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
-          "rightsNote": "水道・水質に関する公的情報への参照。断定的な保存期間は監修前に書かない。",
+          "rightsNote": "現行の水道水質・衛生に関する公式情報への参照リンクのみ。本文は転載しない。",
           "excerpt": null
         },
         {
@@ -571,7 +618,7 @@
           "title": "災害用伝言サービス（総務省案内）",
           "publisher": "総務省",
           "url": "https://www.soumu.go.jp/menu_seisaku/ictseisaku/net_anzen/hijyo/dengon.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "災害用伝言ダイヤル等の存在と使いどころを自前で要約。操作手順の長い転載はしない。",
           "excerpt": null
@@ -614,7 +661,7 @@
           "title": "自然災害への備えは万全ですか？チェックしてみよう！",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
           "excerpt": null
@@ -624,7 +671,7 @@
           "title": "災害用伝言サービス（総務省案内）",
           "publisher": "総務省",
           "url": "https://www.soumu.go.jp/menu_seisaku/ictseisaku/net_anzen/hijyo/dengon.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "災害用伝言ダイヤル等の存在と使いどころを自前で要約。操作手順の長い転載はしない。",
           "excerpt": null
@@ -634,7 +681,7 @@
           "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
           "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
@@ -674,7 +721,7 @@
           "title": "新たな防災気象情報について（令和8年～）",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "警戒レベル付きの防災気象情報と、避難指示がなくてもキキクル等で自ら判断する要点を自前の言葉で案内。",
           "excerpt": null
@@ -684,7 +731,7 @@
           "title": "キキクル",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/bosai/riskmap.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "土砂・浸水・洪水の危険度分布（キキクル）への参照。",
           "excerpt": null
@@ -704,7 +751,7 @@
           "title": "ハザードマップポータルサイト",
           "publisher": "国土地理院",
           "url": "https://disaportal.gsi.go.jp/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "浸水・土砂などのハザードマップ確認用リンク。",
           "excerpt": null
@@ -724,7 +771,7 @@
           "title": "避難情報に関するガイドライン（令和8年3月改定）",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "警戒レベル3・4・5の意味と、令和8年5月以降の警戒レベル相当情報の使い方を自前で要約。",
           "excerpt": null
@@ -748,8 +795,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-08-14",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "jma-portal",
@@ -766,7 +813,7 @@
           "title": "新たな防災気象情報について（令和8年～）",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "警戒レベル付きの防災気象情報と、避難指示がなくてもキキクル等で自ら判断する要点を自前の言葉で案内。",
           "excerpt": null
@@ -776,7 +823,7 @@
           "title": "キキクル",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/bosai/riskmap.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "土砂・浸水・洪水の危険度分布（キキクル）への参照。",
           "excerpt": null
@@ -806,7 +853,7 @@
           "title": "避難情報に関するガイドライン（令和8年3月改定）",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "警戒レベル3・4・5の意味と、令和8年5月以降の警戒レベル相当情報の使い方を自前で要約。",
           "excerpt": null
@@ -838,7 +885,7 @@
           "title": "熱中症予防情報（関係府省庁の取組）",
           "publisher": "環境省・関係府省庁",
           "url": "https://www.wbgt.env.go.jp/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "暑さ指数・熱中症予防の公式情報への参照。診断は行わない。",
           "excerpt": null
@@ -868,7 +915,7 @@
           "title": "熱中症が疑われる人を見かけたら",
           "publisher": "厚生労働省",
           "url": "https://www.mhlw.go.jp/seisakunitsuite/bunya/kenkou_iryou/kenkou/nettyuu/nettyuu_taisaku/happen.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "涼しい場所への移動、冷却、水分補給と救急要請判断を自前で要約。",
           "excerpt": null
@@ -892,8 +939,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-08-14",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "fdma-portal",
@@ -910,7 +957,7 @@
           "title": "応急手当WEB講習 低体温症",
           "publisher": "総務省消防庁",
           "url": "https://www.fdma.go.jp/relocation/kyukyukikaku/oukyu/05kobetsu/05/05_05_11.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "濡れ・風・冷たい地面を避け、それ以上の体温低下を防ぐ保温の要点を自前で要約。",
           "excerpt": null
@@ -930,7 +977,7 @@
           "title": "傷病者の安静",
           "publisher": "日本赤十字社",
           "url": "https://www.jrc.or.jp/study/safety/rest/",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "濡れた衣服の着替え、毛布による保温、大きく揺らさない注意を自前で要約。",
           "excerpt": null
@@ -950,7 +997,7 @@
           "title": "火気器具等の取扱いについて",
           "publisher": "総務省消防庁 消防大学校 消防研究センター",
           "url": "https://nrifd.fdma.go.jp/news/caution/heat_generator/index.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "燃焼器具使用時の換気と一酸化炭素中毒防止の要点を自前で要約。",
           "excerpt": null
@@ -963,6 +1010,16 @@
           "accessedAt": "2026-07-20",
           "usage": "paraphrase",
           "rightsNote": "低体温症の兆候と避難生活での予防に関する要点を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "jrc-gas-poisoning",
+          "title": "中毒（ガス中毒）",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/study/safety/poison/",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "有毒ガスを避ける安全確保と、症状が治まっても119番通報・受診を優先する注意を自前で要約。原文や図表は転載しない。",
           "excerpt": null
         }
       ]
@@ -1064,7 +1121,7 @@
           "title": "自然災害への備えは万全ですか？チェックしてみよう！",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
           "excerpt": null
@@ -1074,7 +1131,7 @@
           "title": "農林水産省 災害時に備えた食品ストックガイド",
           "publisher": "農林水産省",
           "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
           "excerpt": null
@@ -1106,7 +1163,7 @@
           "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
           "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
@@ -1116,7 +1173,7 @@
           "title": "自然災害への備えは万全ですか？チェックしてみよう！",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
           "excerpt": null
@@ -1152,8 +1209,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-08-14",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-bousai-portal",
@@ -1180,7 +1237,7 @@
           "title": "新たな防災気象情報について（令和8年～）",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "警戒レベル付きの防災気象情報と、避難指示がなくてもキキクル等で自ら判断する要点を自前の言葉で案内。",
           "excerpt": null
@@ -1190,7 +1247,7 @@
           "title": "キキクル",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/bosai/riskmap.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "土砂・浸水・洪水の危険度分布（キキクル）への参照。",
           "excerpt": null
@@ -1200,7 +1257,7 @@
           "title": "ハザードマップポータルサイト",
           "publisher": "国土地理院",
           "url": "https://disaportal.gsi.go.jp/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "浸水・土砂などのハザードマップ確認用リンク。",
           "excerpt": null
@@ -1210,7 +1267,7 @@
           "title": "避難情報に関するガイドライン（令和8年3月改定）",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "警戒レベル3・4・5の意味と、令和8年5月以降の警戒レベル相当情報の使い方を自前で要約。",
           "excerpt": null
@@ -1235,8 +1292,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "cao-bousai-portal",
@@ -1267,6 +1324,15 @@
           "usage": "linkOnly",
           "rightsNote": "通信・情報に関する公的案内への参照。",
           "excerpt": null
+        },
+        {
+          "id": "soumu-disaster-misinformation",
+          "title": "災害時におけるインターネット上の偽・誤情報について",
+          "publisher": "総務省（内閣府 広報誌ぼうさい掲載）",
+          "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r05/109/news_03.html",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "発信元・日時・一次情報の確認と未確認情報の拡散抑制を参照し、自前の文章で要約。原文・画像は転載しない。"
         }
       ]
     },
@@ -1293,7 +1359,7 @@
           "title": "一般市民向け 応急手当WEB講習",
           "publisher": "総務省消防庁",
           "url": "https://www.fdma.go.jp/relocation/kyukyukikaku/oukyu/pages/shinpai/shinpai_04.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "119番通報、AEDの手配、呼吸判断に迷う場合の胸骨圧迫という一般市民向け救命手順を自前の言葉で案内。",
           "excerpt": null
@@ -1313,7 +1379,7 @@
           "title": "救急安心センター事業（#7119）ってナニ？",
           "publisher": "総務省消防庁",
           "url": "https://www.fdma.go.jp/mission/enrichment/appropriate/appropriate007.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "緊急性に迷う場合の救急相談窓口について、利用地域の確認を含めて自前で要約。",
           "excerpt": null
@@ -1363,7 +1429,7 @@
           "title": "多量の出血",
           "publisher": "日本赤十字社",
           "url": "https://www.jrc.or.jp/study/safety/bleed/",
-          "accessedAt": "2026-08-14",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "直接圧迫止血と止血帯に関する基礎的な注意を自前で要約。",
           "excerpt": null
@@ -1397,7 +1463,7 @@
           "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
           "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
@@ -1427,7 +1493,7 @@
           "title": "薬局・薬剤師の災害対応",
           "publisher": "厚生労働省",
           "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iyakuhin/saigai.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "災害時の薬局・薬剤師による支援情報への参照。服薬変更を自己判断しない案内の根拠として利用。",
           "excerpt": null
@@ -1468,7 +1534,7 @@
           "title": "自然災害への備えは万全ですか？チェックしてみよう！",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
           "excerpt": null
@@ -1478,7 +1544,7 @@
           "title": "農林水産省 災害時に備えた食品ストックガイド",
           "publisher": "農林水産省",
           "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
           "excerpt": null
@@ -1488,7 +1554,7 @@
           "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
           "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
@@ -1519,7 +1585,7 @@
           "title": "自然災害への備えは万全ですか？チェックしてみよう！",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
           "excerpt": null
@@ -1529,7 +1595,7 @@
           "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
           "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
@@ -1561,7 +1627,7 @@
           "title": "ハザードマップポータルサイト",
           "publisher": "国土地理院",
           "url": "https://disaportal.gsi.go.jp/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "浸水・土砂などのハザードマップ確認用リンク。",
           "excerpt": null
@@ -1591,7 +1657,7 @@
           "title": "国民保護ポータルサイト",
           "publisher": "内閣官房",
           "url": "https://www.kokuminhogo.go.jp/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "国民保護に関する公的案内への参照。",
           "excerpt": null
@@ -1617,15 +1683,15 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "maff-foodstock",
           "title": "農林水産省 災害時に備えた食品ストックガイド",
           "publisher": "農林水産省",
           "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
           "excerpt": null
@@ -1645,9 +1711,19 @@
           "title": "災害時の食中毒予防のために",
           "publisher": "厚生労働省",
           "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000212536_00004.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "災害時の食品保管、手洗い、加熱と早めの喫食に関する要点を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "maff-disaster-food-safety",
+          "title": "停電や断水、大雨による浸水に遭われた地域の皆様へ～食中毒に注意しましょう～",
+          "publisher": "農林水産省",
+          "url": "https://www.maff.go.jp/j/fs/foodpois_flooding.html",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "停電時の食品の温度管理と廃棄、再凍結の回避、断水・浸水後の飲用可確認を自前の表現で要約。原文や図表は転載しない。",
           "excerpt": null
         }
       ]
@@ -1670,8 +1746,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-22",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "gov-prep",
@@ -1688,7 +1764,7 @@
           "title": "防災の手引き～いのちとくらしをまもるために～",
           "publisher": "首相官邸",
           "url": "https://www.kantei.go.jp/jp/headline/bousai/index.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "linkOnly",
           "rightsNote": "事前防災、警戒レベル、避難、災害別情報をまとめた現行の首相官邸公式手引きへの参照。",
           "excerpt": null
@@ -1698,9 +1774,19 @@
           "title": "トイレ備蓄忘れていませんか？",
           "publisher": "内閣府（記事: 経済産業省）",
           "url": "https://www.bousai.go.jp/kohou/kouhoubousai/r06/111/news_08.html",
-          "accessedAt": "2026-07-22",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "携帯トイレの必要性と、1人1日5回・週35回という一般的な備蓄目安を自前で要約。",
+          "excerpt": null
+        },
+        {
+          "id": "mhlw-shelter-health",
+          "title": "避難所生活で健康に過ごすため、以下の点にご注意ください",
+          "publisher": "厚生労働省",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000212521_00003.html",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "避難生活で手指を清潔に保ち、歯磨き等の口腔ケアを続ける要点を自前で要約。原文や図表は転載しない。",
           "excerpt": null
         }
       ]
@@ -1729,7 +1815,7 @@
           "title": "津波警報・注意報と避難のポイント",
           "publisher": "気象庁",
           "url": "https://www.jma.go.jp/jma/kishou/know/jishin/joho/tsunamiinfo.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "強い揺れや弱くても長い揺れを感じた場合の即時避難と、解除まで避難を続ける要点を自前の言葉で案内。",
           "excerpt": null
@@ -1773,8 +1859,8 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
-      "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
+      "reviewedAt": "2026-10-27",
+      "reviewedBy": "14日ノート編集レビュー（Codexによる公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "fdma-portal",
@@ -1811,10 +1897,28 @@
           "title": "火気器具等の取扱いについて",
           "publisher": "総務省消防庁 消防大学校 消防研究センター",
           "url": "https://nrifd.fdma.go.jp/news/caution/heat_generator/index.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "燃焼器具使用時の換気と一酸化炭素中毒防止の要点を自前で要約。",
           "excerpt": null
+        },
+        {
+          "id": "caa-blackout-product-safety",
+          "title": "停電時の発電機によるCO中毒や、復旧後の通電火災に注意！",
+          "publisher": "消費者庁",
+          "url": "https://www.caa.go.jp/policies/policy/consumer_safety/caution/caution_070/",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "発電機の屋内使用禁止と屋外設置時の注意を参照し、自前の文章で要約。原文・図表は転載しない。"
+        },
+        {
+          "id": "jrc-gas-poisoning",
+          "title": "中毒（ガス中毒の手当）",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/study/safety/poison/",
+          "accessedAt": "2026-10-27",
+          "usage": "paraphrase",
+          "rightsNote": "ガス中毒が疑われるときの119番通報と診療、新鮮な空気の確保を参照し、自前の文章で要約。原文・画像は転載しない。"
         }
       ]
     },
@@ -1853,7 +1957,7 @@
           "title": "農林水産省 災害時に備えた食品ストックガイド",
           "publisher": "農林水産省",
           "url": "https://www.maff.go.jp/j/zyukyu/foodstock/",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "食品備蓄の考え方を自前で要約。レシピや長い原文は転載しない。",
           "excerpt": null
@@ -1863,7 +1967,7 @@
           "title": "自然災害への備えは万全ですか？チェックしてみよう！",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/kyoiku/hokenkyousai/check.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-10-27",
           "usage": "paraphrase",
           "rightsNote": "備蓄・持ち出しの公的な考え方を自前の表現で要約。原文は転載しない。",
           "excerpt": null

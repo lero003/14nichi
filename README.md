@@ -2,11 +2,11 @@
 
 災害、停電、断水、通信障害などで日常生活が一時的に機能しなくなったとき、個人や家庭が次の行動をオフラインで確認するためのiPhone・iPadアプリです。
 
-**iOS App Store で公開中**（`1.0.0` / ビルド `6`、iPhone / iPad、2026-07-24 審査通過）。オフライン閲覧、探索、備蓄、緊急カード、公式リンク集、PDF・印刷を提供します。Mac版はリポジトリに将来候補として残しますが、現行の公開商品には含めません。
+**iOS App Store で公開中**（現在の版は `1.2` とユーザーが2026-10-27に確認。ビルド番号・公開日はApp Store Connectで未確認）。初回公開は `1.0.0 (6)`、2026-07-24審査通過です。オフライン閲覧、探索、備蓄、緊急カード、公式リンク集、PDF・印刷を提供します。Mac版はリポジトリに将来候補として残しますが、現行の公開商品には含めません。
 
-`main` は次のiOS版 `1.2.0`（ビルド `7`）の提出前候補です。未提出のv1.1実装候補を引き継ぎ、ホームから緊急時の最優先記事へ直行し、平時は人数・不足品・任意の緊急カードを3項目で確認できます。買い物リストは「備え」の中へ統合し、同梱記事と出典も2026-08-14に再確認しました。2026-10-27には防災ガイドの検索・記事内ジャンプ・読みやすさ導線を改善しました。公開済みの `v1.0.0` タグは変更しません。
+`main` は次のiOS版 `1.3.0`（ビルド `8`）の内部TestFlight配信準備中です。Archive・Upload・Apple処理と内部利用可能化は、まだ確認していません。既存のホーム・準備フローを引き継ぎ、ホームから緊急時の最優先記事へ直行し、平時は人数・不足品・任意の緊急カードを3項目で確認できます。買い物リストは「備え」の中へ統合しています。2026-10-27に防災ガイドの検索・記事内ジャンプ・読みやすさ導線を改善し、独立レビューで本文10記事の安全表現と出典を更新しました。画面幅の変更時に記事・読書位置を保持する改修も含みます。確認範囲とDuo固有の未検証事項は [`レビュー結果`](./docs/REVIEW_RESULTS_2026-10-27.md) を参照してください。公開済みの `v1.0.0` タグは変更しません。
 
-企画の原本は [`14日note.md`](./14日note.md)、実装範囲は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md)、v1.2へ引き継いだ機能スライスの判断は [`docs/V1_1_PRODUCT_PLAN.md`](./docs/V1_1_PRODUCT_PLAN.md)、将来候補は [`docs/ROADMAP.md`](./docs/ROADMAP.md)、変更履歴は [`CHANGELOG.md`](./CHANGELOG.md) を参照してください。AIエージェントは [`AGENTS.md`](./AGENTS.md) を確認し、再提出や次ビルドの手順は [`docs/RELEASE_SUBMISSION_CHECKLIST.md`](./docs/RELEASE_SUBMISSION_CHECKLIST.md) を正本にしてください。申請画像と日本語文案は [`docs/app-store-assets/`](./docs/app-store-assets/) にあります。
+企画の原本は [`14日note.md`](./14日note.md)、実装範囲は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md)、既存機能スライスの判断履歴は [`docs/V1_1_PRODUCT_PLAN.md`](./docs/V1_1_PRODUCT_PLAN.md)、将来候補は [`docs/ROADMAP.md`](./docs/ROADMAP.md)、変更履歴は [`CHANGELOG.md`](./CHANGELOG.md) を参照してください。AIエージェントは [`AGENTS.md`](./AGENTS.md) を確認し、再提出や次ビルドの手順は [`docs/RELEASE_SUBMISSION_CHECKLIST.md`](./docs/RELEASE_SUBMISSION_CHECKLIST.md) を正本にしてください。申請画像と日本語文案は [`docs/app-store-assets/`](./docs/app-store-assets/) にあります。
 
 ## 現在の実装スライス
 
@@ -40,7 +40,7 @@ open FourteenDayNote.xcodeproj
 swift run content-lint --distribution
 ```
 
-生成した `FourteenDayNote.xcodeproj` はローカル生成物としてGit管理しません。v1.2の更新申請ではXcodeの `FourteenDayNote`（iPhone / iPad）を選択します。`FourteenDayNoteMac` は将来候補として残しますが、今回のArchive・Upload対象ではありません。SigningのTeamはXcodeで選択し、`project.yml` にTeam IDを推測で書かないでください。
+生成した `FourteenDayNote.xcodeproj` はローカル生成物としてGit管理しません。v1.3の更新申請ではXcodeの `FourteenDayNote`（iPhone / iPad）を選択します。`FourteenDayNoteMac` は将来候補として残しますが、今回のArchive・Upload対象ではありません。SigningのTeamはXcodeで選択し、`project.yml` にTeam IDを推測で書かないでください。
 
 ## 安全上の境界
 

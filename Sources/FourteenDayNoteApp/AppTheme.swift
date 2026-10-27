@@ -13,6 +13,8 @@ enum AppTheme {
     static let ivory = Color(red: 1.00, green: 0.96, blue: 0.86)
     static let ochre = Color(red: 0.88, green: 0.62, blue: 0.16)
     static let coral = Color(red: 0.92, green: 0.31, blue: 0.25)
+    /// 小さな白文字でも読める、最優先バッジ専用の背景色。
+    static let criticalBadgeFill = Color(red: 0.72, green: 0.18, blue: 0.14)
 
     static let canvas = accent.opacity(0.035)
     static let surfaceStroke = accent.opacity(0.13)

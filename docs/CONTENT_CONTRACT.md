@@ -70,7 +70,7 @@ review_status: approved
 | `sortOrder` | はい | 一覧の並び順 |
 | `shortcutArticleID` | いいえ | ホームの緊急ショートカットから最初に開く記事ID |
 
-`shortcutArticleID` は、その状況で最初に読む記事を編集判断で固定するための任意項目です。指定する記事は、実在し、`approved` で、その状況に属し、`immediate` を含む必要があります。ローダーと `content-lint` がこれを検証します。未指定の状況では、`approved` / `critical` / `immediate` の先頭記事へフォールバックします。
+`shortcutArticleID` は、その状況で最初に読む記事を編集判断で固定するための任意項目です。指定する記事は、実在し、`approved` で、その状況に属し、`immediate` を含む必要があります。記事IDは前後の空白を補正せず完全一致で検証し、空文字・空白のみも不正とします。未指定はフィールド省略または `null` の場合だけです。ローダーと `content-lint` がこれを検証します。未指定の状況では、`approved` / `critical` / `immediate` の先頭記事へフォールバックします。
 
 たとえば「避難を考える」では、持ち出し袋の記事ではなく、避難するか留まるかの判断記事を `shortcutArticleID` で指定しています。
 

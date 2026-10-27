@@ -173,10 +173,9 @@ public struct ContentRepository: Sendable {
             uniquingKeysWith: { first, _ in first }
         )
         for situation in manifest.situations {
-            guard let shortcutArticleID = situation.shortcutArticleID?
-                .trimmingCharacters(in: .whitespacesAndNewlines),
-                !shortcutArticleID.isEmpty
-            else {
+            // 実行時の検索・並び替えと同じIDを検証する。空白を補正して受理すると、
+            // 検証済みの明示指定が実際には解決せず別の記事へフォールバックしてしまう。
+            guard let shortcutArticleID = situation.shortcutArticleID else {
                 continue
             }
             guard let article = articlesByID[shortcutArticleID] else {

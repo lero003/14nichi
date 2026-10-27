@@ -6,7 +6,7 @@
 
 **現在の公開版は iOS `1.2`**（公開レコード `1.2`、選択ビルド `1.2.0 (8)` を2026-10-27にApp Store Connectで確認。公開日は未確認）。**初回公開の履歴**（マーケティング `1.0.0` / ビルド `6`、iPhone / iPad、2026-07-24 審査通過。タグ `v1.0.0`）。フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）と、同梱コンテンツの公的一次情報照合・編集確認・`approved` 化まで完了しています。`approved` は専門資格者による個別監修や正確性保証を意味せず、全記事で不正確または古くなる可能性と公式情報優先を明示します。Macターゲットは将来候補としてリポジトリに残しますが、現行の公開商品・商品ページには含めません。
 
-`main` は **iOS `1.3.0` / ビルド `9` の内部TestFlight配信準備中**。Archive・Upload・Apple処理と内部利用可能化は未確認です。既存のホーム・準備フローを引き継ぎ、公開済みタグは動かさず、ホーム、緊急ショートカット、3項目の準備チェック、備え内の買い物リスト、記事表示の簡潔化、同梱記事・出典更新、2026-10-27の防災ガイド改善を含みます。同日の独立レビューで本文10記事の誤記・安全条件と出典を更新し、可変幅での記事・読書位置の保持を追加しました。全30記事を一律8/14確認とせず、各記事・出典の日付を正とします。Duo固有の開閉・セーフエリアは未検証。確認範囲は [`REVIEW_RESULTS_2026-10-27.md`](./REVIEW_RESULTS_2026-10-27.md)、機能スライスの判断と未完了の人間側ゲートは [`V1_1_PRODUCT_PLAN.md`](./V1_1_PRODUCT_PLAN.md)、後続候補は [`ROADMAP.md`](./ROADMAP.md) を正とします。
+`main` は **iOS `1.3.0` / ビルド `9` を内部TestFlightへ配信済み**。Archive・Validate・Upload・Apple処理完了と既存内部グループ「test」（1名）への追加を確認しました。App Store審査は未提出。配信の来歴は [`TESTFLIGHT_1_3_0.md`](./TESTFLIGHT_1_3_0.md)。既存のホーム・準備フローを引き継ぎ、公開済みタグは動かさず、ホーム、緊急ショートカット、3項目の準備チェック、備え内の買い物リスト、記事表示の簡潔化、同梱記事・出典更新、2026-10-27の防災ガイド改善を含みます。同日の独立レビューで本文10記事の誤記・安全条件と出典を更新し、可変幅での記事・読書位置の保持を追加しました。全30記事を一律8/14確認とせず、各記事・出典の日付を正とします。Duo固有の開閉・セーフエリアは未検証。確認範囲は [`REVIEW_RESULTS_2026-10-27.md`](./REVIEW_RESULTS_2026-10-27.md)、機能スライスの判断と未完了の人間側ゲートは [`V1_1_PRODUCT_PLAN.md`](./V1_1_PRODUCT_PLAN.md)、後続候補は [`ROADMAP.md`](./ROADMAP.md) を正とします。
 
 ### いま動くもの
 
@@ -48,9 +48,11 @@
 
 ### 検証・公開状況
 
+- `1.3.0 (9)` の署名付きiOS Archive / IPA export / Apple側Validate / Upload成功。Apple処理完了と内部グループ `test`（1名）への追加を確認。App Store審査は未提出（詳細: `TESTFLIGHT_1_3_0.md`）。
+
 - `swift test --disable-sandbox`: 85 tests / 14 suites 成功（独立レビュー改修後、2026-10-27）
 - `swift run --disable-sandbox content-lint` / `--distribution`: OK（13 situations / 30 articles, all approved）
-- 以下のSimulatorビルド・UI検証は独立レビュー時の `1.2.0 (7)` の記録。現在候補 `1.3.0 (9)` の配信検証は進行中。
+- 以下のSimulatorビルド・UI検証は独立レビュー時の `1.2.0 (7)` の記録。現在候補 `1.3.0 (9)` の配信検証は `TESTFLIGHT_1_3_0.md` を参照。
 - `xcodegen generate`: 成功。生成プロジェクトで `1.2.0 (7)` を確認
 - `FourteenDayNote` generic iOS Simulator Debug / Release（unsigned、`1.2.0 (7)`）: 成功
 - iPhone 17 / iOS 27.0 SimulatorのXCUITest: 8 tests 成功（検索、記事内ジャンプ、読みやすさ、避難ショートカット、ホーム、備え→買い物、ガイド復帰）。iPad Pro 11-inch (M4)の可変幅回帰3件も成功（2026-10-27）。Duo固有のpose確認とは別。

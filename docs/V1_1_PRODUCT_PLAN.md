@@ -1,8 +1,10 @@
 # v1.1 Product Plan
 
 最終更新: 2026-10-27
-状態: **機能スライス実装済み・未提出のためv1.2候補へ統合**
-対象: iPhone / iPad、`1.2.0` / ビルド `7`（本書は旧v1.1機能スライスの判断記録）
+状態: **履歴**。旧v1.1機能スライスと、`1.2.0 (7)` 候補へ統合した時点の判断記録。公開版ごとの実装証明ではない。
+記録対象: iPhone / iPad、`1.2.0` / ビルド `7`
+
+現在の運用先は `1.3.0 (9)` で、内部TestFlightへ配信済み。公開レコード `1.2` / 選択ビルド `1.2.0 (8)` は2026-10-27にApp Store Connectで確認済み（公開日は未確認）。今回のUpload・Apple処理完了・既存内部グループ利用可能化は `TESTFLIGHT_1_3_0.md` に記録した。App Store審査は未提出。最新状況は [`PROJECT_FOUNDATION.md`](./PROJECT_FOUNDATION.md)、配信・提出手順は [`RELEASE_SUBMISSION_CHECKLIST.md`](./RELEASE_SUBMISSION_CHECKLIST.md) を正とする。
 
 ## 目的
 

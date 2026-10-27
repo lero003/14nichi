@@ -6,7 +6,7 @@
 
 - 現在の公開版: iOS/iPadOS `1.2`（公開レコード `1.2`、選択ビルド `1.2.0 (8)` を2026-10-27にApp Store Connectで確認。公開日は未確認）。
 - 初回公開の履歴: `1.0.0 (6)`、2026-07-24審査通過、タグ `v1.0.0`。
-- 現在: `main` の `1.3.0 (9)` 内部TestFlight配信準備中。独立レビュー改修と前段候補 `1.3.0 (8)` は `38cef0d` でpush済み。現在のビルド9への変更はcommit前。ビルド9のArchive/Upload、Apple処理・内部利用可能化は未確認。
+- 現在: `1.3.0 (9)` を内部TestFlightへ配信済み。配信元はcleanな `58d63e0`（origin/mainへpush済み）。Archive/Validate/Upload・Apple処理完了・既存内部グループ `test`（1名）への追加を確認。App Store審査は未提出。
 - 同梱13状況・30記事は全件approved。今回全本文を読了し、本文10記事と出典を修正。出典追加/差替を含め13記事の確認日・確認者を更新。
 - 公開対象はiPhone/iPad。Macターゲットは将来候補。
 - 正本: `PROJECT_FOUNDATION.md`、`CONTENT_CONTRACT.md`、`RELEASE_SUBMISSION_CHECKLIST.md`。今回の確認範囲・出典・未取得資料は `REVIEW_RESULTS_2026-10-27.md`。
@@ -31,7 +31,7 @@
 
 ## Tests
 
-以下は独立レビュー時の `1.2.0 (7)` の記録。現在候補 `1.3.0 (9)` の配信検証は進行中。
+以下は独立レビュー時の `1.2.0 (7)` の記録。現在候補 `1.3.0 (9)` の配信検証は `TESTFLIGHT_1_3_0.md` を参照。
 
 - `swift test --disable-sandbox`: **85 tests / 14 suites成功**。
 - `swift run content-lint` / `--distribution`: **13状況・30記事、全件approved**。
@@ -43,8 +43,8 @@
 - `git diff --check`成功。統合レビューで追加ブロッカーなし。
 - AppIntents抽出スキップ、XcodeのSDK build番号/debugger lookup診断がある。詳細はレビュー結果。
 
-- 前段候補 `1.3.0 (8)` のArchive/exportは成功したが未Upload。これはビルド9の検証証拠ではない。
-- App Store Connectの2026-10-27確認ではTestFlight最大ビルド8、1.3の登録ビルドなし。次の未使用番号として9を選択。既存内部グループは `test`（自動配信）。
+- `1.3.0 (9)` のArchive/export、ローカル署名/プロファイル照合、Apple側Validate/Uploadと処理完了を確認。IPAのSHA-256と配信元コミットは `TESTFLIGHT_1_3_0.md`。
+- 1.2.0(8)の次に1.3.0(9)を配信し、既存内部グループ `test` へ自動追加。日本語テスト内容も保存済み。
 
 ## Risks / Unknowns
 
@@ -53,11 +53,11 @@
 - 機内モード30秒、App Switcher秘匿、認証、PDF共有などの実機ゲートは未実施。
 - 政府広報旧preparation URLとMETIガス臭ページは直接取得403、厚労省低体温PDFは取得上限。旧accessedAt維持。他の取得済み一次資料と区別。
 - App Store画像は旧候補。最終Release候補の全点再撮影が必要。
-- 現在のビルド9のArchive / Validate / Upload、Apple処理・内部配信、一般公開提出は未確認。初見5人観察も未実施。
+- ビルド9のArchive/Validate/Upload・Apple処理・内部配信は確認済み。App Store審査提出と初見5人観察は未実施。
 
 ## Next Actions
 
-1. `RELEASE_SUBMISSION_CHECKLIST.md` に沿って現在候補をArchive/Validate/Uploadし、Apple処理・既存内部グループでの利用可能化を確認する。Connectでビルド番号が使用済みなら次の未使用番号へ上げる。
+1. 内部TestFlightの1.3.0(9)を実機で確認し、`MANUAL_SMOKE_CHECKLIST.md` の結果を記録。App Store提出はその後に `RELEASE_SUBMISSION_CHECKLIST.md` に従う。
 2. TestFlightで `MANUAL_SMOKE_CHECKLIST.md` のDuo/実機/アクセシビリティを実施し、端末・OS・結果を記録する。
 3. 一般公開提出の前に最終Release候補のApp Store画像とConnect文案を確認する。
 

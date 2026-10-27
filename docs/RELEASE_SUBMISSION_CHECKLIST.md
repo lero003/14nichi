@@ -10,6 +10,7 @@
 
 - 脅威モデル: [`EMERGENCY_CARD_THREAT_MODEL.md`](./EMERGENCY_CARD_THREAT_MODEL.md)
 - 手動スモーク: [`MANUAL_SMOKE_CHECKLIST.md`](./MANUAL_SMOKE_CHECKLIST.md)
+- 最新TestFlight配信記録: [`TESTFLIGHT_1_3_0.md`](./TESTFLIGHT_1_3_0.md)
 - TestFlight 引き渡し（初回用・履歴）: [`TESTFLIGHT_HANDOFF.md`](./TESTFLIGHT_HANDOFF.md)
 - 実行仕様（完了済み・履歴）: [`FULL_MVP_COMPLETION_BRIEF.md`](./FULL_MVP_COMPLETION_BRIEF.md)
 - 変更履歴: [`../CHANGELOG.md`](../CHANGELOG.md)
@@ -28,8 +29,8 @@
 | 済 | 記事 `approved` 化 | **完了**（30記事、公的一次情報照合・編集確認） |
 | 済 | 製品 / プライバシー / サポート公開ページ | 本番URL運用中。変更時はアプリ内リンクとConnectを同時更新 |
 | 一部済 | v1.3スクリーンショット・説明文 | 主要5画像は旧v1.1 Debug候補。v1.3最終Release候補で全点を再撮影 |
-| 現在候補 | ビルド番号 | `CURRENT_PROJECT_VERSION = 9`。2026-10-27のConnect確認でTestFlight最大8・1.3の登録ビルドなし。再Upload時は次の未使用番号へ上げる |
-| 配信準備中 | v1.3 | `main` は `1.3.0 (9)`。独立レビュー改修まで統合し、内部TestFlight配信を準備中。Archive/Upload/Apple処理・内部利用可能化は未確認。実機と人間テストは未完了 |
+| 現在候補 | ビルド番号 | `CURRENT_PROJECT_VERSION = 9`。Upload前のConnect確認で既存最新1.2.0(8)・1.3登録なしだったため9を選択。現在は1.3.0(9)配信済み。再Upload時は次の未使用番号へ上げる |
+| 内部TestFlight済 | v1.3 | `main` は `1.3.0 (9)`。独立レビュー改修まで統合し、内部TestFlightへ配信済み。Archive/Validate/Upload/Apple処理完了・既存内部グループ利用可能化を確認（`TESTFLIGHT_1_3_0.md`）。App Store審査は未提出。実機と人間テストは未完了 |
 
 公開中: レコード `1.2` / 選択ビルド `1.2.0 (8)`（2026-10-27 Connect確認）。公開日は未確認
 リポジトリ候補: マーケティング `1.3.0` / ビルド `9`

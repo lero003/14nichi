@@ -1,22 +1,26 @@
 # Project Foundation
 
-最終更新: 2026-07-26
+最終更新: 2026-10-27
 
 ## 現在地
 
 **iOS App Store 初回公開済み**（マーケティング `1.0.0` / ビルド `6`、iPhone / iPad、2026-07-24 審査通過。タグ `v1.0.0`）。フルMVPの機能実装（Slice 1〜4、公式リンク集、PDF・印刷）と、同梱コンテンツの公的一次情報照合・編集確認・`approved` 化まで完了しています。`approved` は専門資格者による個別監修や正確性保証を意味せず、全記事で不正確または古くなる可能性と公式情報優先を明示します。Macターゲットは将来候補としてリポジトリに残しますが、現行の公開商品・商品ページには含めません。
 
-`main` は **iOS `1.1.0` / ビルド `7` の提出前候補**。公開済みタグは動かさず、新ホーム、緊急ショートカット、3項目の準備チェック、備え内の買い物リスト、記事表示の簡潔化を追加しています。実装判断と未完了の人間側ゲートは [`V1_1_PRODUCT_PLAN.md`](./V1_1_PRODUCT_PLAN.md)、後続候補は [`ROADMAP.md`](./ROADMAP.md) を正とします。
+`main` は **iOS `1.2.0` / ビルド `7` の提出前候補**。未提出のv1.1実装候補を引き継ぎ、公開済みタグは動かさず、新ホーム、緊急ショートカット、3項目の準備チェック、備え内の買い物リスト、記事表示の簡潔化、2026-08-14時点の同梱記事・出典更新、2026-10-27の防災ガイド改善を含みます。機能スライスの判断と未完了の人間側ゲートは [`V1_1_PRODUCT_PLAN.md`](./V1_1_PRODUCT_PLAN.md)、後続候補は [`ROADMAP.md`](./ROADMAP.md) を正とします。
 
 ### いま動くもの
 
 - 「いま困っている」と「平時に備える」を分けた初期ホーム
 - 地震・停電・断水・風水害・ケガ・避難の最優先記事へ直接進む6ショートカット
+- 状況ごとに最初に読む記事をmanifestの`shortcutArticleID`で指定（避難は判断記事へ）。状況の記事一覧でも先頭に表示
 - 人数・不足品・任意の緊急カードを、保証的な点数を使わず確認する3項目チェック
 - タブ「ホーム / ガイド / 備え / 緊急 / その他」と、備え内の買い物リスト
 - 13状況 / 30記事の製品コンテンツ（すべて `approved`。公的一次情報照合・編集確認済み）
 - manifest と front matter の検証付きローダー
 - 優先度・期間ラベル付きの SwiftUI ブラウザ（iPhone / iPad / Mac）
+- ガイド先頭の常時表示検索欄と、状況・カテゴリ・行動時期・お気に入りを組み合わせた探索
+- 記事内の見出し（最初の5分、今日中、やってはいけない等）へ移動できる「記事の構成」
+- 状況一覧・記事一覧・記事詳細から開ける「読みやすさ」と「このアプリについて」
 - アプリ状態モデル（読み込み / 選択 / About / 読みやすさ）
 - 読みやすさ設定（初期値は標準、文字サイズ5段階・広めの行間・太字・余白、端末内保存。端末側のより大きな文字設定を維持）
 - モーション（選択・詳細切替の spring、Reduce Motion 対応）
@@ -27,6 +31,7 @@
 - 全記事を対象にしたオフライン全文検索（複数語AND検索、大文字小文字・全角半角を吸収）
 - 重複する先頭H1を原本を書き換えず省略し、同じ状況の関連記事を最大3件表示
 - manifestの既存メタデータを使うカテゴリ・行動時期フィルタ（検索・お気に入り・状況選択と合成）
+- 検索結果・お気に入りでの、記事が属する状況名の表示
 - お気に入り登録・絞り込み（記事IDだけを端末内保存）
 - 合計人数と7日・14日の計画期間だけを使う備蓄計算
 - 公的情報に基づく飲料水3L・食料3食・携帯トイレ5回分（いずれも1人1日）の一般的な目安を自動表示
@@ -42,11 +47,12 @@
 
 ### 検証・公開状況
 
-- `swift test --disable-sandbox`: 75 tests / 13 suites 成功（v1.1候補、2026-07-26）
+- `swift test --disable-sandbox`: 84 tests / 14 suites 成功（v1.2候補、2026-10-27）
 - `swift run --disable-sandbox content-lint` / `--distribution`: OK（13 situations / 30 articles, all approved）
-- `FourteenDayNote` generic iOS Simulator Debug / Release（unsigned、`1.1.0 (7)`）: 成功
-- iPhone 17 / iOS 26.5 SimulatorのXCUITest: 3 tests 成功（ホーム、地震記事直行、備え→買い物、ガイド復帰）
-- v1.1主要スクリーンショット5点を再撮影。緊急カード、PDF、買い物リストは最終Release候補での再撮影待ち
+- `xcodegen generate`: 成功。生成プロジェクトで `1.2.0 (7)` を確認
+- `FourteenDayNote` generic iOS Simulator Debug / Release（unsigned、`1.2.0 (7)`）: 成功
+- iPhone 17 / iOS 27.0 SimulatorのXCUITest: 8 tests 成功（検索、記事内ジャンプ、読みやすさ、避難ショートカット、ホーム、備え→買い物、ガイド復帰）
+- ガイド、状況一覧、記事詳細、ホームをiPhone 17 / iOS 27 Simulatorで目視確認。App Store画像は最終Release候補で全点の再撮影待ち
 - 生成appで Bundle ID、版番号、Face ID 利用目的、`ITSAppUsesNonExemptEncryption=false`、Privacy Manifest 同梱を確認
 - About / 読みやすさは単一の sheet 状態で排他的に表示
 - **App Store 審査通過・初回公開**（2026-07-24、`1.0.0 (6)`）
@@ -156,7 +162,7 @@ OfficialLinks JSON
 
 ## 次の着手候補
 
-1. v1.1のiPhone / iPad実機スモーク、VoiceOver、App Switcher、PDF共有を確認する。
+1. v1.2のiPhone / iPad実機スモーク、VoiceOver、App Switcher、PDF共有を確認する。
 2. 初見利用者5人の観察テストを行い、目的理解と10分準備フローを記録する。
 3. 残る緊急カード、PDF、買い物リストのApp Store画像を最終Release候補で再撮影する。
 4. 記事・出典の鮮度確認と `content-lint --distribution` を維持する。

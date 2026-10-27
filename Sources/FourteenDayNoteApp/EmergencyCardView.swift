@@ -223,7 +223,7 @@ struct EmergencyCardView: View {
                     if checklist.state.emergencyCardChoice == .skipped {
                         Label("今回は使わない設定です", systemImage: "checkmark.circle.fill")
                             .font(.callout.weight(.semibold))
-                            .foregroundStyle(AppTheme.deepTeal)
+                            .foregroundStyle(AppTheme.accent)
                     }
                 }
             }

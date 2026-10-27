@@ -3,43 +3,55 @@ import SwiftUI
 
 struct ArticleDetailView: View {
     let article: GuideArticle
+    /// 上部ナビゲーションに出す状況名。本文の大きなタイトルと重複させない。
+    let contextTitle: String?
     let isFavorite: Bool
     let relatedArticles: [GuideArticle]
     let onToggleFavorite: () -> Void
     let onOpenRelated: (GuideArticle) -> Void
     @Environment(ReadabilitySettings.self) private var readability
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
     @State private var revealed = false
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: readability.sectionSpacing) {
-                header
-                compactSafetyBanner
-                summaryBlock
-                bodyBlock
-                detailedSafetyFooter
-                sourcesBlock
-                relatedArticlesBlock
+        let blocks = GuideMarkdownParser.displayBlocks(
+            article.bodyMarkdown,
+            omittingLeadingTitle: article.title
+        )
+        let sections = GuideArticleOutline.sections(in: blocks)
+
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: readability.sectionSpacing) {
+                    header
+                    compactSafetyBanner
+                    summaryBlock
+                    sectionJumpBar(sections, proxy: proxy)
+                    bodyBlock(blocks)
+                    detailedSafetyFooter
+                    relatedArticlesBlock
+                    sourcesBlock
+                }
+                .padding(AppTheme.contentGutter)
+                .frame(maxWidth: readability.textSize.contentMaxWidth, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .opacity(revealed || reduceMotion ? 1 : 0)
+                .offset(y: revealed || reduceMotion ? 0 : 10)
             }
-            .padding(AppTheme.contentGutter)
-            .frame(maxWidth: readability.textSize.contentMaxWidth, alignment: .leading)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .opacity(revealed || reduceMotion ? 1 : 0)
-            .offset(y: revealed || reduceMotion ? 0 : 10)
-        }
-        .navigationTitle(article.title)
+            .navigationTitle(contextTitle ?? article.title)
 #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.inline)
 #endif
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(
-                    isFavorite ? "お気に入りから外す" : "お気に入りに追加",
-                    systemImage: isFavorite ? "heart.fill" : "heart",
-                    action: onToggleFavorite
-                )
-                .accessibilityHint("この記事のお気に入り状態を端末内に保存します")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(
+                        isFavorite ? "お気に入りから外す" : "お気に入りに追加",
+                        systemImage: isFavorite ? "heart.fill" : "heart",
+                        action: onToggleFavorite
+                    )
+                    .accessibilityHint("この記事のお気に入り状態を端末内に保存します")
+                }
             }
         }
         .onAppear {
@@ -131,10 +143,57 @@ struct ArticleDetailView: View {
             .fixedSize(horizontal: false, vertical: true)
     }
 
-    private var bodyBlock: some View {
+    /// 長い記事でも、必要な節へ迷わず移れるようにする。
+    @ViewBuilder
+    private func sectionJumpBar(
+        _ sections: [GuideArticleSection],
+        proxy: ScrollViewProxy
+    ) -> some View {
+        if sections.count >= 2 {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("記事の構成", systemImage: "list.bullet")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                WrapLayout(spacing: 8, lineSpacing: 8) {
+                    ForEach(sections) { section in
+                        Button {
+                            withAnimation(AppTheme.gentle(reduceMotion: reduceMotion)) {
+                                proxy.scrollTo(section.anchorID, anchor: .center)
+                            }
+                        } label: {
+                            Text(section.label)
+                                .font(.subheadline.weight(.semibold))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 7)
+                                .foregroundStyle(AppTheme.accent)
+                                .background(
+                                    AppTheme.accent.opacity(colorScheme == .dark ? 0.20 : 0.09),
+                                    in: Capsule()
+                                )
+                                .overlay {
+                                    Capsule()
+                                        .strokeBorder(
+                                            AppTheme.accent.opacity(colorScheme == .dark ? 0.38 : 0.18),
+                                            lineWidth: 1
+                                        )
+                                }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(section.title)
+                        .accessibilityHint("この見出し付近へ移動します")
+                        .accessibilityIdentifier("article.sectionJump.\(section.id)")
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .contain)
+            }
+        }
+    }
+
+    private func bodyBlock(_ blocks: [GuideMarkdownBlock]) -> some View {
         ArticleMarkdownView(
-            markdown: article.bodyMarkdown,
-            articleTitle: article.title,
+            blocks: blocks,
             prefersBoldBody: readability.prefersBoldBody,
             lineSpacing: readability.resolvedLineSpacing
         )
@@ -340,6 +399,7 @@ private struct FlowMeta<Content: View>: View {
                 - 照明を確保する
                 """
             ),
+            contextTitle: "停電した",
             isFavorite: false,
             relatedArticles: [],
             onToggleFavorite: {},

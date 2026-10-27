@@ -111,8 +111,11 @@ struct HomeView: View {
                 appModel.selectSituation(nil)
                 router.navigate(to: .guideRoot)
             } label: {
-                Label("すべての状況を見る", systemImage: "list.bullet.rectangle")
-                    .frame(maxWidth: .infinity)
+                Label(
+                    "すべての状況を見る（\(appModel.catalog?.situations.count ?? 0)）",
+                    systemImage: "list.bullet.rectangle"
+                )
+                .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
             .controlSize(.large)
@@ -190,7 +193,7 @@ struct HomeView: View {
     private var offlineNote: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "wifi.slash")
-                .foregroundStyle(AppTheme.deepTeal)
+                .foregroundStyle(AppTheme.accent)
             Text("ガイド、備蓄、緊急カードは端末内で利用できます。公式サイトを開く操作だけはオンラインです。")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
@@ -222,7 +225,7 @@ struct HomeView: View {
             HStack(spacing: 12) {
                 Image(systemName: isComplete ? "checkmark.circle.fill" : systemImage)
                     .font(.title3)
-                    .foregroundStyle(isComplete ? AppTheme.deepTeal : AppTheme.accent)
+                    .foregroundStyle(isComplete ? Color.green : AppTheme.accent)
                     .frame(width: 30)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(title)

@@ -18,6 +18,9 @@ public struct ContentRepository: Sendable {
         case incompleteApprovedReview(String)
         case invalidSource(articleID: String, sourceID: String, reason: String)
         case duplicateSourceID(articleID: String, sourceID: String)
+        case unknownShortcutArticle(situationID: String, articleID: String)
+        case invalidShortcutArticle(situationID: String, articleID: String, reason: String)
+        case articleTitleMismatch(articleID: String, documentTitle: String)
 
         public var errorDescription: String? {
             switch self {
@@ -47,6 +50,12 @@ public struct ContentRepository: Sendable {
                 "記事 \(articleID) の出典 \(sourceID): \(reason)"
             case .duplicateSourceID(let articleID, let sourceID):
                 "記事 \(articleID) で出典IDが重複しています: \(sourceID)"
+            case .unknownShortcutArticle(let situationID, let articleID):
+                "状況 \(situationID) のショートカット記事が見つかりません: \(articleID)"
+            case .invalidShortcutArticle(let situationID, let articleID, let reason):
+                "状況 \(situationID) のショートカット記事 \(articleID): \(reason)"
+            case .articleTitleMismatch(let articleID, let documentTitle):
+                "記事 \(articleID) の先頭H1が manifest の title と一致しません: \(documentTitle)"
             }
         }
     }
@@ -106,6 +115,7 @@ public struct ContentRepository: Sendable {
                     documentStatus: document.frontMatter["review_status"]
                 )
             }
+            try Self.validateTitle(metadata.title, in: document.body, articleID: metadata.id)
 
             return GuideArticle(
                 metadata: metadata,
@@ -155,6 +165,46 @@ public struct ContentRepository: Sendable {
                 guard hasReviewDate, hasReviewer, !article.sources.isEmpty else {
                     throw RepositoryError.incompleteApprovedReview(article.id)
                 }
+            }
+        }
+
+        let articlesByID = Dictionary(
+            manifest.articles.map { ($0.id, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        for situation in manifest.situations {
+            guard let shortcutArticleID = situation.shortcutArticleID?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                !shortcutArticleID.isEmpty
+            else {
+                continue
+            }
+            guard let article = articlesByID[shortcutArticleID] else {
+                throw RepositoryError.unknownShortcutArticle(
+                    situationID: situation.id,
+                    articleID: shortcutArticleID
+                )
+            }
+            guard article.reviewStatus == .approved else {
+                throw RepositoryError.invalidShortcutArticle(
+                    situationID: situation.id,
+                    articleID: shortcutArticleID,
+                    reason: "approved ではありません"
+                )
+            }
+            guard article.situations.contains(situation.id) else {
+                throw RepositoryError.invalidShortcutArticle(
+                    situationID: situation.id,
+                    articleID: shortcutArticleID,
+                    reason: "この状況に属していません"
+                )
+            }
+            guard article.periods.contains(GuidePeriod.immediate.rawValue) else {
+                throw RepositoryError.invalidShortcutArticle(
+                    situationID: situation.id,
+                    articleID: shortcutArticleID,
+                    reason: "immediate ではありません"
+                )
             }
         }
     }
@@ -247,6 +297,26 @@ public struct ContentRepository: Sendable {
         guard let date = calendar.date(from: components) else { return false }
         let resolved = calendar.dateComponents([.year, .month, .day], from: date)
         return resolved.year == year && resolved.month == month && resolved.day == day
+    }
+
+    /// 表示側はmanifestのtitleを記事タイトルとして描画するため、先頭H1と一致させて二重表示を防ぐ。
+    static func leadingTitle(in markdown: String) -> String? {
+        guard case .heading(let level, let text) = GuideMarkdownParser.parse(markdown).first,
+              level == 1
+        else {
+            return nil
+        }
+        return text.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    static func validateTitle(_ title: String, in markdown: String, articleID: String) throws {
+        guard let documentTitle = leadingTitle(in: markdown) else { return }
+        guard documentTitle == title.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            throw RepositoryError.articleTitleMismatch(
+                articleID: articleID,
+                documentTitle: documentTitle
+            )
+        }
     }
 
     private static func parseDocument(_ source: String, path: String) throws -> ParsedDocument {

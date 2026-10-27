@@ -61,6 +61,18 @@
           "purpose": "警報・注意報や雨雲など防災向けの情報を確認する"
         },
         {
+          "id": "jma-weather-2026",
+          "title": "気象庁 新たな防災気象情報（令和8年～）",
+          "url": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
+          "purpose": "警戒レベルと結びついた防災気象情報の見方を確認する"
+        },
+        {
+          "id": "jma-kikikuru",
+          "title": "気象庁 キキクル",
+          "url": "https://www.jma.go.jp/bosai/risk/",
+          "purpose": "土砂・浸水・洪水の危険度分布を確認する"
+        },
+        {
           "id": "mlit-river",
           "title": "国土交通省 防災情報（河川等）",
           "url": "https://www.mlit.go.jp/river/bousai/",
@@ -87,7 +99,7 @@
         {
           "id": "mhlw-water",
           "title": "厚生労働省 水道",
-          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/topics/bukyoku/kenkou/suido/index.html",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/suido/index.html",
           "purpose": "水道・水質に関する公的情報を確認する"
         },
         {

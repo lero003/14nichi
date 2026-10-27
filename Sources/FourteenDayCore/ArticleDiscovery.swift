@@ -26,10 +26,20 @@ public struct GuideArticleFilter: Equatable, Sendable {
 
 public extension ContentCatalog {
     /// ホームの緊急ショートカットから開く、確認済みの最優先記事。
+    /// manifest で `shortcutArticleID` が指定されていればそれを優先し、
+    /// 未指定なら approved / critical / immediate の先頭記事へフォールバックする。
     func emergencyShortcutArticle(
         for situationID: GuideSituation.ID
     ) -> GuideArticle? {
-        articles(for: situationID).first { article in
+        if let shortcutArticleID = situation(id: situationID)?.shortcutArticleID,
+           let shortcut = article(id: shortcutArticleID),
+           shortcut.reviewStatus == .approved,
+           shortcut.situations.contains(situationID),
+           shortcut.periods.contains(GuidePeriod.immediate.rawValue) {
+            return shortcut
+        }
+
+        return articles(for: situationID).first { article in
             article.reviewStatus == .approved
                 && article.priority == .critical
                 && article.periods.contains(GuidePeriod.immediate.rawValue)

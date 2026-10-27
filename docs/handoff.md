@@ -3,7 +3,7 @@
 ## Current State
 
 - **2026-07-24: iOS App Store 審査通過・初回公開**（`1.0.0` / ビルド `6`、iPhone / iPad）。Git タグ `v1.0.0`。
-- `main` は **iOS `1.1.0` / ビルド `7` の提出前候補**。新ホーム、緊急ショートカット、3項目の準備チェック、備え内の買い物リスト、記事UXの簡潔化を実装済み。
+- `main` は **iOS `1.2.0` / ビルド `7` の提出前候補**。未提出のv1.1機能スライス、2026-08-14の記事・出典更新、2026-10-27の防災ガイド改善を統合済み。
 - 公開範囲は **iPhone / iPadのみ**。Macターゲットはリポジトリに残すが、現行商品ページ・公開対象には含めない。
 - フルMVP機能完了（オフラインガイド、探索、備蓄、緊急カード、公式リンク、PDF・印刷、Face ID 利用目的、暗号化 Infop、Privacy Manifest）。
 - 同梱13状況・30記事はすべて `approved`。公的一次情報照合・編集確認済みで、専門資格監修や正確性保証ではない旨を常時表示。
@@ -12,6 +12,8 @@
 
 ## Recent Changes
 
+- 2026-10-27: 防災ガイドを改善。ガイド先頭に検索欄を常時表示（`.navigationBarDrawer`指定がないとiOS 27 Simulatorで検索UIが出ないことを確認して修正）、記事内に「記事の構成」ジャンプを追加、状況一覧・記事詳細からも読みやすさ/Aboutを開けるようにした。検索結果・お気に入りには所属状況を表示。避難ショートカットはmanifestの`shortcutArticleID`で「避難するか、留まるか」へ固定。状況一覧の重複見出し、全行の「正式版」表示、ガイドヒーローの文言・指標を整理。Simulator確認用に`--screenshot-route=`を追加（DEBUG）。あわせて14記事のmanifestタイトルと本文H1を統一し、ローダーで一致を検証。iPad分割表示の選択行をカスタム表示へ変更して白文字化を解消し、ダークモードの正式版・補助文言を適応色へ。ガイドのiPad空状態には状況一覧を開くボタンを追加。
+- 2026-08-14: iOS版を `1.2.0` / ビルド `7` の提出前候補へ更新。同梱記事と36出典URLを再照合し、水害・避難3記事へ令和8年5月開始の防災気象情報（レベル付き警報、キキクル、避難指示がなくても自ら判断）を追加。余震記事のガス臭時に電気スイッチ禁止をガス記事と揃え、低体温の保温表現を消防庁・日赤の個別ページへ直接追跡できる内容に整理。日赤止血URLと厚労省水道URLを現行到達先へ更新し、公式リンク集へ新気象情報とキキクルを追加。
 - 2026-07-26自己レビュー: 空にした緊急カードの準備状態を未確認へ戻し、関連記事の同順位をmanifest順に固定。v1.1提出資料のビルド番号・再撮影状態も現在候補へ揃えた。
 - 2026-07-26: 初期画面をホームへ変更し、地震・停電・断水・大雨／洪水・ケガ／体調不良・避難から `approved` / `critical` / `immediate` 記事へ1タップで進めるようにした。
 - タブを「ホーム / ガイド / 備え / 緊急 / その他」へ変更し、買い物リストを備えの子画面へ統合。備えと買い物の双方向導線を追加した。
@@ -51,39 +53,36 @@
 
 ## Tests
 
-- `swift test --disable-sandbox`: **75 tests / 13 suites 成功**（2026-07-26）。
-- `swift run --disable-sandbox content-lint`: 成功（13状況・30記事、全件 `approved`）。
-- `swift run --disable-sandbox content-lint --distribution`: 成功。
-- `xcodegen generate`: 成功。
-- `FourteenDayNote` generic iOS Simulator Debug / Release unsigned build: **`1.1.0 (7)` で成功**。
-- iPhone 17 / iOS 26.5 SimulatorのXCUITest: **3件成功**（初回ホーム、地震記事直行、備え→買い物、ガイド復帰）。
-- `swift test --disable-sandbox`: 66 tests / 12 suites 成功（V1永続ストアからV2への実移行と、残存PDF一時ディレクトリ削除のテストを含む）。
-- `FourteenDayNote` generic iOS Simulator Release unsigned build: `1.0.0 (6)` で成功。
-- `swift run --disable-sandbox content-lint`: 成功（13状況・30記事はすべて `approved`）。
-- `swift run --disable-sandbox content-lint --distribution`: 成功。
-- 生成したiOS app bundleで Bundle ID `jp.hazakura.FourteenDayNote`、`1.0.0 (6)`、Face ID文、暗号化フラグfalse、Privacy Manifest同梱を確認。
-- Mac Releaseは過去に成功しているが、今回の申請対象外のため最終調整後は再検証していない。
+- `swift test --disable-sandbox`: **84 tests / 14 suites 成功**（2026-10-27、ガイド改善後）。
+- `swift run --disable-sandbox content-lint` / `--distribution`: 成功（13状況・30記事、全件 `approved`）。
+- `xcodegen generate`: 成功。生成プロジェクトで **`1.2.0 (7)`** を確認（2026-10-27）。
+- `FourteenDayNote` generic iOS Simulator Debug / Release unsigned build: **`1.2.0 (7)` で成功**。
+- iPhone 17 / iOS 27.0 SimulatorのXCUITest: **8件成功**（検索、記事内ジャンプ、読みやすさ、避難ショートカット、ホーム、備え→買い物、ガイド復帰）。
+- ガイド・状況一覧・記事詳細・ホームをiPhone 17 / iOS 27 Simulatorで目視確認。App Store画像の再撮影は未実施。
+- v1.2のArchive / Validate / Upload: **未実施**（本人がXcode側で実施）。
+- 生成appで Bundle ID `jp.hazakura.FourteenDayNote`、`1.2.0 (7)`、Face ID文、暗号化フラグfalse、Privacy Manifest同梱を確認。
 - AppIcon source 11枚: 指定ピクセル寸法、RGB PNG、`hasAlpha: no` を確認。iOS / Mac Asset Catalogを含むRelease unsigned build成功。
-- iPhone 17 / iOS 26.5 Simulator Debug unsigned + `simctl launch`: 成功（修正後に再検証）。過去の Release / iPad も成功済み。
-- UI刷新後の `FourteenDayNote` iOS Simulator Release unsigned / `FourteenDayNoteMac` macOS Release unsigned: 成功。iPhone 17でガイド先頭・カード階層・タブ配色をスクリーンショット目視確認。
-- コンテンツ正式化と注意事項追加後、65 tests / 12 suites、iPhone 17 Simulator Debug unsigned、`FourteenDayNoteMac` Debug unsigned が成功。
+- 過去: 75 tests / 13 suites（2026-08-14、記事・出典更新後）、66 tests / 12 suites（V1永続ストアからV2への実移行とPDF一時ディレクトリ削除）、`1.0.0 (6)` Release（2026-07-24）。
+- Mac Releaseは過去に成功しているが、今回の申請対象外のため最終調整後は再検証していない。
 
 ## Risks / Unknowns
 
 - iPhone / iPad実機での機内モード30秒、VoiceOver、最大Dynamic Type、Reduce Motion、ダークモード、App Switcher秘匿、認証、PDF共有は未確認。
+- 記事内ジャンプは見出しを画面中央付近へ移動する（ナビゲーションバー直下への固定ではない）。実機で位置とVoiceOverの読み上げ順を確認する。
+- 「記事の構成」は最大Dynamic Typeで2〜3行に折り返す。実機でのタップ領域と折り返しを確認する。
 - 初見利用者5人の目的理解・10分準備フロー観察は未実施。
-- v1.1 App Store画像は主要5点のみ更新済み。緊急カード、PDF、買い物リストは最終Release候補で再撮影が必要。
+- App Store画像は旧v1.1候補のままで、v1.2のガイド改善を反映した全点の再撮影が必要。
 - Archive / Validate / Upload / App Store Connect入力・提出は未実施。
-- 公開後フィードバックとコンテンツ鮮度の継続監視が必要。
+- 公開後フィードバックとコンテンツ鮮度の継続監視が必要。2026-08-14に水害・避難・余震・低体温と一部出典URLを再確認したが、専門資格監修は未実施。
 - 失効 Development 証明書（lero003）が identity に残存する環境では使わない。
 - 専門資格者による個別監修は未実施。編集確認済みという境界を維持する。
 - Mac版の商品構成・Bundle ID・保存領域は、配布を実際に進めるときに再レビューする。
 
 ## Next Actions
 
-1. v1.1をiPhone / iPad実機で `docs/MANUAL_SMOKE_CHECKLIST.md` に沿って確認する。
+1. v1.2をiPhone / iPad実機で `docs/MANUAL_SMOKE_CHECKLIST.md` に沿って確認する。
 2. 初見利用者5人の観察テストを実施し、4人以上の基準を記録する。
-3. 残るApp Store画像を最終Release候補で撮影し、Connect文面を本人が最終確認する。
+3. App Store画像を最終Release候補で全点撮影し、Connect文面を本人が最終確認する。
 4. `docs/RELEASE_SUBMISSION_CHECKLIST.md` に沿ってArchive / Validate / Upload / 提出する。Connectに後続ビルドがあればビルド番号を上げる。
 
 ## Avoid

@@ -51,7 +51,7 @@ targets:
         SUPPORTS_MACCATALYST: false
         CODE_SIGN_STYLE: Automatic
         CURRENT_PROJECT_VERSION: 7
-        MARKETING_VERSION: 1.1.0
+        MARKETING_VERSION: 1.2.0
         # DEVELOPMENT_TEAM は推測で書かない。Xcode の Signing & Capabilities で選択する。
 
   FourteenDayNoteMac:

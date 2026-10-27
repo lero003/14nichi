@@ -66,7 +66,7 @@ struct ReviewStatusLabel: View {
     var body: some View {
         Label(status.displayName, systemImage: status == .approved ? "checkmark.seal.fill" : "hammer.fill")
             .font(.caption.weight(.semibold))
-            .foregroundStyle(status == .approved ? AppTheme.deepTeal : AppTheme.ochre)
+            .foregroundStyle(status == .approved ? AppTheme.accent : AppTheme.ochre)
     }
 }
 
@@ -145,12 +145,12 @@ struct GuideHeroCard: View {
                     .tracking(1.1)
                     .foregroundStyle(AppTheme.ochre)
 
-                Text("備えを、今日から\n少しずつ。")
+                Text("いまの状況から、\n最初の行動へ。")
                     .font(.title2.weight(.bold))
                     .foregroundStyle(AppTheme.ivory)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("いまの状況から、次に読む記事を選べます。")
+                Text("状況を選ぶと、確認済みの記事へ進めます。")
                     .font(.subheadline)
                     .foregroundStyle(AppTheme.ivory.opacity(0.80))
                     .fixedSize(horizontal: false, vertical: true)
@@ -159,6 +159,8 @@ struct GuideHeroCard: View {
                     HStack(spacing: 8) {
                         heroMetrics
                     }
+                    .fixedSize(horizontal: true, vertical: false)
+
                     VStack(alignment: .leading, spacing: 8) {
                         heroMetrics
                     }
@@ -182,16 +184,23 @@ struct GuideHeroCard: View {
         .clipShape(.rect(cornerRadius: 24))
         .shadow(color: AppTheme.deepTeal.opacity(0.18), radius: 16, y: 8)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("14日ノート。備えを今日から少しずつ。状況 \(situationCount)件、記事 \(articleCount)件")
+        .accessibilityLabel("14日ノート。いまの状況から最初の行動へ。状況 \(situationCount)件、記事 \(articleCount)件")
     }
 
     private func heroMetric(systemName: String, text: String) -> some View {
-        Label(text, systemImage: systemName)
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(AppTheme.ivory)
-            .padding(.horizontal, 9)
-            .padding(.vertical, 6)
-            .background(Color.white.opacity(0.10), in: Capsule())
+        HStack(spacing: 5) {
+            Image(systemName: systemName)
+                .imageScale(.small)
+            Text(text)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(AppTheme.ivory)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 6)
+        .background(Color.white.opacity(0.10), in: Capsule())
+        .fixedSize(horizontal: true, vertical: false)
     }
 
     @ViewBuilder

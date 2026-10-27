@@ -4,18 +4,18 @@
 
 **iOS App Store で公開中**（`1.0.0` / ビルド `6`、iPhone / iPad、2026-07-24 審査通過）。オフライン閲覧、探索、備蓄、緊急カード、公式リンク集、PDF・印刷を提供します。Mac版はリポジトリに将来候補として残しますが、現行の公開商品には含めません。
 
-`main` は次のiOS版 `1.1.0`（ビルド `7`）の実装候補です。ホームから緊急時の最優先記事へ直行し、平時は人数・不足品・任意の緊急カードを3項目で確認できます。買い物リストは「備え」の中へ統合しました。公開済みの `v1.0.0` タグは変更しません。
+`main` は次のiOS版 `1.2.0`（ビルド `7`）の提出前候補です。未提出のv1.1実装候補を引き継ぎ、ホームから緊急時の最優先記事へ直行し、平時は人数・不足品・任意の緊急カードを3項目で確認できます。買い物リストは「備え」の中へ統合し、同梱記事と出典も2026-08-14に再確認しました。2026-10-27には防災ガイドの検索・記事内ジャンプ・読みやすさ導線を改善しました。公開済みの `v1.0.0` タグは変更しません。
 
-企画の原本は [`14日note.md`](./14日note.md)、実装範囲は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md)、v1.1の判断は [`docs/V1_1_PRODUCT_PLAN.md`](./docs/V1_1_PRODUCT_PLAN.md)、将来候補は [`docs/ROADMAP.md`](./docs/ROADMAP.md)、変更履歴は [`CHANGELOG.md`](./CHANGELOG.md) を参照してください。AIエージェントは [`AGENTS.md`](./AGENTS.md) を確認し、再提出や次ビルドの手順は [`docs/RELEASE_SUBMISSION_CHECKLIST.md`](./docs/RELEASE_SUBMISSION_CHECKLIST.md) を正本にしてください。申請画像と日本語文案は [`docs/app-store-assets/`](./docs/app-store-assets/) にあります。
+企画の原本は [`14日note.md`](./14日note.md)、実装範囲は [`docs/PROJECT_FOUNDATION.md`](./docs/PROJECT_FOUNDATION.md)、v1.2へ引き継いだ機能スライスの判断は [`docs/V1_1_PRODUCT_PLAN.md`](./docs/V1_1_PRODUCT_PLAN.md)、将来候補は [`docs/ROADMAP.md`](./docs/ROADMAP.md)、変更履歴は [`CHANGELOG.md`](./CHANGELOG.md) を参照してください。AIエージェントは [`AGENTS.md`](./AGENTS.md) を確認し、再提出や次ビルドの手順は [`docs/RELEASE_SUBMISSION_CHECKLIST.md`](./docs/RELEASE_SUBMISSION_CHECKLIST.md) を正本にしてください。申請画像と日本語文案は [`docs/app-store-assets/`](./docs/app-store-assets/) にあります。
 
 ## 現在の実装スライス
 
-ホームは「いま困っている」と「平時に備える」を分け、地震・停電・断水・風水害・ケガ・避難の最優先記事へ1タップで進めます。同梱したMarkdown記事を状況別に一覧表示し、通信なしで全文検索・カテゴリ・行動時期・お気に入りを組み合わせて閲覧できます。備蓄では人数と7日・14日だけを選ぶと、公的情報に基づく水・食料・携帯トイレの目安を表示し、その他の生活用品は不足チェックのみの買い物リストへ載せられます。選択状態はSwiftDataへ保存します。緊急カードは脅威モデルで定めた最小の個人情報だけを、備蓄とは分離した端末内ストアへ保存します。公式情報リンク集と、項目選択・明示同意付きのPDF・印刷を備えます。同梱30記事は公的一次情報との照合と編集確認を通過した `approved` です。
+ホームは「いま困っている」と「平時に備える」を分け、地震・停電・断水・風水害・ケガ・避難の最優先記事へ1タップで進めます。同梱したMarkdown記事を状況別に一覧表示し、通信なしで全文検索・カテゴリ・行動時期・お気に入りを組み合わせて閲覧できます。記事内では「最初の5分」「やってはいけない」などの見出しへ移動でき、状況一覧・記事一覧・記事詳細のどこからでも読みやすさ設定を開けます。備蓄では人数と7日・14日だけを選ぶと、公的情報に基づく水・食料・携帯トイレの目安を表示し、その他の生活用品は不足チェックのみの買い物リストへ載せられます。選択状態はSwiftDataへ保存します。緊急カードは脅威モデルで定めた最小の個人情報だけを、備蓄とは分離した端末内ストアへ保存します。公式情報リンク集と、項目選択・明示同意付きのPDF・印刷を備えます。同梱30記事は公的一次情報との照合と編集確認を通過した `approved` です。
 
 ## 必要環境
 
-- Xcode 26.6 以降（現在のローカル検証環境）
-- Swift 6.2 以降
+- Xcode 26.6 以降（現在のローカル検証環境: Xcode 27.1）
+- Swift 6.2 以降（現在のローカル検証環境: Swift 6.4）
 - XcodeGen 2.x
 - iOS / iPadOS 18.0 以降
 - macOS 15.0 以降（将来候補のMacターゲットをビルドする場合）
@@ -40,7 +40,7 @@ open FourteenDayNote.xcodeproj
 swift run content-lint --distribution
 ```
 
-生成した `FourteenDayNote.xcodeproj` はローカル生成物としてGit管理しません。v1.1の更新申請ではXcodeの `FourteenDayNote`（iPhone / iPad）を選択します。`FourteenDayNoteMac` は将来候補として残しますが、今回のArchive・Upload対象ではありません。SigningのTeamはXcodeで選択し、`project.yml` にTeam IDを推測で書かないでください。
+生成した `FourteenDayNote.xcodeproj` はローカル生成物としてGit管理しません。v1.2の更新申請ではXcodeの `FourteenDayNote`（iPhone / iPad）を選択します。`FourteenDayNoteMac` は将来候補として残しますが、今回のArchive・Upload対象ではありません。SigningのTeamはXcodeで選択し、`project.yml` にTeam IDを推測で書かないでください。
 
 ## 安全上の境界
 

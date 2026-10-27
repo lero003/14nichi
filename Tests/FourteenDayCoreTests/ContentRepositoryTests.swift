@@ -51,7 +51,7 @@ struct ContentRepositoryTests {
     }
 
     @Test(
-        "the six v1.1 home shortcuts resolve to approved critical immediate articles",
+        "home shortcuts resolve to approved immediate articles in their situation",
         arguments: [
             "earthquake",
             "blackout",
@@ -61,7 +61,7 @@ struct ContentRepositoryTests {
             "evacuation",
         ]
     )
-    func resolvesV11HomeShortcut(_ situationID: String) throws {
+    func resolvesHomeShortcut(_ situationID: String) throws {
         let catalog = try ContentRepository().loadBundledCatalog()
         let expectedArticleIDs = [
             "earthquake": "earthquake-first-actions",
@@ -69,18 +69,96 @@ struct ContentRepositoryTests {
             "water-outage": "water-outage-first-actions",
             "flood": "flood-first-actions",
             "first-aid": "first-aid-call-119",
-            "evacuation": "evacuation-go-bag",
+            "evacuation": "evacuation-decision",
         ]
         let article = try #require(
             catalog.emergencyShortcutArticle(for: situationID),
-            "A v1.1 home shortcut must never lead to an empty screen."
+            "A home shortcut must never lead to an empty screen."
         )
 
         #expect(article.id == expectedArticleIDs[situationID])
         #expect(article.reviewStatus == .approved)
-        #expect(article.priority == .critical)
         #expect(article.periods.contains(GuidePeriod.immediate.rawValue))
         #expect(article.situations.contains(situationID))
+    }
+
+    @Test("the situation's shortcut article is listed first")
+    func listsShortcutArticleFirst() throws {
+        let catalog = try ContentRepository().loadBundledCatalog()
+
+        #expect(catalog.articles(for: "evacuation").first?.id == "evacuation-decision")
+        #expect(catalog.articles(for: "earthquake").first?.id == "earthquake-first-actions")
+    }
+
+    @Test("manifest rejects an unknown shortcut article")
+    func rejectsUnknownShortcutArticle() {
+        let situation = GuideSituation(
+            id: "blackout",
+            title: "停電",
+            summary: "summary",
+            systemImage: "bolt.slash",
+            sortOrder: 1,
+            shortcutArticleID: "missing-article"
+        )
+        let manifest = Manifest(
+            schemaVersion: 1,
+            situations: [situation],
+            articles: []
+        )
+
+        #expect(
+            throws: ContentRepository.RepositoryError.unknownShortcutArticle(
+                situationID: "blackout",
+                articleID: "missing-article"
+            )
+        ) {
+            try ContentRepository.validate(manifest: manifest)
+        }
+    }
+
+    @Test("manifest rejects a shortcut that is not approved immediate content")
+    func rejectsInvalidShortcutArticle() {
+        let situation = GuideSituation(
+            id: "blackout",
+            title: "停電",
+            summary: "summary",
+            systemImage: "bolt.slash",
+            sortOrder: 1,
+            shortcutArticleID: "sample"
+        )
+        let manifest = Manifest(
+            schemaVersion: 1,
+            situations: [situation],
+            articles: [articleMetadata()]
+        )
+
+        #expect(
+            throws: ContentRepository.RepositoryError.invalidShortcutArticle(
+                situationID: "blackout",
+                articleID: "sample",
+                reason: "approved ではありません"
+            )
+        ) {
+            try ContentRepository.validate(manifest: manifest)
+        }
+    }
+
+    @Test("article H1 must match the manifest title")
+    func rejectsTitleMismatch() {
+        #expect(ContentRepository.leadingTitle(in: "# 見出し\n\n本文") == "見出し")
+        #expect(ContentRepository.leadingTitle(in: "本文だけ") == nil)
+        #expect(
+            throws: ContentRepository.RepositoryError.articleTitleMismatch(
+                articleID: "sample",
+                documentTitle: "別の見出し"
+            )
+        ) {
+            try ContentRepository.validateTitle(
+                "記事タイトル",
+                in: "# 別の見出し\n\n本文",
+                articleID: "sample"
+            )
+        }
     }
 
     @Test("front matter is removed from displayed body")

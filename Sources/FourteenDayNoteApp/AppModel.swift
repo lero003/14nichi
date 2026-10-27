@@ -118,6 +118,11 @@ final class AppModel {
         articleFilter.isActive
     }
 
+    /// 状況一覧のルートでは記事がまだ絞られていないため、絞り込み導線を出さない。
+    var canFilterArticles: Bool {
+        selectedSituationID != nil || hasSearchQuery || showsFavoritesOnly
+    }
+
     /// いまの候補集合から選べるカテゴリだけを返す（他状況のカテゴリで空振りしない）。
     var availableCategories: [String] {
         Array(Set(filterBaseArticles.map(\.category))).sorted {

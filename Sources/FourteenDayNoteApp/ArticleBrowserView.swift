@@ -75,8 +75,13 @@ struct ArticleBrowserView: View {
                     }
                 }
                 .toolbar { browserToolbar }
+                // スタックの外側に付けると検索欄が出ないことがあるため、一覧へ直接付ける。
+                .searchable(
+                    text: $model.searchQuery,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: "記事を検索"
+                )
         }
-        .searchable(text: $model.searchQuery, prompt: "記事を検索")
     }
 
     private var situationRootList: some View {
@@ -109,6 +114,7 @@ struct ArticleBrowserView: View {
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
+                        .accessibilityIdentifier("guide.situation.\(situation.id)")
                         .opacity(appeared || reduceMotion ? 1 : 0)
                         .offset(y: appeared || reduceMotion ? 0 : 8)
                         .animation(
@@ -149,7 +155,8 @@ struct ArticleBrowserView: View {
 
     private func articleListScreen(situationID: GuideSituation.ID) -> some View {
         List {
-            articleSection(title: model.articleListTitle)
+            // 状況名はナビゲーションタイトルに出るため、ここでは繰り返さない。
+            articleSection(title: nil)
         }
 #if os(iOS)
         .listStyle(.insetGrouped)
@@ -157,6 +164,7 @@ struct ArticleBrowserView: View {
         .listStyle(.sidebar)
 #endif
         .navigationTitle(model.catalog?.situation(id: situationID)?.title ?? "記事")
+        .toolbar { browserToolbar }
         .overlay { articleEmptyOverlay }
         .onAppear {
             // スタック戻り後も一覧の候補集合をこの状況に合わせる（検索状態は壊さない）
@@ -165,7 +173,7 @@ struct ArticleBrowserView: View {
     }
 
     @ViewBuilder
-    private func articleSection(title: String) -> some View {
+    private func articleSection(title: String?) -> some View {
         Section {
             ForEach(model.displayedArticles) { article in
                 Button {
@@ -174,22 +182,28 @@ struct ArticleBrowserView: View {
                     ArticleRow(
                         article: article,
                         isFavorite: model.isFavorite(article.id),
-                        generousSpacing: readability.prefersGenerousSpacing
+                        generousSpacing: readability.prefersGenerousSpacing,
+                        contextLabel: articleContextLabel(for: article)
                     )
                 }
                 .buttonStyle(.plain)
                 .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
+                .accessibilityIdentifier("guide.article.\(article.id)")
             }
         } header: {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                if model.hasActiveArticleFilters {
-                    Text("絞り込み: \(model.articleFilterSummary)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            if title != nil || model.hasActiveArticleFilters {
+                VStack(alignment: .leading, spacing: 3) {
+                    if let title {
+                        Text(title)
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    if model.hasActiveArticleFilters {
+                        Text("絞り込み: \(model.articleFilterSummary)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
         } footer: {
@@ -205,11 +219,13 @@ struct ArticleBrowserView: View {
         if let article = model.catalog?.article(id: articleID) {
             ArticleDetailView(
                 article: article,
+                contextTitle: situationTitle(for: article),
                 isFavorite: model.isFavorite(article.id),
                 relatedArticles: model.catalog?.relatedArticles(to: article) ?? [],
                 onToggleFavorite: { model.toggleFavorite(article.id) },
                 onOpenRelated: openRelatedArticle
             )
+            .toolbar { readingToolbar }
             .onAppear {
                 model.selectArticle(articleID, requireDisplayed: false)
             }
@@ -256,6 +272,21 @@ struct ArticleBrowserView: View {
                 )
             )
         }
+    }
+
+    /// 記事が主に対象とする状況名。詳細の上部に文脈として出す。
+    private func situationTitle(for article: GuideArticle) -> String? {
+        article.situations
+            .compactMap { model.catalog?.situation(id: $0)?.title }
+            .first
+    }
+
+    /// 検索・お気に入りでは、記事がどの状況のものか分からなくなりやすいので補う。
+    private func articleContextLabel(for article: GuideArticle) -> String? {
+        guard model.hasSearchQuery || model.showsFavoritesOnly else { return nil }
+        let titles = article.situations.compactMap { model.catalog?.situation(id: $0)?.title }
+        guard let first = titles.first else { return nil }
+        return titles.count > 1 ? "\(first) ほか" : first
     }
 
     /// model の選択から compact 用 path を復元する（サイズクラス切り替え用）。
@@ -315,7 +346,7 @@ struct ArticleBrowserView: View {
     }
 
     private var splitSituationColumn: some View {
-        List(selection: situationSelection) {
+        List {
             Section {
                 GuideHeroCard(
                     situationCount: model.catalog?.situations.count ?? 0,
@@ -329,16 +360,23 @@ struct ArticleBrowserView: View {
 
             Section {
                 ForEach(model.catalog?.situations ?? [], id: \.id) { situation in
-                    SituationRow(
-                        situation: situation,
-                        articleCount: model.catalog?.articles(for: situation.id).count ?? 0,
-                        generousSpacing: readability.prefersGenerousSpacing,
-                        isSelected: model.selectedSituationID == situation.id
-                    )
-                    .tag(Optional(situation.id))
+                    Button {
+                        withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                            model.selectSituation(situation.id)
+                        }
+                    } label: {
+                        SituationRow(
+                            situation: situation,
+                            articleCount: model.catalog?.articles(for: situation.id).count ?? 0,
+                            generousSpacing: readability.prefersGenerousSpacing,
+                            isSelected: model.selectedSituationID == situation.id
+                        )
+                    }
+                    .buttonStyle(.plain)
                     .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
+                    .accessibilityIdentifier("guide.situation.\(situation.id)")
                 }
             } header: {
                 Text("状況を選ぶ")
@@ -364,29 +402,34 @@ struct ArticleBrowserView: View {
     }
 
     private var splitArticleColumn: some View {
-        List(selection: articleSelection) {
+        List {
             if model.catalog != nil {
                 Section {
                     ForEach(model.displayedArticles) { article in
-                        ArticleRow(
-                            article: article,
-                            isFavorite: model.isFavorite(article.id),
-                            generousSpacing: readability.prefersGenerousSpacing
-                        )
-                        .tag(Optional(article.id))
+                        Button {
+                            withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                                model.selectArticle(article.id, requireDisplayed: true)
+                            }
+                        } label: {
+                            ArticleRow(
+                                article: article,
+                                isFavorite: model.isFavorite(article.id),
+                                generousSpacing: readability.prefersGenerousSpacing,
+                                contextLabel: articleContextLabel(for: article),
+                                isSelected: model.selectedArticleID == article.id
+                            )
+                        }
+                        .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
+                        .accessibilityIdentifier("guide.article.\(article.id)")
                     }
                 } header: {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(model.articleListTitle)
-                            .font(.subheadline.weight(.semibold))
-                        if model.hasActiveArticleFilters {
-                            Text("絞り込み: \(model.articleFilterSummary)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                    if model.hasActiveArticleFilters {
+                        Text("絞り込み: \(model.articleFilterSummary)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 } footer: {
                     if !model.displayedArticles.isEmpty {
@@ -412,12 +455,14 @@ struct ArticleBrowserView: View {
         if let article = model.selectedArticle {
             ArticleDetailView(
                 article: article,
+                contextTitle: situationTitle(for: article),
                 isFavorite: model.isFavorite(article.id),
                 relatedArticles: model.catalog?.relatedArticles(to: article) ?? [],
                 onToggleFavorite: { model.toggleFavorite(article.id) },
                 onOpenRelated: openRelatedArticle
             )
             .id(article.id)
+            .toolbar { readingToolbar }
         } else {
             emptyState(
                 title: "記事を選んでください",
@@ -445,11 +490,20 @@ struct ArticleBrowserView: View {
                   !model.hasSearchQuery,
                   model.selectedSituationID == nil,
                   usesCompactNavigation == false {
-            emptyState(
-                title: "状況を選んでください",
-                systemImage: "checklist",
-                description: "左側からいまの状況を選ぶと、関連記事が表示されます。"
-            )
+            ContentUnavailableView {
+                Label("状況を選んでください", systemImage: "checklist")
+            } description: {
+                Text("いまの状況を選ぶと、関連記事が表示されます。")
+                    .font(.body)
+            } actions: {
+                Button("状況の一覧を開く") {
+                    withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                        columnVisibility = .all
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("guide.openSituations")
+            }
         } else if model.selectedSituationID != nil, model.displayedArticles.isEmpty {
             emptyState(
                 title: "記事がありません",
@@ -486,95 +540,98 @@ struct ArticleBrowserView: View {
     @ToolbarContentBuilder
     private var browserToolbar: some ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
-            Menu {
-                Picker("カテゴリ", selection: categoryFilterSelection) {
-                    Text("すべてのカテゴリ").tag(nil as String?)
-                    ForEach(model.availableCategories, id: \.self) { category in
-                        Text(GuideCategory.displayName(for: category)).tag(Optional(category))
-                    }
-                }
-
-                Picker("行動時期", selection: periodFilterSelection) {
-                    Text("すべての時期").tag(nil as GuidePeriod?)
-                    ForEach(model.availablePeriods, id: \.rawValue) { period in
-                        Text(period.displayName).tag(Optional(period))
-                    }
-                }
-
-                if model.hasActiveArticleFilters {
-                    Divider()
-                    Button("絞り込みを解除", systemImage: "xmark.circle") {
-                        model.clearArticleFilters()
-                    }
-                }
-            } label: {
-                Label(
-                    model.hasActiveArticleFilters ? "絞り込み中" : "記事を絞り込む",
-                    systemImage: model.hasActiveArticleFilters
-                        ? "line.3.horizontal.decrease.circle.fill"
-                        : "line.3.horizontal.decrease.circle"
-                )
+            // 状況一覧のルートでは絞り込み対象がないため出さない。
+            if model.canFilterArticles {
+                filterMenu
             }
-            .help(model.hasActiveArticleFilters ? model.articleFilterSummary : "カテゴリと行動時期で絞り込む")
-            .accessibilityValue(model.articleFilterSummary)
-
-            Button {
-                withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
-                    model.toggleFavoritesFilter()
-                    if usesCompactNavigation {
-                        router.guidePath = []
-                    }
-                }
-            } label: {
-                Label(
-                    model.showsFavoritesOnly ? "すべての記事を表示" : "お気に入りだけ表示",
-                    systemImage: model.showsFavoritesOnly ? "heart.fill" : "heart"
-                )
-            }
-            .help(
-                model.showsFavoritesOnly
-                    ? "状況別の記事一覧へ戻る"
-                    : "お気に入り \(model.favoriteArticleIDs.count)件を表示"
-            )
-            .accessibilityValue(model.showsFavoritesOnly ? "選択中" : "未選択")
-
-            Button {
-                model.presentedSheet = .readability
-            } label: {
-                Label("読みやすさ", systemImage: "textformat.size")
-            }
-            .help("文字サイズと余白を変更")
-            .accessibilityHint("文字を大きくしたり、行間を広げたりできます")
-
-            Button {
-                model.presentedSheet = .about
-            } label: {
-                Label("このアプリについて", systemImage: "info.circle")
-            }
-            .help("アプリの説明と製品ページ")
+            favoritesButton
+            readabilityButton
+            aboutButton
         }
     }
 
-    private var situationSelection: Binding<GuideSituation.ID?> {
-        Binding(
-            get: { model.selectedSituationID },
-            set: { newValue in
-                withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
-                    model.selectSituation(newValue)
-                }
-            }
-        )
+    /// 記事を読んでいる間も文字サイズを変えられるようにする。
+    @ToolbarContentBuilder
+    private var readingToolbar: some ToolbarContent {
+        ToolbarItemGroup(placement: .primaryAction) {
+            readabilityButton
+            aboutButton
+        }
     }
 
-    private var articleSelection: Binding<GuideArticle.ID?> {
-        Binding(
-            get: { model.selectedArticleID },
-            set: { newValue in
-                withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
-                    model.selectArticle(newValue, requireDisplayed: true)
+    private var filterMenu: some View {
+        Menu {
+            Picker("カテゴリ", selection: categoryFilterSelection) {
+                Text("すべてのカテゴリ").tag(nil as String?)
+                ForEach(model.availableCategories, id: \.self) { category in
+                    Text(GuideCategory.displayName(for: category)).tag(Optional(category))
                 }
             }
+
+            Picker("行動時期", selection: periodFilterSelection) {
+                Text("すべての時期").tag(nil as GuidePeriod?)
+                ForEach(model.availablePeriods, id: \.rawValue) { period in
+                    Text(period.displayName).tag(Optional(period))
+                }
+            }
+
+            if model.hasActiveArticleFilters {
+                Divider()
+                Button("絞り込みを解除", systemImage: "xmark.circle") {
+                    model.clearArticleFilters()
+                }
+            }
+        } label: {
+            Label(
+                model.hasActiveArticleFilters ? "絞り込み中" : "記事を絞り込む",
+                systemImage: model.hasActiveArticleFilters
+                    ? "line.3.horizontal.decrease.circle.fill"
+                    : "line.3.horizontal.decrease.circle"
+            )
+        }
+        .help(model.hasActiveArticleFilters ? model.articleFilterSummary : "カテゴリと行動時期で絞り込む")
+        .accessibilityValue(model.articleFilterSummary)
+    }
+
+    private var favoritesButton: some View {
+        Button {
+            withAnimation(AppTheme.spring(reduceMotion: reduceMotion)) {
+                model.toggleFavoritesFilter()
+                if usesCompactNavigation {
+                    router.guidePath = []
+                }
+            }
+        } label: {
+            Label(
+                model.showsFavoritesOnly ? "すべての記事を表示" : "お気に入りだけ表示",
+                systemImage: model.showsFavoritesOnly ? "heart.fill" : "heart"
+            )
+        }
+        .help(
+            model.showsFavoritesOnly
+                ? "状況別の記事一覧へ戻る"
+                : "お気に入り \(model.favoriteArticleIDs.count)件を表示"
         )
+        .accessibilityValue(model.showsFavoritesOnly ? "選択中" : "未選択")
+    }
+
+    private var readabilityButton: some View {
+        Button {
+            model.presentedSheet = .readability
+        } label: {
+            Label("読みやすさ", systemImage: "textformat.size")
+        }
+        .help("文字サイズと余白を変更")
+        .accessibilityHint("文字を大きくしたり、行間を広げたりできます")
+    }
+
+    private var aboutButton: some View {
+        Button {
+            model.presentedSheet = .about
+        } label: {
+            Label("このアプリについて", systemImage: "info.circle")
+        }
+        .help("アプリの説明と製品ページ")
     }
 
     private var categoryFilterSelection: Binding<String?> {
@@ -605,15 +662,15 @@ private struct SituationRow: View {
             VStack(alignment: .leading, spacing: generousSpacing ? 6 : 4) {
                 Text(situation.title)
                     .font(.headline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.primary)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(situation.summary)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(articleCount == 0 ? "記事なし" : "記事 \(articleCount)件")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondary)
             }
             Spacer(minLength: 0)
             if isSelected {
@@ -656,6 +713,8 @@ private struct ArticleRow: View {
     let article: GuideArticle
     let isFavorite: Bool
     var generousSpacing: Bool
+    var contextLabel: String? = nil
+    var isSelected: Bool = false
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -674,14 +733,23 @@ private struct ArticleRow: View {
 
             Text(article.summary)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            if let contextLabel {
+                Label(contextLabel, systemImage: "square.stack")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+            }
 
             FlowChips {
                 ForEach(article.periodLabels, id: \.self) { label in
                     PeriodChip(label: label)
                 }
-                ReviewStatusLabel(status: article.reviewStatus)
+                // 製品版は全記事が approved。一覧では差が出ないため、未承認のときだけ警告する。
+                if article.reviewStatus != .approved {
+                    ReviewStatusLabel(status: article.reviewStatus)
+                }
                 if isFavorite {
                     FavoriteStatusLabel()
                 }
@@ -690,20 +758,24 @@ private struct ArticleRow: View {
         .padding(generousSpacing ? 16 : 14)
         .background(
             RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .fill(cardFill)
+                .fill(isSelected ? AppTheme.accent.opacity(0.12) : cardFill)
         )
         .overlay {
             RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
-                .strokeBorder(AppTheme.surfaceStroke, lineWidth: 1)
+                .strokeBorder(
+                    isSelected ? AppTheme.accent.opacity(0.45) : AppTheme.surfaceStroke,
+                    lineWidth: isSelected ? 1.5 : 1
+                )
         }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private var articleTitle: some View {
         Text(article.title)
             .font(.headline)
-            .foregroundStyle(.primary)
+            .foregroundStyle(Color.primary)
             .fixedSize(horizontal: false, vertical: true)
     }
 

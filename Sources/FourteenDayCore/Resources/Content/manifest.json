@@ -69,7 +69,8 @@
       "title": "避難を考える",
       "summary": "避難の判断材料、持ち出し、移動時の安全。",
       "systemImage": "figure.walk",
-      "sortOrder": 100
+      "sortOrder": 100,
+      "shortcutArticleID": "evacuation-decision"
     },
     {
       "id": "misinfo",
@@ -161,7 +162,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -192,6 +193,16 @@
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
           "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "meti-gas-smell",
+          "title": "ガス臭いと感じた時には",
+          "publisher": "経済産業省",
+          "url": "https://www.meti.go.jp/policy/safety_security/industrial_safety/sangyo/citygas/anzen_torikumi/file_jisyuhoan/business/study/fireaccident/gas_smell.html",
+          "accessedAt": "2026-08-14",
+          "usage": "paraphrase",
+          "rightsNote": "火気・電気スイッチを避け、窓を開け、栓を閉めて事業者へ連絡する要点を自前で要約。",
           "excerpt": null
         }
       ]
@@ -375,15 +386,15 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-22",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "mhlw-water",
           "title": "厚生労働省 水道のページ",
           "publisher": "厚生労働省",
-          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/topics/bukyoku/kenkou/suido/index.html",
-          "accessedAt": "2026-07-20",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/suido/index.html",
+          "accessedAt": "2026-08-14",
           "usage": "linkOnly",
           "rightsNote": "水道・水質に関する公的情報への参照。断定的な保存期間は監修前に書かない。",
           "excerpt": null
@@ -422,7 +433,7 @@
     },
     {
       "id": "water-outage-toilet-hygiene",
-      "title": "断水：トイレと衛生",
+      "title": "断水時のトイレと衛生",
       "summary": "水が使えないときの排泄と手指衛生の基本。",
       "path": "emergency/water-outage-toilet-hygiene.md",
       "category": "hygiene",
@@ -501,15 +512,15 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
           "id": "mhlw-water",
           "title": "厚生労働省 水道のページ",
           "publisher": "厚生労働省",
-          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/topics/bukyoku/kenkou/suido/index.html",
-          "accessedAt": "2026-07-20",
+          "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/suido/index.html",
+          "accessedAt": "2026-08-14",
           "usage": "linkOnly",
           "rightsNote": "水道・水質に関する公的情報への参照。断定的な保存期間は監修前に書かない。",
           "excerpt": null
@@ -528,7 +539,7 @@
     },
     {
       "id": "communication-first-actions",
-      "title": "通信障害：最初の連絡手段",
+      "title": "通信しづらいときの最初の行動",
       "summary": "つながりにくいときに試す順序と、電池を守る連絡。",
       "path": "emergency/communication-first-actions.md",
       "category": "communication",
@@ -579,7 +590,7 @@
     },
     {
       "id": "communication-family-plan",
-      "title": "家族の連絡・集合ルール",
+      "title": "家族の連絡と集合の決め方",
       "summary": "平時に決めておくと混乱時に効く、短い家族ルール。",
       "path": "emergency/communication-family-plan.md",
       "category": "communication",
@@ -645,7 +656,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -656,6 +667,26 @@
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
           "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-weather-info-2026",
+          "title": "新たな防災気象情報について（令和8年～）",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
+          "accessedAt": "2026-08-14",
+          "usage": "paraphrase",
+          "rightsNote": "警戒レベル付きの防災気象情報と、避難指示がなくてもキキクル等で自ら判断する要点を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-kikikuru",
+          "title": "キキクル",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/bosai/riskmap.html",
+          "accessedAt": "2026-08-14",
+          "usage": "linkOnly",
+          "rightsNote": "土砂・浸水・洪水の危険度分布（キキクル）への参照。",
           "excerpt": null
         },
         {
@@ -693,16 +724,16 @@
           "title": "避難情報に関するガイドライン（令和8年3月改定）",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-08-14",
           "usage": "paraphrase",
-          "rightsNote": "警戒レベル3・4・5の意味と、警戒レベル4までの避難判断を自前で要約。",
+          "rightsNote": "警戒レベル3・4・5の意味と、令和8年5月以降の警戒レベル相当情報の使い方を自前で要約。",
           "excerpt": null
         }
       ]
     },
     {
       "id": "flood-evacuation-timing",
-      "title": "水害：避難のタイミング",
+      "title": "避難情報と動き出すタイミング",
       "summary": "明るいうち・安全なうちに動くための確認リスト。",
       "path": "emergency/flood-evacuation-timing.md",
       "category": "evacuation",
@@ -717,7 +748,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -728,6 +759,26 @@
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
           "rightsNote": "警報・注意報・地震・津波などの公式発表への参照。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-weather-info-2026",
+          "title": "新たな防災気象情報について（令和8年～）",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
+          "accessedAt": "2026-08-14",
+          "usage": "paraphrase",
+          "rightsNote": "警戒レベル付きの防災気象情報と、避難指示がなくてもキキクル等で自ら判断する要点を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-kikikuru",
+          "title": "キキクル",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/bosai/riskmap.html",
+          "accessedAt": "2026-08-14",
+          "usage": "linkOnly",
+          "rightsNote": "土砂・浸水・洪水の危険度分布（キキクル）への参照。",
           "excerpt": null
         },
         {
@@ -755,16 +806,16 @@
           "title": "避難情報に関するガイドライン（令和8年3月改定）",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-08-14",
           "usage": "paraphrase",
-          "rightsNote": "警戒レベル3・4・5の意味と、警戒レベル4までの避難判断を自前で要約。",
+          "rightsNote": "警戒レベル3・4・5の意味と、令和8年5月以降の警戒レベル相当情報の使い方を自前で要約。",
           "excerpt": null
         }
       ]
     },
     {
       "id": "heat-first-actions",
-      "title": "猛暑：熱中症を防ぐ確認",
+      "title": "猛暑・熱中症：身を守る",
       "summary": "暑い環境での休息・水分・冷却の基本（診断はしない）。",
       "path": "emergency/heat-first-actions.md",
       "category": "weather",
@@ -841,7 +892,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -855,6 +906,16 @@
           "excerpt": null
         },
         {
+          "id": "fdma-hypothermia",
+          "title": "応急手当WEB講習 低体温症",
+          "publisher": "総務省消防庁",
+          "url": "https://www.fdma.go.jp/relocation/kyukyukikaku/oukyu/05kobetsu/05/05_05_11.html",
+          "accessedAt": "2026-08-14",
+          "usage": "paraphrase",
+          "rightsNote": "濡れ・風・冷たい地面を避け、それ以上の体温低下を防ぐ保温の要点を自前で要約。",
+          "excerpt": null
+        },
+        {
           "id": "jrc-portal",
           "title": "日本赤十字社",
           "publisher": "日本赤十字社",
@@ -862,6 +923,16 @@
           "accessedAt": "2026-07-20",
           "usage": "linkOnly",
           "rightsNote": "応急手当・災害救護の公的案内への参照。専門講習の代替ではない。",
+          "excerpt": null
+        },
+        {
+          "id": "jrc-rest-warmth",
+          "title": "傷病者の安静",
+          "publisher": "日本赤十字社",
+          "url": "https://www.jrc.or.jp/study/safety/rest/",
+          "accessedAt": "2026-08-14",
+          "usage": "paraphrase",
+          "rightsNote": "濡れた衣服の着替え、毛布による保温、大きく揺らさない注意を自前で要約。",
           "excerpt": null
         },
         {
@@ -898,7 +969,7 @@
     },
     {
       "id": "gas-outage-first-actions",
-      "title": "ガス停止・ガス臭のときの行動",
+      "title": "ガスが止まった・臭いがするとき",
       "summary": "ガス漏れが疑われるときの火気禁止と換気、通報の優先。",
       "path": "emergency/gas-outage-first-actions.md",
       "category": "gas",
@@ -1012,7 +1083,7 @@
     },
     {
       "id": "evacuation-go-bag",
-      "title": "避難時の持ち出しチェック",
+      "title": "持ち出し袋の整え方",
       "summary": "すぐ持てる最小セットと、あると安心なもの。",
       "path": "emergency/evacuation-go-bag.md",
       "category": "evacuation",
@@ -1064,7 +1135,7 @@
     },
     {
       "id": "evacuation-decision",
-      "title": "避難するか、留まるか",
+      "title": "避難する・留まるの判断",
       "summary": "アプリは判断を代行しない。考えるための確認項目。",
       "path": "emergency/evacuation-decision.md",
       "category": "evacuation",
@@ -1081,7 +1152,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -1105,6 +1176,26 @@
           "excerpt": null
         },
         {
+          "id": "jma-weather-info-2026",
+          "title": "新たな防災気象情報について（令和8年～）",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html",
+          "accessedAt": "2026-08-14",
+          "usage": "paraphrase",
+          "rightsNote": "警戒レベル付きの防災気象情報と、避難指示がなくてもキキクル等で自ら判断する要点を自前の言葉で案内。",
+          "excerpt": null
+        },
+        {
+          "id": "jma-kikikuru",
+          "title": "キキクル",
+          "publisher": "気象庁",
+          "url": "https://www.jma.go.jp/jma/kishou/know/bosai/riskmap.html",
+          "accessedAt": "2026-08-14",
+          "usage": "linkOnly",
+          "rightsNote": "土砂・浸水・洪水の危険度分布（キキクル）への参照。",
+          "excerpt": null
+        },
+        {
           "id": "gsi-hazard",
           "title": "ハザードマップポータルサイト",
           "publisher": "国土地理院",
@@ -1119,16 +1210,16 @@
           "title": "避難情報に関するガイドライン（令和8年3月改定）",
           "publisher": "内閣府",
           "url": "https://www.bousai.go.jp/oukyu/hinanjouhou/r3_hinanjouhou_guideline/index.html",
-          "accessedAt": "2026-07-20",
+          "accessedAt": "2026-08-14",
           "usage": "paraphrase",
-          "rightsNote": "警戒レベル3・4・5の意味と、警戒レベル4までの避難判断を自前で要約。",
+          "rightsNote": "警戒レベル3・4・5の意味と、令和8年5月以降の警戒レベル相当情報の使い方を自前で要約。",
           "excerpt": null
         }
       ]
     },
     {
       "id": "misinfo-check-steps",
-      "title": "情報の真偽を確かめる手順",
+      "title": "情報が錯綜しているときの確認手順",
       "summary": "不安な投稿に触れたときに踏む、短い確認ステップ。",
       "path": "emergency/misinfo-check-steps.md",
       "category": "information",
@@ -1231,7 +1322,7 @@
     },
     {
       "id": "first-aid-bleeding-basics",
-      "title": "出血への初期対応（基本）",
+      "title": "出血があるときの基本",
       "summary": "安全確保と圧迫止血の考え方。重度は救急要請を優先。",
       "path": "emergency/first-aid-bleeding-basics.md",
       "category": "firstAid",
@@ -1244,7 +1335,7 @@
       ],
       "region": "jp",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-20",
+      "reviewedAt": "2026-08-14",
       "reviewedBy": "14日ノート編集レビュー（公的一次情報照合・専門資格監修なし）",
       "sources": [
         {
@@ -1271,8 +1362,8 @@
           "id": "jrc-direct-pressure",
           "title": "多量の出血",
           "publisher": "日本赤十字社",
-          "url": "https://www.jrc.or.jp/activity/study/safety/bleed/index.html",
-          "accessedAt": "2026-07-20",
+          "url": "https://www.jrc.or.jp/study/safety/bleed/",
+          "accessedAt": "2026-08-14",
           "usage": "paraphrase",
           "rightsNote": "直接圧迫止血と止血帯に関する基礎的な注意を自前で要約。",
           "excerpt": null
@@ -1281,7 +1372,7 @@
     },
     {
       "id": "first-aid-medications-shortage",
-      "title": "常用薬が足りなくなりそうなとき",
+      "title": "常用薬が足りないとき",
       "summary": "自己判断での飲み方変更はせず、相談先を探すための確認。",
       "path": "emergency/first-aid-medications-shortage.md",
       "category": "firstAid",
@@ -1509,7 +1600,7 @@
     },
     {
       "id": "food-no-cook-priority",
-      "title": "火や電気が使えないときの食事",
+      "title": "火が使えないときの食事の順番",
       "summary": "調理条件から考える、食べる順番と注意。",
       "path": "emergency/food-no-cook-priority.md",
       "category": "food",
@@ -1563,7 +1654,7 @@
     },
     {
       "id": "hygiene-without-bathing",
-      "title": "入浴できない期間の清潔",
+      "title": "入浴できないときの清潔",
       "summary": "水が少ないときの身体と口腔の清潔のとり方。",
       "path": "emergency/hygiene-without-bathing.md",
       "category": "hygiene",
@@ -1729,7 +1820,7 @@
     },
     {
       "id": "shelter-day7-to-day14",
-      "title": "7日を超えそうなときの見直し",
+      "title": "1〜2週目の生活を立て直す",
       "summary": "短期想定から少し長い混乱へ移るときの資源と情報の見直し。",
       "path": "emergency/shelter-day7-to-day14.md",
       "category": "preparedness",

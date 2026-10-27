@@ -142,19 +142,23 @@ public struct GuideSituation: Codable, Hashable, Identifiable, Sendable {
     public let summary: String
     public let systemImage: String
     public let sortOrder: Int
+    /// ホームの緊急ショートカットから最初に開く記事。省略時は approved / critical / immediate の先頭記事。
+    public let shortcutArticleID: String?
 
     public init(
         id: String,
         title: String,
         summary: String,
         systemImage: String,
-        sortOrder: Int
+        sortOrder: Int,
+        shortcutArticleID: String? = nil
     ) {
         self.id = id
         self.title = title
         self.summary = summary
         self.systemImage = systemImage
         self.sortOrder = sortOrder
+        self.shortcutArticleID = shortcutArticleID
     }
 }
 
@@ -169,10 +173,16 @@ public struct ContentCatalog: Hashable, Sendable {
 
     public func articles(for situationID: GuideSituation.ID?) -> [GuideArticle] {
         guard let situationID else { return [] }
+        let shortcutArticleID = situation(id: situationID)?.shortcutArticleID
         return articles
             .filter { $0.situations.contains(situationID) }
             .sorted { lhs, rhs in
-                Self.articleSort(lhs, rhs, preferredSituationID: situationID)
+                // 編集上「最初に読む」と決めた記事を、状況の記事一覧でも先頭に出す。
+                if let shortcutArticleID, lhs.id != rhs.id {
+                    if lhs.id == shortcutArticleID { return true }
+                    if rhs.id == shortcutArticleID { return false }
+                }
+                return Self.articleSort(lhs, rhs, preferredSituationID: situationID)
             }
     }
 

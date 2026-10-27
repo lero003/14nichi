@@ -79,6 +79,48 @@ struct ArticleDiscoveryTests {
         #expect(candidates.emergencyShortcutArticle(for: "water-outage") == nil)
     }
 
+    @Test("an explicit shortcut article wins over the critical fallback")
+    func resolvesExplicitShortcut() {
+        let decision = article(
+            id: "decision",
+            title: "避難するか留まるか",
+            summary: "判断",
+            situation: "evacuation",
+            body: "本文",
+            publisher: "内閣府",
+            category: "evacuation",
+            priority: .high,
+            reviewStatus: .approved,
+            periods: ["immediate"]
+        )
+        let fallback = article(
+            id: "critical",
+            title: "最優先の持ち物",
+            summary: "持ち物",
+            situation: "evacuation",
+            body: "本文",
+            publisher: "内閣府",
+            category: "evacuation",
+            priority: .critical,
+            reviewStatus: .approved,
+            periods: ["immediate"]
+        )
+        let situation = GuideSituation(
+            id: "evacuation",
+            title: "避難を考える",
+            summary: "避難の判断",
+            systemImage: "figure.walk",
+            sortOrder: 3,
+            shortcutArticleID: "decision"
+        )
+        let candidates = ContentCatalog(
+            situations: [situation],
+            articles: [fallback, decision]
+        )
+
+        #expect(candidates.emergencyShortcutArticle(for: "evacuation")?.id == "decision")
+    }
+
     @Test("related articles keep editorial priority and exclude the current article")
     func resolvesRelatedArticles() {
         let current = article(

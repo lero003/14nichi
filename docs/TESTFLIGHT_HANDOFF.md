@@ -27,22 +27,22 @@
 
 | 状態 | Identity |
 |---|---|
-| **失効** | Apple Development: lero003@gmail.com (A96KNANR4F) — `CSSMERR_TP_CERT_REVOKED` |
-| 有効 | Apple Development: Keitaro Matsukura (A96KNANR4F) |
-| 有効 | Apple Distribution: Keitaro Matsukura (8BNUB2R9C8) |
-| 有効 | Developer ID Application: Keitaro Matsukura (8BNUB2R9C8) |
+| **失効** | Apple Development — `CSSMERR_TP_CERT_REVOKED` |
+| 有効 | Apple Development |
+| 有効 | Apple Distribution |
+| 有効 | Developer ID Application |
 
-Team ID らしき値: **8BNUB2R9C8**（証明書の表示から読み取り。リポジトリには書き込んでいない）。
+上記は当時の状態。所有者名・メールアドレス・証明書固有の識別情報は公開文書から省略する。現在の証明書と Team は、本人がローカルの Xcode / Keychain で確認する。
 
 ### ユーザーが Xcode で行う操作
 
 1. Xcode → Settings → Accounts で Apple ID を追加/更新する。
 2. `xcodegen generate` 後に `FourteenDayNote.xcodeproj` を開く。
 3. ターゲット **FourteenDayNote** → Signing & Capabilities:
-   - Team を選択（例: Keitaro Matsukura / 8BNUB2R9C8 を本人確認のうえ）。
+   - 本人が確認した開発用 Team を選択する。
    - Automatically manage signing をオン。
    - Bundle Identifier が `jp.hazakura.FourteenDayNote` であること。
-4. 失効した Development 証明書（lero003@gmail.com）は使わない。
+4. 失効した Development 証明書は使わない。
 5. App Store Connectで **iOS** のアプリレコードを作成（iPhone / iPad）。macOSは追加しない。
 6. Product → Archive（Any iOS Device）。
 7. Organizer → **Validate** を先に実行。
